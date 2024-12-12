@@ -1,0 +1,101 @@
+city_name,Region,origin_name,origin_type,origin_point_lat,origin_point_lon,street_order_category
+Amsterdam,Europe,Amsterdam Centraal Station,train station,52.379189,4.899431,Disorderly
+Athens,Europe,Athens Railway Station,train station,37.990833,23.713889,Disorderly
+Atlanta,US/Canada,Atlanta Bus Station,bus station,33.753371,-84.392374,Orderly
+Baghdad,Middle East/Africa,Baghdad Central Station,train station,33.313227,44.413411,Disorderly
+Baltimore,US/Canada,Baltimore Penn Station,train station,39.307222,-76.615,Disorderly
+Bangkok,Asia/Oceania,Hua Lamphong Railway Station,train station,13.744434,100.529761,Disorderly
+Barcelona,Europe,Barcelona Sants,train station,41.379891,2.139462,Disorderly
+Beijing,Asia/Oceania,Beijing Railway Station,train station,39.904722,116.427222,Orderly
+Beirut,Middle East/Africa,Charles Helou Bus & Taxi Station,bus station,33.89589,35.510781,Disorderly
+Berlin,Europe,Berlin Hauptbahnhof,train station,52.525592,13.369545,Disorderly
+Bogota,Latin America,El Dorado International Airport,airport,4.701389,-74.146944,Disorderly
+Boston,US/Canada,South Station Bus Terminal,bus station,42.351944,-71.055278,Disorderly
+Budapest,Europe,Budapest Keleti Train Station,train station,47.500113,19.082514,Disorderly
+Buenos Aires,Latin America,Retiro Station,train station,-34.592778,-58.377222,Orderly
+Cairo,Middle East/Africa,Ramses Station,train station,30.062125,31.246985,Disorderly
+Cape Town,Middle East/Africa,Cape Town Station,train station,-33.925998,18.423299,Disorderly
+Caracas,Latin America,Caracas Metro,metro station,10.495345,-66.864631,Disorderly
+Casablanca,Middle East/Africa,Casa Voyageurs,train station,33.592258,-7.619821,Disorderly
+Charlotte,US/Canada,Charlotte Transportation Center,bus station,35.226944,-80.843333,Disorderly
+Chicago,US/Canada,Chicago Union Station,train station,41.878333,-87.641111,Orderly
+Cleveland,US/Canada,Cleveland Amtrak Station,train station,41.505833,-81.693333,Orderly
+Copenhagen,Europe,Copenhagen Central Station,train station,55.676234,12.568297,Disorderly
+Dallas,US/Canada,Dallas Union Station,train station,32.776192,-96.796969,Orderly
+Damascus,Middle East/Africa,Damascus Central Station,train station,33.507911,36.303369,Disorderly
+Denver,US/Canada,Denver Union Station,train station,39.757222,-104.988056,Orderly
+Detroit,US/Canada,Detroit Amtrak Station,train station,42.331667,-83.046667,Orderly
+Dubai,Middle East/Africa,Dubai Central Bus Station,bus station,25.269444,55.308889,Disorderly
+Dublin,Europe,Dublin Connolly Station,train station,53.347811,-6.259678,Disorderly
+Glasgow,Europe,Glasgow Central Station,train station,55.860711,-4.257512,Disorderly
+Hanoi,Asia/Oceania,Hanoi Railway Station,train station,21.024444,105.841111,Disorderly
+Havana,Latin America,Havana Central Station,train station,23.138717,-82.383857,Disorderly
+Helsinki,Europe,Helsinki Central Railway Station,train station,60.171882,24.941333,Disorderly
+Hong Kong,Asia/Oceania,Hung Hom Station,train station,22.2975,114.175833,Disorderly
+Honolulu,US/Canada,Ala Moana Center Bus Terminal,bus station,21.2925,-157.846667,Disorderly
+Houston,US/Canada,Houston Amtrak Station,train station,29.756944,-95.355556,Orderly
+Istanbul,Middle East/Africa,Istanbul Sirkeci Terminal,train station,41.014549,28.979918,Disorderly
+Jakarta,Asia/Oceania,Gambir Station,train station,-6.175278,106.827222,Disorderly
+Jerusalem,Middle East/Africa,Jerusalem Central Bus Station,bus station,31.788889,35.203889,Disorderly
+Johannesburg,Middle East/Africa,Johannesburg Park Station,train station,-26.197347,28.03491,Disorderly
+Kabul,Asia/Oceania,Kabul International Airport,airport,34.565833,69.212222,Disorderly
+Karachi,Asia/Oceania,Karachi Cantonment Railway Station,train station,24.861667,67.025,Disorderly
+Kathmandu,Asia/Oceania,Tribhuvan International Airport,airport,27.701667,85.351667,Disorderly
+Kiev,Europe,Kyiv-Pasazhyrskyi Railway Station,train station,50.440299,30.50845,Disorderly
+Kyoto,Asia/Oceania,Kyoto Station,train station,34.985278,135.758333,Orderly
+Lagos,Middle East/Africa,Oshodi Transport Interchange,bus station,6.527309,3.362727,Disorderly
+Las Vegas,US/Canada,RTC Bonneville Transit Center,bus station,36.168056,-115.140556,Orderly
+Lima,Latin America,Lima Central Station,train station,-12.075224,-77.078283,Orderly
+Lisbon,Europe,Lisbon Santa Apolónia Station,train station,38.714359,-9.132909,Disorderly
+London,Europe,London Euston Station,train station,51.528333,-0.133333,Disorderly
+Los Angeles,US/Canada,Los Angeles Union Station,train station,34.056944,-118.236111,Orderly
+Madrid,Europe,Madrid Atocha Station,train station,40.406111,-3.688333,Disorderly
+Manhattan,US/Canada,Grand Central Terminal,train station,40.752778,-73.977222,Orderly
+Manila,Asia/Oceania,Manila North Harbor Port,port,14.604167,120.982222,Disorderly
+Melbourne,Asia/Oceania,Flinders Street Station,train station,-37.818056,144.966944,Orderly
+Mexico City,Latin America,Mexico City Metro,metro station,19.427222,-99.127778,Disorderly
+Miami,US/Canada,MiamiCentral Station,train station,25.775117,-80.190137,Orderly
+Minneapolis,US/Canada,Target Field Station,train station,44.981667,-93.276667,Orderly
+Mogadishu,Middle East/Africa,Mogadishu Central Station,train station,2.055278,45.326389,Orderly
+Montreal,US/Canada,Gare Centrale,train station,45.503611,-73.561667,Disorderly
+Moscow,Europe,Moscow Kazansky Railway Station,train station,55.776111,37.650556,Disorderly
+Mumbai,Asia/Oceania,Chhatrapati Shivaji Maharaj Terminus,train station,18.940278,72.835278,Disorderly
+Munich,Europe,Munich Hauptbahnhof,train station,48.140278,11.558333,Disorderly
+Nairobi,Middle East/Africa,Nairobi Central Railway Station,train station,-1.2825,36.823611,Disorderly
+New Delhi,Asia/Oceania,New Delhi Railway Station,train station,28.643056,77.221667,Disorderly
+New Orleans,US/Canada,New Orleans Union Passenger Terminal,train station,29.954722,-90.082222,Disorderly
+Orlando,US/Canada,Orlando Amtrak Station,train station,28.538725,-81.378992,Orderly
+Osaka,Asia/Oceania,Osaka Station,train station,34.7025,135.495833,Disorderly
+Oslo,Europe,Oslo Central Station,train station,59.911389,10.751667,Disorderly
+Paris,Europe,Paris Gare du Nord,train station,48.880833,2.355556,Disorderly
+Philadelphia,US/Canada,Philadelphia 30th Street Station,train station,39.955967,-75.182535,Orderly
+Phnom Penh,Asia/Oceania,Phnom Penh International Airport,airport,11.548056,104.840556,Orderly
+Phoenix,US/Canada,Phoenix Greyhound Station,bus station,33.448333,-112.074167,Orderly
+Pittsburgh,US/Canada,Pittsburgh Amtrak Station,train station,40.441111,-79.996111,Disorderly
+Port au Prince,Latin America,Port-au-Prince Railway Station,train station,18.53959,-72.334698,Disorderly
+Portland,US/Canada,Portland Union Station,train station,45.523333,-122.676389,Orderly
+Prague,Europe,Prague Main Railway Station,train station,50.083056,14.436389,Disorderly
+Pyongyang,Asia/Oceania,Pyongyang Station,train station,39.018333,125.753333,Disorderly
+Reykjavik,Europe,BSÍ Bus Terminal,bus station,64.145833,-21.938889,Disorderly
+Rio de Janeiro,Latin America,Central do Brasil,train station,-22.908333,-43.196389,Disorderly
+Rome,Europe,Roma Termini,train station,41.898889,12.513889,Disorderly
+San Francisco,US/Canada,Salesforce Transit Center,bus station,37.788019,-122.401983,Orderly
+Sao Paulo,Latin America,São Paulo Metro,metro station,-23.548827,-46.633854,Disorderly
+Sarajevo,Europe,Sarajevo Railway Station,train station,43.8575,18.400278,Disorderly
+Seattle,US/Canada,Seattle King Street Station,train station,47.6025,-122.331111,Orderly
+Seoul,Asia/Oceania,Seoul Station,train station,37.541389,126.966944,Disorderly
+Shanghai,Asia/Oceania,Shanghai Railway Station,train station,31.233889,121.462778,Disorderly
+Singapore,Asia/Oceania,Singapore Changi Airport,airport,1.350278,103.994444,Disorderly
+St Louis,US/Canada,St. Louis Gateway Station,train station,38.630072,-90.189594,Orderly
+Stockholm,Europe,Stockholm Central Station,train station,59.330556,18.057222,Disorderly
+Sydney,Asia/Oceania,Sydney Central Station,train station,-33.884167,151.2075,Disorderly
+Taipei,Asia/Oceania,Taipei Main Station,train station,25.047778,121.517222,Disorderly
+Tehran,Middle East/Africa,Tehran Railway Station,train station,35.699722,51.414722,Disorderly
+Tokyo,Asia/Oceania,Tokyo Station,train station,35.681111,139.767222,Disorderly
+Toronto,US/Canada,Toronto Union Station,train station,43.645278,-79.380556,Orderly
+Ulaanbaatar,Asia/Oceania,Ulaanbaatar Railway Station,train station,47.913056,106.883056,Disorderly
+Vancouver,US/Canada,Vancouver Pacific Central Station,train station,49.273889,-123.098889,Orderly
+Venice,Europe,Venezia Santa Lucia,train station,45.4375,12.335833,Disorderly
+Vienna,Europe,Vienna Central Station,train station,48.2,16.366667,Disorderly
+Warsaw,Europe,Warszawa Centralna,train station,52.231944,21.005833,Disorderly
+Washington,US/Canada,Washington Union Station,train station,38.8975,-77.006389,Orderly

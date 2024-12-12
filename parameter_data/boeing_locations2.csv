@@ -1,0 +1,83 @@
+city_name,type,origin_name,origin_point_lat,origin_point_lon
+Amsterdam,train station,Amsterdam Centraal Station,52.379121,4.899431
+Athens,train station,Athens Railway Station,37.990833,23.713889
+Baghdad,train station,Baghdad Central Station,33.313227,44.413411
+Baltimore,train station,Baltimore Penn Station,39.307222,-76.615556
+Barcelona,train station,Barcelona Sants,41.379663,2.140075
+Beijing,train station,Beijing Railway Station,39.904722,116.427222
+Berlin,train station,Berlin Hauptbahnhof,52.525592,13.369545
+Budapest,train station,Budapest Keleti Train Station,47.500111,19.082514
+Cape Town,train station,Cape Town Station,-33.925998,18.423299
+Caracas,metro station,Caracas Metro,10.495345,-66.864631
+Casablanca,train station,Casa Voyageurs,33.592778,-7.619444
+Rio de Janeiro,train station,Central do Brasil,-22.908333,-43.196389
+Mumbai,train station,Chhatrapati Shivaji Maharaj Terminus,18.940169,72.835278
+Chicago,train station,Chicago Union Station,41.878611,-87.640278
+Cleveland,train station,Cleveland Amtrak Station,41.505833,-81.693333
+Copenhagen,train station,Copenhagen Central Station,55.676111,12.568333
+Dallas,train station,Dallas Union Station,32.776111,-96.796944
+Damascus,train station,Damascus Central Station,33.507974,36.302826
+Denver,train station,Denver Union Station,39.757222,-104.988056
+Detroit,train station,Detroit Amtrak Station,42.331667,-83.046667
+Dublin,train station,Dublin Connolly Station,53.3475,-6.259722
+Melbourne,train station,Flinders Street Station,-37.818056,144.966944
+Jakarta,train station,Gambir Station,-6.175278,106.827222
+Montreal,train station,Gare Centrale,45.503611,-73.561667
+Glasgow,train station,Glasgow Central Station,55.860976,-4.25769
+Manhattan,train station,Grand Central Terminal,40.752725,-73.977202
+Hanoi,train station,Hanoi Railway Station,21.024444,105.841111
+Havana,train station,Havana Central Station,23.138333,-82.384167
+Helsinki,train station,Helsinki Central Railway Station,60.171876,24.941452
+Houston,train station,Houston Amtrak Station,29.756944,-95.355556
+Bangkok,train station,Hua Lamphong Railway Station,13.744434,100.529761
+Hong Kong,train station,Hung Hom Station,22.2975,114.175833
+Istanbul,train station,Istanbul Sirkeci Terminal,41.014444,28.979722
+Johannesburg,train station,Johannesburg Park Station,-26.1975,28.034722
+Karachi,train station,Karachi Cantonment Railway Station,24.861667,67.025
+Kiev,train station,Kyiv-Pasazhyrskyi Railway Station,50.440278,30.508611
+Kyoto,train station,Kyoto Station,34.985278,135.758333
+Lima,train station,Lima Central Station,not certain,
+Lisbon,train station,Lisbon Santa Apolónia Station,38.714707,-9.132398
+London,train station,London Euston Station,51.528333,-0.133333
+Los Angeles,train station,Los Angeles Union Station,34.056944,-118.236111
+Madrid,train station,Madrid Atocha Station,40.407222,-3.688056
+Mexico City,metro station,Mexico City Metro,19.427222,-99.127778
+Miami,train station,MiamiCentral Station,25.775,-80.19
+Mogadishu,train station,Mogadishu Central Station,2.055278,45.326389
+Moscow,train station,Moscow Kazansky Railway Station,55.776111,37.650556
+Munich,train station,Munich Hauptbahnhof,48.140278,11.558333
+Nairobi,train station,Nairobi Central Railway Station,-1.2825,36.823611
+New Delhi,train station,New Delhi Railway Station,28.643056,77.221667
+New Orleans,train station,New Orleans Union Passenger Terminal,29.954722,-90.082222
+Orlando,train station,Orlando Amtrak Station,28.538611,-81.378889
+Osaka,train station,Osaka Station,34.7025,135.495833
+Oslo,train station,Oslo Central Station,59.911389,10.751667
+Paris,train station,Paris Gare du Nord,48.880833,2.355556
+Philadelphia,train station,Philadelphia 30th Street Station,39.956111,-75.1825
+Pittsburgh,train station,Pittsburgh Amtrak Station,40.441111,-79.996111
+Port au Prince,train station,Port-au-Prince Railway Station,18.539444,-72.335
+Portland,train station,Portland Union Station,45.523333,-122.676389
+Prague,train station,Prague Main Railway Station,50.083056,14.436389
+Pyongyang,train station,Pyongyang Station,39.018333,125.753333
+Cairo,train station,Ramses Station,30.061944,31.247222
+Buenos Aires,train station,Retiro Station,-34.594257,-58.376709
+Rome,train station,Roma Termini,41.898889,12.513889
+Sao Paulo,metro station,São Paulo Metro,-23.548889,-46.633889
+Sarajevo,train station,Sarajevo Railway Station,43.8575,18.400278
+Seattle,train station,Seattle King Street Station,47.603056,-122.331667
+Seoul,train station,Seoul Station,37.554843,126.972429
+Shanghai,train station,Shanghai Railway Station,31.233889,121.462778
+St Louis,train station,St. Louis Gateway Station,38.630278,-90.19
+Stockholm,train station,Stockholm Central Station,59.330278,18.057222
+Sydney,train station,Sydney Central Station,-33.882778,151.206667
+Taipei,train station,Taipei Main Station,25.047778,121.517222
+Minneapolis,train station,Target Field Station,44.981353,-93.276351
+Tehran,train station,Tehran Railway Station,35.699722,51.414722
+Tokyo,train station,Tokyo Station,35.681111,139.767222
+Toronto,train station,Toronto Union Station,43.645278,-79.380556
+Ulaanbaatar,train station,Ulaanbaatar Railway Station,47.913056,106.883056
+Vancouver,train station,Vancouver Pacific Central Station,49.273889,-123.098889
+Venice,train station,Venezia Santa Lucia,45.4375,12.335833
+Vienna,train station,Vienna Central Station,48.2,16.366667
+Warsaw,train station,Warszawa Centralna,52.231944,21.005833
+Washington,train station,Washington Union Station,38.8975,-77.006389

@@ -1,0 +1,45 @@
+origin_name,origin_point_lat,origin_point_lon,street_order_category,city_name,origin_type
+Tehran Railway Station,35.6583779525268,51.3978744495775,orderly environment,Tehran,train_station
+Sirkeci Terminal,41.0149890709189,28.9781801817554,disorderly environment,Istanbul,train_station
+Estacion Central,-12.0402751850248,-77.0397167234489,orderly environment,Lima,train_station
+Luz Station,-23.5351240787635,-46.6349324303467,disorderly environment,Sao Paulo,train_station
+Charlotte Amtrak Station,35.2412490370956,-80.8228137351353,disorderly environment,Charlotte,train_station
+Miami Airport Station,25.7961473872053,-80.2582974803535,orderly environment,Miami,train_station
+Kyoto Station,34.9858247525771,135.75870257351,orderly environment,Kyoto,train_station
+Boon Lay MRT Station,1.33804542181268,103.704951783129,disorderly environment,Singapore,train_station
+Barcelona_Sants,41.3788869179542,2.13989539222213,orderly environment,Barcelona,subway_station
+Roma Termini,41.9012374607968,12.5016292808655,disorderly environment,Rome,train_station
+Tehran Metro Station,35.7159506358635,51.3359481282217,orderly environment,Tehran,subway_tation
+Taksim Metro Station,41.0369504572829,28.9858512707203,disorderly environment,Istanbul,subway_station
+Estacion La Cultura,-12.0868208142873,-77.0038325604804,orderly environment,Lima,train_station
+Lapa Linha 7,-23.5176639462512,-46.7035605918298,disorderly environment,Sao Paulo,train_station
+Charlotte Transportation Center,35.2247769087525,-80.8401548354415,disorderly environment,Charlotte,train_station
+Culmer Station,25.7845073744341,-80.2075690653741,orderly environment,Miami,train_station
+Jūjō Station,34.9737645813173,135.752442933749,orderly environment,Kyoto,train_station
+Jurong East MRT Station,1.33342970226713,103.74207064456,disorderly environment,Singapore,train_station
+Estacio del nord,41.3934232507066,2.18246863544947,orderly environment,Barcelona,train_station
+Roma Tiburtina,41.9106737794297,12.5302804624686,disorderly environment,Rome,train_station
+Fadak Metro Station,35.7265110961572,51.4758670592774,orderly environment,Tehran,subway_station
+Vezneciler Istanbul University Metro Station,41.012479770895,28.9596236332406,disorderly environment,Istanbul,subway_station
+Metropolitano Estacion Central,-12.057706350246,-77.0359266918145,orderly environment,Lima,train_station
+Sao Paulo Morumbi Subway Station,-23.5860411918587,-46.7239997225387,disorderly environment,Sao Paulo,subway_station
+Woodlawn Station,35.1759020377457,-80.8796228951314,disorderly environment,Charlotte,train_station
+University Metrorail Station,25.7147326905889,-80.2770742378317,orderly environment,Miami,train_station
+Nijo Station,35.0109602593706,135.741731220567,orderly environment,Kyoto,train_station
+Little India MRT Station,1.30661526415585,103.849229917374,disorderly environment,Singapore,train_station
+Estacio de Franca,41.3841478323544,2.18646388415887,orderly environment,Barcelona,train_station
+Roma Ostiens,41.8728039468471,12.4842127171572,disorderly environment,Rome,train_station
+Cologne Central station,50.942933,6.957385,disorderly environment,Cologne,train_station
+Gare Saint-Lazare,48.878796,2.322611,orderly environment,Paris,train_station
+New Delhi Railway Station,28.642422,77.219051,orderly environment,New Delhi,train_station
+Firenze Santa Maria Novella,43.77609,11.248222,disorderly environment,Florence,train_station
+Thessaloniki Railway Station,40.644107,22.929309,disorderly environment,Thessaloniki,train_station
+Prague Main Station,50.083298,14.434985,disorderly environment,Prague,train_station
+Grand Central Terminal,40.753821,-73.97854,orderly environment,New York,train_station
+Estacion de Santa,37.391547,-5.97584,disorderly environment,Seville,train_station
+Union Station Washington DC,38.898153,-77.005861,orderly environment,Washington DC,train_station
+Union Station Toronto,43.645483,-79.380737,orderly environment,Toronto,train_station
+Umeå Östra Station,63.81756685611817,20.293565110017052, orderly environment, Umeå, train_station
+Umeå Central Station,63.82987237026882,20.266635057417854, orderly environment, Umeå, train_station
+Manila Central Station,14.592689653094036,120.98161151139324, disorderly environment, Manila, train_station
+Melbourne Central Railway Station,-37.811618199999984,144.96459827116405, orderly environment, Melbourne, train_station
