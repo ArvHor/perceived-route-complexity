@@ -101,18 +101,3 @@ class Graph:
         print(f'Removed {len(edges_to_remove)} edges with infinite decision complexity')
         self.graph = G
         self.removed_inf_edges = edges_to_remove
-
-    def add_route(self, route: Route) -> None:
-        self.routes.add(route)
-        
-    def remove_route(self, route: Route) -> None:
-        self.routes.discard(route)
-        
-    def get_routes_from(self, start: str) -> List[Route]:
-        return [route for route in self.routes if route.start == start]
-    
-    def get_routes_to(self, end: str) -> List[Route]:
-        return [route for route in self.routes if route.end == end]
-    
-    def __str__(self) -> str:
-        return f"Graph({self.name}, {len(self.routes)} routes)"

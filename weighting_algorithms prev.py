@@ -1,6 +1,10 @@
 import itertools
+import math
 import osmnx as ox
+import networkx as nx
 import pyproj
+import pandas as pd
+import heapq
 
 
 def simplest_path_weight_algorithm(G,start_node):
@@ -43,12 +47,16 @@ def simplest_path_weight_algorithm(G,start_node):
 
             E_pairs.add(((u, v), (v, w)))
 
-    while E.difference(S):
 
+    #edge_heap = [(G.edges[edge[0], edge[1], 0]['weight_decision_complexity'], edge) for edge in E]
+    #heapq.heapify(edge_heap)
+    #print(f'Heap size: {len(edge_heap)}')
+    print(f'edge set size: {len(E)}')
+
+    while E.difference(S):
         min_edge = min(E.difference(S), key=lambda e: cs[e])
 
         S.add(min_edge)
-
         u, v = min_edge
         
         out_edges = []
@@ -66,6 +74,7 @@ def simplest_path_weight_algorithm(G,start_node):
                 print(f'min complexity for edge pair {((u, v), (v, w))}: {min_complexity}')
                 G.edges[(v, w, 0)]['weight_decision_complexity'] = min_complexity
                 cs[(v, w)] = min_complexity
+                #heapq.heappush(edge_heap, (min_complexity, (v, w)))
             else:
                 print(f"Edge pair {((u, v), (v, w))} not found in E_pairs")
 
@@ -77,6 +86,38 @@ def simplest_path_weight_algorithm(G,start_node):
 
     print(f'Percentage of edges with infinite weight_decision_complexity: {percentage_inf_edges:.2f}%')
     return G
+
+
+def simplest_path_retrieval(G,cs,start_node,end_node):
+    path = [end_node]
+    current_vertex = start_node
+    
+    # Continue until we reach the start vertex
+    while current_vertex != start_node:
+        # Find incoming edge with minimum complexity score
+        min_complexity = float('inf')
+        best_previous_vertex = None
+        
+        # Check all incoming edges to current vertex
+        for predecessor in G.predecessors(current_vertex):
+            edge = (predecessor, current_vertex)
+            if edge in cs:  # Check if edge exists in complexity scores
+                if cs[edge] < min_complexity:
+                    min_complexity = cs[edge]
+                    best_previous_vertex = predecessor
+        
+        # If no valid previous vertex found, path doesn't exist
+        if best_previous_vertex is None:
+            raise ValueError(f"No valid path found from {start_node} to {end_node}")
+        
+        # Prepend the best previous vertex to the path
+        path.insert(0, best_previous_vertex)
+        current_vertex = best_previous_vertex
+    
+    return path
+    
+
+
 
 
 def add_deviation_prototypical_weight(G):
@@ -153,6 +194,16 @@ def calculate_decisionpoint_complexity(G,e1,e2):
     #print(f'Slots: {slots}')
     return slots
 
+def calculate_edgepair_weight(G,e1,e2):
+    origin_node = e1[0]
+    intermediate_node = e1[1]
+    destination_node = e2[1]
+    bearing_weight = 1/360
+    bearing_origin_intermediate,_,_ = get_azimuth(G, origin_node, intermediate_node)
+    bearing_intermediate_destination,_,_ = get_azimuth(G, intermediate_node, destination_node)
+    bearing_difference = abs(bearing_origin_intermediate - bearing_intermediate_destination)
+    
+    return bearing_difference*bearing_weight
 
 def get_bearings_to_successors(G,node):
     successors = list(G.successors(node))
