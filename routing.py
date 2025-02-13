@@ -3,7 +3,7 @@ import random
 import networkx as nx
 import osmnx as ox
 import pyproj
-import street_network as sn
+import network_properties as sn
 import networkx.algorithms.isomorphism as iso
 
 
@@ -100,9 +100,6 @@ def get_azimuth(G, node_a, node_b):
         fwd_azimuth, back_azimuth, distance = geodesic.inv(long1, lat1, long2, lat2)
         return fwd_azimuth, back_azimuth, distance
 
-
-
-
 def is_targetlength(graph, path, target_length, margin, weight='length'):
     edge_values = []
     for i in range(len(path) - 1):
@@ -176,88 +173,9 @@ def has_acute_angle(G, source, destination):
         return True
     else:
         return False
-    
-def calculate_different_models_weights(MultiDigraph, traffic, landmark):
-    if traffic == True & landmark == True:
-        d1 = route_search_models.distance_model(MultiDigraph)
-        d2 = route_search_models.traffic_model(d1)
-        d3 = route_search_models.social_model(d2)
-        d4 = route_search_models.complexity_model(d3)
-        d5 = route_search_models.combined_model(d4)
-        d6 = route_search_models.least_time_without_traffic_model(d5)
-        d7 = route_search_models.least_time_with_traffic_model(d6)
-        return d7
-    elif landmark == True:
-        d1 = route_search_models.distance_model(MultiDigraph)
-        d2 = route_search_models.complexity_model(d1)
-        return d2
-    elif traffic == False & landmark == False:
-        d1 = route_search_models.distance_model(MultiDigraph)
-        d2 = route_search_models.env_complexity_model_v2(d1)
-        return d2
-
-def path_finder(MultiDigraph, model_number, source, destination,traffic):
-    if traffic == True:
-        weight_map = {
-        1: 'distance_weight',
-        2: 'traffic_weight',
-        3: 'social_weight',
-        4: 'complexity_weight',
-        5: 'combined_weight',
-        6: 'least_time_without_traffic_weight',
-        7: 'least_time_with_traffic_weight',
-        }
-        weight_string = weight_map.get(model_number, '')
-        cost_string = weight_map.get(model_number, '')
-
-        path = nx.dijkstra_path(MultiDigraph, source, destination, weight=cost_string)
-        path_weights_sum = 0
-        #print('path weights: ')
-        for n in range(len(path) - 1):
-            for edge_key in MultiDigraph[path[n], path[n + 1]]:
-                weight = MultiDigraph.edges[path[n], path[n + 1],edge_key].get(weight_string, 0)
-                path_weights_sum += weight
 
 
-        
-        return path, path_weights_sum
-    else:
-        weight_map = {
-        1: 'distance_weight',
-        2: 'complexity_weight',
-        3: 'env_complexity_weight'
-        }
-        weight_string = weight_map.get(model_number, '')
-        cost_string = weight_map.get(model_number, '')
-
-        path = nx.dijkstra_path(MultiDigraph, source, destination, weight=cost_string)
-        path_weights_sum = 0
-        
-        edges = []
-        for i in range(len(path) - 1):
-            # Get the key of the edge with the minimum weight
-            min_weight = float('inf')
-            min_key = None
-            for key in MultiDigraph[path[i]][path[i + 1]]:
-                weight = MultiDigraph.edges[path[i], path[i + 1], key].get(weight_string, 0)
-                if weight < min_weight:
-                    min_weight = weight
-                    min_key = key
-            edges.append((path[i], path[i + 1], min_key)) 
-            weight = MultiDigraph.edges[path[i], path[i + 1], min_key].get(weight_string, 0)
-            path_weights_sum += weight
-            
-        path = {
-            'model': weight_string,
-            'nodes': path,
-            'edges': edges,
-            'weight': path_weights_sum
-        }
-        #print(path['edges'])
-        return path
-    
-
-def get_dijkstra_path(MultiDigraph, origin, destination, cost_string):
+def get_dijkstra_path_dict(MultiDigraph, origin, destination, cost_string):
     
 
     path = nx.dijkstra_path(MultiDigraph, origin, destination, weight=cost_string)
@@ -275,7 +193,7 @@ def get_dijkstra_path(MultiDigraph, origin, destination, cost_string):
                 min_key = key
         edges.append((path[i], path[i + 1], min_key)) 
         weight = MultiDigraph.edges[path[i], path[i + 1], min_key].get(cost_string, 0)
-        path_weights_sum += weight
+        path_weights_sum += min_weight
         
     path = {
         'model_weight': cost_string,
