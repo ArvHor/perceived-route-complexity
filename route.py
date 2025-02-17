@@ -3,6 +3,7 @@ import networkx as nx
 import hashlib
 import osmnx as ox
 import weighting_algorithms as wa
+import map_plotting as mp
 info_handler = logging.FileHandler('info.log')
 info_handler.setLevel(logging.INFO)
 info_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
@@ -10,7 +11,6 @@ info_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(mes
 
 class route:
     def __init__(self, graph, origin, destination, weighstring):
-
         self.graph = graph
         self.origin_node = origin
         self.destination_node = destination
@@ -34,6 +34,7 @@ class route:
         self.sum_node_degree = self.get_edges_sum('node_degree')
         self.sum_instruction_equivalent = self.get_edges_sum('instruction_equivalent')
         self.identifier = self.generate_identifier()
+        self.map_bbox = None
 
     def get_route_subgraph(self, graph):
         """Creates a subgraph from the original graph containing only the route nodes and edges."""
@@ -59,6 +60,23 @@ class route:
             edges_sum += edge_length
         return edges_sum
     
+    def create_route_map(self,filepath,map_tiles="CartoDB.VoyagerNoLabels",flip=False):
+        """Adds a map of the route to the route object."""
+        #def plot_route_gdf(G, route_gdf,start_node,end_node,info_text="null",imgpath="route_on_map.png"
+        # ,file_path="route_on_map.png",map_tiles="CartoDB.VoyagerNoLabels",return_bbox=False, flip=False):
+
+        route_gdf = ox.routing.route_to_gdf(self.graph,self.nodes,weight=self.weightstring)
+        bbox = mp.plot_route_gdf(self.graph,route_gdf,self.origin_node,self.destination_node,info_text=self.identifier,file_path=filepath,flip=flip,map_tiles=map_tiles,return_bbox=True)
+        self.map_bbox = bbox
+    
+    def get_map_bbox(self):
+        if self.map_bbox is not None:
+            return self.map_bbox
+        else:
+            bbox = mp.get_routegdf_bbox(self.graph,self.nodes,self.origin_node,self.destination_node)
+            self.map_bbox = bbox
+            return bbox
+
 
     @staticmethod
     def retrieve_simplest_path(G,origin,destination):

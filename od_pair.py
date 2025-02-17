@@ -195,7 +195,6 @@ class od_pair:
             "max_circular_correlation_weighted": max_circular_correlation_weighted, 
             'cross_correlation_dist_weighted': weighted_lag,
             "max_correlation_weighted": weighted_max_correlation,
-            
             # Orientation values
             "orientation_entropy": self.environment_orientation_entropy,
             "orientation_entropy_weighted": self.environment_orientation_entropy_weighted,

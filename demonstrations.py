@@ -1,4 +1,5 @@
 import ast
+import math
 import numpy as np
 import pandas as pd
 from origin_graph_set import origin_graph_set
@@ -100,41 +101,44 @@ def plot_some_odpairs(city_name):
 
     return city_routes,origin_point
 
-def plot_some_odpair_polygons(city_name):
+def plot_some_city_orientations(city_name):
     og_set = origin_graph_set.load_pickle('graph_sets/local_graphs_randnode1_simplified_drive.pkl')
     city_routes = []
     origin_point = None
     for origin_graph in og_set.origin_graphs:
         #print("now processing origin graph", origin_graph.city_name)
+
         if origin_graph.city_name == city_name:
             #origin_point = origin_graph.origin_point
             #print(f"found city, origin point: {origin_point}")
-            n = 0
-            for od_pair in origin_graph.od_pairs:
-                if origin_point is None:
-                    origin_point = od_pair.origin_point
-                    print(f"origin point: {origin_point}")
-                if n < 5:
-                    path = f"demonstration/orientation_plot_{city_name}_{n}.png"
-                    plot_od_pair_polygon(od_pair,path)
-                    n += 1
-
+            Graph = origin_graph.graph
+            Graph = ox.convert.to_undirected(Graph)
+            fig, ax = ox.plot.plot_orientation(Graph, num_bins=36)
+            fig.savefig(f"demonstration/orientation_plot_{city_name}.png")
+            #dist,_ = ox.bearing._bearings_distribution(G=Graph,num_bins=36,min_length=10,weight="length")
+            env_entropy = ox.bearing.orientation_entropy(Graph,num_bins=36,weight="length",min_length=10)
+            max_nats = math.log(36)
+            min_nats = math.log(4)
+            orientation_order = 1 - ((env_entropy - min_nats) / (max_nats - min_nats))**2
+            print(f"orientation order: {orientation_order} for {city_name}")
     return city_routes,origin_point
-
-def plot_od_pair_polygon(od_pair,path):
-    polygon = od_pair.polygon
-    origin_point = od_pair.origin_point
-    destination_point = od_pair.destination_point
-
-
 if __name__ == '__main__':
     
     #df = pd.read_csv('od_pair_data/route_pathinfo.csv')
-    plot_some_odpairs('Chicago')
-    plot_some_odpairs('Baghdad')
-    plot_some_odpairs('Barcelona')
-    plot_some_odpairs('Beijing')
-    plot_some_odpairs('Berlin')
-    plot_some_odpairs('Pnom Penh')
-    #city_routes,origin = get_city_routes_from_csv(df)
+    #plot_some_odpairs('Chicago')
+    #plot_some_odpairs('Baghdad')
+    #plot_some_odpairs('Barcelona')
+    #plot_some_odpairs('Beijing')
+    #plot_some_odpairs('Berlin')
+    plot_some_odpairs('Phnom Penh')
+    plot_some_odpairs('Ulaanbaatar')
+    #plot_some_city_orientations('Pnom Penh')
+    #plot_some_city_orientations('Berlin')
+    #plot_some_city_orientations('Stockholm')
+    #plot_some_city_orientations('Mumbai')
+    #plot_some_city_orientations('Chicago')
+    #plot_some_city_orientations('Berlin')
+    #plot_some_city_orientations('Tehran')
+    #plot_some_city_orientations('Barcelona')
+    #     #city_routes,origin = get_city_routes_from_csv(df)
     #mp.plot_all_routes(city_routes,"demonstration/Chicago_simple.html",origin)

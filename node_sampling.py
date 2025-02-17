@@ -11,9 +11,6 @@ import random
 # Initialize geolocator
 
 
-origin_locations = pd.read_csv('./parameter_data/boeing_locations.csv')
-location_info = pd.read_csv('./parameter_data/boeing_locations_with_regions.csv')
-#new_locations = pd.DataFrame(columns=['city_name','train_station_name', 'train_station_lat', 'train_station_lon'])
 api = overpy.Overpass()
 
 def get_train_station_coordinates(city):
@@ -102,7 +99,7 @@ def create_train_station_csv(origin_locations):
   new_locations.to_csv('./parameter_data/boeing_locations_with_stations.csv', index=False)
 
 
-def download_street_network_and_select_random_nodes(city_name):
+def download_street_network_and_select_random_nodes(city_name,min_distance_km=3):
   """
   Downloads the street network graph of a city and selects 3 random nodes that are at least 4 kilometers away from each other.
 
@@ -120,7 +117,7 @@ def download_street_network_and_select_random_nodes(city_name):
     nodes = list(graph.nodes)
     
     # Function to check if nodes are at least 4 kilometers apart
-    def nodes_far_enough(node_list, new_node, min_distance_km=4):
+    def nodes_far_enough(node_list, new_node, min_distance_km=min_distance_km):
       for node in node_list:
         dist = geodesic((graph.nodes[node]['y'], graph.nodes[node]['x']), 
                         (graph.nodes[new_node]['y'], graph.nodes[new_node]['x'])).km
@@ -142,7 +139,7 @@ def download_street_network_and_select_random_nodes(city_name):
     print(f"An error occurred while processing {city_name}: {e}")
     return None
 
-def get_random_nodes_for_all_cities(origin_locations):
+def get_random_nodes_for_all_cities(origin_locations, min_distance_km=3):
   # Example usage
   locations = []
   for index, row in origin_locations.iterrows():
@@ -173,10 +170,9 @@ def get_random_nodes_for_all_cities(origin_locations):
 
     location = {
       'city_name': city,
-      'country': get_country(city),
-      'region': row['Region'],
+      'country': row['country'],
+      'region': row['region'],
       "network_type":"drive",
-      "street_order_category": row['street_order_category'],
       "node1_id": node_samples_ids[0],
       'node1_latlon': node_samples_latlon[0],
       'node2_id': node_samples_ids[1],
@@ -187,26 +183,8 @@ def get_random_nodes_for_all_cities(origin_locations):
     locations.append(location)
     # Save the random nodes DataFrame to a new CSV file
   node_samples_df = pd.DataFrame(locations)
-  node_samples_df.to_csv('./parameter_data/boeing_locations_3node_sample_B.csv', index=False)
+  return node_samples_df 
 
-def get_country(city):
-  match = location_info[location_info['city_name'] == city]['country'].values
-  return match[0] if len(match) > 0 else "Unknown"
-
-def add_country_region_cols(origin_locations):
-  location_info = pd.read_csv('./parameter_data/boeing_locations_with_regions.csv')
-
-  def get_country(city):
-    match = location_info[location_info['city_name'] == city]['country'].values
-    return match[0] if len(match) > 0 else "Unknown"
-
-  def get_region(city):
-    match = location_info[location_info['city_name'] == city]['region'].values
-    return match[0] if len(match) > 0 else "Unknown"
-  
-  origin_locations['country'] = origin_locations['city_name'].apply(get_country)
-  origin_locations['region'] = origin_locations['city_name'].apply(get_region)
-  origin_locations.to_csv('./parameter_data/boeing_locations_3node_sample_A.csv', index=False)
 
 def get_coord_info(lat, lon, max_retries=3, retry_delay=2):
     """
@@ -272,8 +250,3 @@ def fix_unknown(origin_locations):
         origin_locations.at[index, 'country'] = coord_info['country']
         origin_locations.at[index, 'region'] = coord_info['region']
   origin_locations.to_csv('./parameter_data/boeing_locations_3node_sample_B.csv', index=False)
-
-#node_locations = pd.read_csv('./parameter_data/boeing_locations_3node_sample_A.csv')
-
-get_random_nodes_for_all_cities(origin_locations)
-#fix_unknown(node_locations)

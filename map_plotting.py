@@ -383,10 +383,8 @@ def plot_all_routes_complexity(routes, map_path):
 
 def plot_all_routes(route_gdfs, map_path,point_list):
     """Plot all routes in a single map"""
-    print(f"point list: {point_list}")
-    m = folium.Map(tiles="OpenStreetMap.Mapnik",
-                        control_scale=False,
-                        zoom_control=False,)
+
+    m = folium.Map(tiles="OpenStreetMap.Mapnik")
 
     all_bounds = [] 
     for route_gdf in route_gdfs:
@@ -413,7 +411,7 @@ def plot_all_routes(route_gdfs, map_path,point_list):
 
         folium.PolyLine(route_linestring, color=color, weight=4, opacity=0.3).add_to(m)
     for point in point_list:
-
+        
             folium.Marker(
                 location=point,
                 icon=folium.Icon(color='green', icon='fa-map-marker', prefix='fa-solid'),  # green map pin icon without dot
