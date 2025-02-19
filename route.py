@@ -1,13 +1,8 @@
-import logging
 import networkx as nx
 import hashlib
 import osmnx as ox
 import weighting_algorithms as wa
 import map_plotting as mp
-info_handler = logging.FileHandler('info.log')
-info_handler.setLevel(logging.INFO)
-info_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-
 
 class route:
     def __init__(self, graph, origin, destination, weighstring):
@@ -68,9 +63,6 @@ class route:
     
     def create_route_map(self,filepath,map_tiles="CartoDB.VoyagerNoLabels",flip=False):
         """Adds a map of the route to the route object."""
-        #def plot_route_gdf(G, route_gdf,start_node,end_node,info_text="null",imgpath="route_on_map.png"
-        # ,file_path="route_on_map.png",map_tiles="CartoDB.VoyagerNoLabels",return_bbox=False, flip=False):
-
         route_gdf = ox.routing.route_to_gdf(self.graph,self.nodes,weight=self.weightstring)
         bbox = mp.plot_route_gdf(self.graph,route_gdf,self.origin_node,self.destination_node,info_text=self.identifier,file_path=filepath,flip=flip,map_tiles=map_tiles,return_bbox=True)
         self.map_bbox = bbox

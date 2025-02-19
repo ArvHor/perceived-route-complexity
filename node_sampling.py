@@ -99,16 +99,7 @@ def create_train_station_csv(origin_locations):
   new_locations.to_csv('./parameter_data/boeing_locations_with_stations.csv', index=False)
 
 
-def download_street_network_and_select_random_nodes(city_name,min_distance_km=3):
-  """
-  Downloads the street network graph of a city and selects 3 random nodes that are at least 4 kilometers away from each other.
-
-  Args:
-    city_name: The name of the city.
-
-  Returns:
-    A list containing 3 random nodes from the city's street network graph.
-  """
+def download_street_network_and_select_random_nodes(city_name,min_distance_km=3,sample_size=3):
   try:
     # Download the street network graph for the city
     graph = ox.graph_from_place(city_name, network_type='drive')
@@ -127,25 +118,25 @@ def download_street_network_and_select_random_nodes(city_name,min_distance_km=3)
     
     # Select 3 random nodes that are at least 4 kilometers apart
     random_nodes = []
-    while len(random_nodes) < 3:
+    while len(random_nodes) < sample_size:
       candidate_node = random.choice(nodes)
       if nodes_far_enough(random_nodes, candidate_node):
         random_nodes.append(candidate_node)
     
-    print(f"Random nodes for {city_name} that are at least 4 km apart: {random_nodes}")
+    print(f"Random nodes for {city_name} that are at least {min_distance_km} km apart: {random_nodes}")
     return graph, random_nodes
   
   except Exception as e:
     print(f"An error occurred while processing {city_name}: {e}")
     return None
 
-def get_random_nodes_for_all_cities(origin_locations, min_distance_km=3):
+def get_random_nodes_for_all_cities(origin_locations, min_distance_km=3, sample_size=3):
   # Example usage
   samples = []
   for index, row in origin_locations.iterrows():
     city_name = row['city_name']
     try:
-      graph, random_nodes = download_street_network_and_select_random_nodes(city_name)
+      graph, random_nodes = download_street_network_and_select_random_nodes(city_name,min_distance_km=min_distance_km,sample_size=sample_size)
     except Exception as e:
       print(f"An error occurred while processing {city_name}: {e}")
       continue

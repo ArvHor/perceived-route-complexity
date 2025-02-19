@@ -4,11 +4,6 @@ import pandas as pd
 import multiprocessing
 import osmnx as ox
 
-#info_handler = logging.FileHandler('info.log')
-#info_handler.setLevel(logging.INFO)
-#info_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-
-
 class origin_graph_set:
     def __init__(self, origin_graphs):
         self.origin_graphs = origin_graphs
@@ -31,11 +26,9 @@ class origin_graph_set:
             deviation_from_prototypical_list = []
             node_degree_list = []
             for (u, v, data) in origin_graph.graph.edges(data=True):
-                #print(f"Data: {data}")
                 if float(data['decision_complexity']) != float('inf'):
                     decision_complexity_list.append(float(data['decision_complexity']))
                 else:
-                    logging.error("THIS SHOULD NOT HAPPEN")
                     data['decision_complexity'] = 1
                     decision_complexity_list.append(float(data['decision_complexity']))
 
@@ -57,9 +50,7 @@ class origin_graph_set:
                 'max_node_degree': max_node_degree
             }
             graphs_max_values.append(graph_max)
-        #print(f"Calculating max values for all graphs, dictlist:{graphs_max_values}")
         graphs_max_values_df = pd.DataFrame(graphs_max_values)
-        print(f"Calculating max values for all graphs, df:{graphs_max_values_df}")
         self.max_decision_complexity = graphs_max_values_df['max_decision_complexity'].max()
 
     def add_normalized_weights(self):
@@ -78,6 +69,8 @@ class origin_graph_set:
             origin_graph.weights_list.append('normalized_decision_complexity')
             origin_graph_list.append(origin_graph)
         self.origin_graphs = origin_graph_list
+
+
     def save_graphs(self):
         """
         Save the routing graphs to graphml files.
@@ -90,7 +83,6 @@ class origin_graph_set:
     
     def add_all_od_pairs(self, min_radius=3000, max_radius=3500):
             num_processes = multiprocessing.cpu_count()
-            print(f"Number of processes: {num_processes}")
 
             with multiprocessing.Manager() as manager:
                 # Create a shared list that can be modified by the worker processes
@@ -120,10 +112,9 @@ class origin_graph_set:
     
     def get_all_od_pair_data_parallel(self):
         num_processes = multiprocessing.cpu_count()
-        print(f"Number of processes: {num_processes}")
 
         with multiprocessing.Pool(processes=num_processes) as pool:
-            # Use pool.apply_async to call get_od_pair_data on each origin_graph
+
             results = [pool.apply_async(origin_graph.get_od_pair_data)
                        for origin_graph in self.origin_graphs]
 
@@ -131,17 +122,17 @@ class origin_graph_set:
             od_pair_dfs = []
             for result in results:
                 df = result.get()
-                if isinstance(df, pd.DataFrame):  # Check if the result is a DataFrame
+                if isinstance(df, pd.DataFrame): 
                     od_pair_dfs.append(df)
                 else:
                     print(f"Warning: Result is not a DataFrame: {type(df)}")
 
-        # Concatenate the DataFrames outside the pool context
+
         if od_pair_dfs:
             return pd.concat(od_pair_dfs)
         else:
             print("Warning: No DataFrames generated.")
-            return None # or None, depending on how you want to handle this case
+            return None 
    
     def save_pickle(self, filepath):
         """
@@ -153,11 +144,14 @@ class origin_graph_set:
         Output:
         - Saves the routing_graph_set object to the specified filepath.
         """
+
         with open(filepath, 'wb') as f:
             pickle.dump(self, f)
+
     def add_length_fix(self):
         for origin_graph in self.origin_graphs:
             ox.distance.add_edge_lengths(origin_graph.graph)
+
     @staticmethod
     def load_pickle(filepath):
         """
@@ -172,6 +166,7 @@ class origin_graph_set:
         with open(filepath, 'rb') as f:
             routing_graph = pickle.load(f)
         return routing_graph
+    
     def _create_od_pairs_wrapper(o_graph, min_radius, max_radius, index, shared_list):
         """
         Wrapper function to call create_od_pairs and update the shared list.

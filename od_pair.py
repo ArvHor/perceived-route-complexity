@@ -1,5 +1,4 @@
 import math
-import networkx as nx
 import numpy as np
 from route import route
 import osmnx as ox
@@ -176,7 +175,7 @@ class od_pair:
             'shortest_path_length': self.shortest_path.length,
             "shortest_path_circuity": self.shortest_path.length / self.od_distance,
             'shortest_path_complexity': self.shortest_path.complexity,
-            'shortest_path_turn_labels': self.shortest_path.edges,
+            'shortest_path_turn_labels': self.shortest_path.turn_types,
             "shortest_path_n_nodes": self.shortest_path.n_nodes,
             "shortest_path_deviation_from_prototypical": self.shortest_path.sum_deviation_from_prototypical,
             "shortest_path_instruction_equivalent": self.shortest_path.sum_instruction_equivalent,
@@ -188,7 +187,7 @@ class od_pair:
             'simplest_path_length': self.simplest_path.length,
             "simplest_path_circuity": self.simplest_path.length / self.od_distance,
             'simplest_path_complexity': self.simplest_path.complexity,
-            'simplest_path_turn_labels': self.simplest_path.edges,
+            'simplest_path_turn_labels': self.simplest_path.turn_types,
             "simplest_path_n_nodes": self.simplest_path.n_nodes,
             "simplest_path_deviation_from_prototypical": self.simplest_path.sum_deviation_from_prototypical,
             "simplest_path_instruction_equivalent": self.simplest_path.sum_instruction_equivalent,

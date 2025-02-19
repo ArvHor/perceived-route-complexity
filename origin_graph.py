@@ -1,8 +1,7 @@
 from collections import defaultdict
 import pickle
 import random
-from typing import List, Optional, Set, Dict
-from dataclasses import dataclass
+from typing import List, Optional
 import logging
 import numpy as np
 import osmnx as ox
@@ -11,7 +10,6 @@ import weighting_algorithms as wa
 from od_pair import od_pair
 import networkx as nx
 import ast
-from typing import Union, Dict, Any
 
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s',filename='app.log', filemode='w')
 
@@ -70,6 +68,7 @@ class origin_graph:
             'origin_point': tuple,  # e.g., (lat, lon)
             'distance_from_point': float,
             'network_type': str,
+            'graph_path': str,
             'simplify': bool,
             'remove_parallel': bool,
             'city_name': str,
@@ -245,10 +244,10 @@ class origin_graph:
         if filepath is not None:
             self.graph_path = filepath
         try:
+            self.graph.graph["graph_path"] = self.graph_path
             ox.save_graphml(self.graph, self.graph_path)
-            logging.info(f'Saved graph to {self.graph_path}')
-        except:
-            logging.error(f'Error saving graph to {self.graph_path}',exc_info=True)
+        except Exception as e:
+            print(f"Error saving graph: {e}")
 
     def save_pickle(self, filepath):
         """
@@ -299,8 +298,9 @@ class origin_graph:
 
         split_bin_counts, split_bin_edges = np.histogram(bearings, bins=split_bin_edges)
         split_bin_counts = np.roll(split_bin_counts, 1)
+
         bin_counts = split_bin_counts[::2] + split_bin_counts[1::2]
-        bin_centers = split_bin_edges[range(0, num_split_bins, 2)] # Corrected to step by 2
+        bin_centers = split_bin_edges[range(0, num_split_bins, 2)] 
 
 
          # 3. Create a dictionary to store nodes in each bin
@@ -312,14 +312,9 @@ class origin_graph:
         
         # 4. Retrieve a sample of nodes from each bin
         sampled_nodes = set()
-        nodes_per_bin = n // num_bins
-        lap = 1
-        max_laps = 10
         max_empty_in_row = 18
-        while len(sampled_nodes) < n and lap < max_laps:
+        while len(sampled_nodes) < n:
             start_bin = random.randint(0, num_bins - 1)
-            #logging.info(f"lap {lap} beginning at bin {start_bin}")
-            lap += 1
             empty_in_row = 0
             for i in range(num_bins):
                 current_bin = (start_bin + i) % num_bins
@@ -330,11 +325,13 @@ class origin_graph:
                         sampled_nodes.add(np.random.choice(list(new_nodes)))
                     else:
                         empty_in_row += 1
+                        #print(f"Empty in row: {empty_in_row}")
                         if empty_in_row >= max_empty_in_row:
                             break
                 else:
                     break
-            
+            if empty_in_row >= max_empty_in_row:
+                break
         return sampled_nodes
 
 
@@ -346,11 +343,12 @@ class origin_graph:
             od_p = od_pair(G=self.graph,origin=self.start_node,destination=destination)
             od_pairs.append(od_p)
         self.od_pairs = od_pairs
-        #return od_pairs
 
     def get_od_pair_data(self):
         od_pair_data = []
         for od_pair in self.od_pairs:
+            od_pair_dict = od_pair.get_comparison_dict()
+            od_pair_dict["graph_path"] = self.graph_path
             od_pair_data.append(od_pair.get_comparison_dict())
         od_pair_data = pd.DataFrame(od_pair_data)
         return od_pair_data
