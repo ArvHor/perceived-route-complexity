@@ -60,7 +60,7 @@ class od_pair:
             self.environment_orientation_entropy_weighted = ox.bearing.orientation_entropy(od_pair_polygon_g,num_bins=36,weight="length",min_length=10)
             self.environment_orientation_entropy = ox.bearing.orientation_entropy(od_pair_polygon_g,num_bins=36,min_length=10)
         
-        print(f"Environment bearing distribution: {env_bearing_distribution}, weighted: {env_bearing_distribution_weighted}")
+        
         return env_bearing_distribution, env_bearing_distribution_weighted
     
     def create_orientation_plot(self,filepath):
@@ -140,21 +140,27 @@ class od_pair:
     def get_comparison_dict(self):
         env_dist, env_dist_weighted = self.get_environment_bearing_dist()
         route_dist = self.get_route_direction_bearing_dist()
-        logging.info(f"Route distribution: {route_dist}")
-        logging.info(f"Environment distribution: {env_dist}")
-        cross_correlation_dist, lag, max_correlation = self.get_crosscorrelation_alignment(route_dist, env_dist)
-        cross_correlation_dist_weighted, weighted_lag, weighted_max_correlation = self.get_crosscorrelation_alignment(route_dist, env_dist_weighted)
-        cosine_similarity = self.get_cosine_similarity_alignment(route_dist, env_dist)
-        cosine_similarity_weighted = self.get_cosine_similarity_alignment(route_dist, env_dist_weighted)
-        max_correlation, best_lag, best_score, best_score_lag = self.find_strongest_and_closest_correlation(route_dist, env_dist_weighted)
 
+        # basic cross-correlation
+        lag, max_correlation = alignment.get_crosscorrelation_alignment(route_dist, env_dist_weighted)
 
-        max_circular_correlation_weighted, circ_lag_weighted, circular_cosine_similarity_weighted = self.get_circular_crosscorrelation_alignment(route_dist, env_dist_weighted)
+        # Circular cross-correlation
+        max_circular_correlation_weighted, circ_lag_weighted, circular_cosine_similarity_weighted = alignment.get_circular_crosscorrelation_alignment(route_dist, env_dist_weighted)
 
+        # Circular cross-correlation to find the strongest and closest correlation
+        max_correlation, best_lag, best_score, best_score_lag = alignment.find_strongest_and_closest_correlation(route_dist, env_dist_weighted)
+
+        # Cosine similarity
+        cosine_similarity_weighted = alignment.get_cosine_similarity_alignment(route_dist, env_dist_weighted)
+
+        # Wasserstein distance or Earth Mover's Distance
+        wasserstein_distance = alignment.get_EMD_alignment(route_dist, env_dist_weighted)
 
         route_dist = route_dist / np.sum(route_dist)
         env_dist = env_dist / np.sum(env_dist)
         env_dist_weighted = env_dist_weighted / np.sum(env_dist_weighted)
+
+
         comparison_dict = {
             # od pair values
             'id': f"{self.origin_node}-{self.destination_node}",  
@@ -164,50 +170,60 @@ class od_pair:
             "destination_point": self.destination_point,
             'destination_node': self.destination_node,
             'od_distance': self.od_distance,
-            # path values
-            "simplest_path_nodes": self.simplest_path.nodes,
+
+            # Shortest path values
             "shortest_path_nodes": self.shortest_path.nodes,
-            'simplest_path_length': self.simplest_path.length,
             'shortest_path_length': self.shortest_path.length,
-            'simplest_path_complexity': self.simplest_path.complexity,
+            "shortest_path_circuity": self.shortest_path.length / self.od_distance,
             'shortest_path_complexity': self.shortest_path.complexity,
-            'simplest_path_turn_labels': self.simplest_path.edges,
             'shortest_path_turn_labels': self.shortest_path.edges,
-            "simplest_path_n_nodes": self.simplest_path.n_nodes,
             "shortest_path_n_nodes": self.shortest_path.n_nodes,
-            "simplest_path_deviation_from_prototypical": self.simplest_path.sum_deviation_from_prototypical,
             "shortest_path_deviation_from_prototypical": self.shortest_path.sum_deviation_from_prototypical,
-            "simplest_path_instruction_equivalent": self.simplest_path.sum_instruction_equivalent,
             "shortest_path_instruction_equivalent": self.shortest_path.sum_instruction_equivalent,
-            "simplest_path_node_degree": self.simplest_path.sum_node_degree,
             "shortest_path_node_degree": self.shortest_path.sum_node_degree,
-            "simplest_path_geometry": self.simplest_path.route_geometry,
             "shortest_path_geometry": self.shortest_path.route_geometry,
+
+            # Simplest path values
+            "simplest_path_nodes": self.simplest_path.nodes,
+            'simplest_path_length': self.simplest_path.length,
+            "simplest_path_circuity": self.simplest_path.length / self.od_distance,
+            'simplest_path_complexity': self.simplest_path.complexity,
+            'simplest_path_turn_labels': self.simplest_path.edges,
+            "simplest_path_n_nodes": self.simplest_path.n_nodes,
+            "simplest_path_deviation_from_prototypical": self.simplest_path.sum_deviation_from_prototypical,
+            "simplest_path_instruction_equivalent": self.simplest_path.sum_instruction_equivalent,
+            "simplest_path_node_degree": self.simplest_path.sum_node_degree,
+            "simplest_path_geometry": self.simplest_path.route_geometry,
+
             # basic alignment values
-            'cross_correlation_dist': lag,
+            'basic_crosscorrelation_lag': lag,
+            'basic_crosscorrelation_max_corr': max_correlation,
+            'circular_crosscorrelation_lag': circ_lag_weighted,
+            "circular_crosscorrelation_max_corr": max_circular_correlation_weighted, 
             'cosine_similarity': cosine_similarity_weighted,
-            'wasserstein_distance': self.get_EMD_alignment(route_dist, env_dist_weighted),
+            "cosine_similarity_at_best_lag":  circular_cosine_similarity_weighted,
+            'wasserstein_distance': wasserstein_distance,
+
             # Alignment values
             "closest_strongest_lag": best_score_lag,
-            "closest_strongest_score": best_score,
+            "closest_strongest_correlation": best_score,
             "strongest_correlation_lag": best_lag,
-            'circular_crosscorrelation_dist_weighted': circ_lag_weighted,
-            "max_circular_correlation_weighted": max_circular_correlation_weighted, 
-            'cross_correlation_dist_weighted': weighted_lag,
-            "max_correlation_weighted": weighted_max_correlation,
-            # Orientation values
+
+            # Street orientation values
             "orientation_entropy": self.environment_orientation_entropy,
             "orientation_entropy_weighted": self.environment_orientation_entropy_weighted,
             "environment_orientation_order": self.get_environment_orientation_order(self.environment_orientation_entropy),
-            "route_bearings_distribution": str(route_dist),
+            "route_bearings_distribution": route_dist.tolist(),
             "route_bearings": [str(self.shape_dict["fwd_bearing"]), str(self.shape_dict["bwd_bearing"])],
-            "environment_bearings_distribution": str(env_dist),
-            "environment_bearings_distribution_weighted": str(env_dist_weighted),
+            "environment_bearings_distribution": env_dist.tolist(),
+            "environment_bearings_distribution_weighted": env_dist_weighted.tolist(),
+
             # od pair shape values
             "bbox": self.bbox,
             "diamond": self.polygon,
             "area": self.area,
-            # subgraph or environment values
+
+            # subgraph/environment values
             "edge_count": self.subgraph_stats['m'],
             "node_count": self.subgraph_stats['n'],
             "street_segment_count": self.subgraph_stats['street_segment_count'],

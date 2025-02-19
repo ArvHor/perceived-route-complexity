@@ -1,159 +1,73 @@
-from asyncio import PriorityQueue
 import itertools
 import osmnx as ox
 import pyproj
 import logging
-import heapq
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s',filename='app.log', filemode='w')
-info_handler = logging.FileHandler('info.log')
-info_handler.setLevel(logging.INFO)
-info_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-def simplest_path_weight_algorithm_optimized(G, start_node):
-    """
-    Calculates edge weights using an optimized algorithm with a priority queue.
 
-    Args:
-        G: The graph (NetworkX graph).
-        start_node: The starting node.
+logging.basicConfig(
+    filename='app.log',          # Log file name
+    filemode='a',                # 'a' for append, 'w' for overwrite
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.INFO           # Set the minimum logging level
+)
 
-    Returns:
-        G: The graph with updated edge weights.
-    """
+def simplest_path_from_source(G, start_node):
 
-    print(f'{G.size()} edges in the graph')
-
-    # 1. Initialize Edge Pairs
-    E_pairs = set()
+    # Define the set of edges of all edges E and the empty set of edges S
     S = set()
     E = set(G.edges(keys=False))
-    start_node = int(start_node)
+    
+    # Define the set of edge pairs E_pairs
+    E_pairs = set()
     for u, v in G.edges():
         for _, w in G.out_edges(v):
             E_pairs.add(((u, v), (v, w)))
 
-    # 2. Initialize Edge Weights and Priority Queue
+    # Initialize Edge Weights such that all edges from the source node have a weight of 0 and all other edges have a weight of infinity
+    start_node = int(start_node)
     for u, v in G.edges():
         if u == start_node:
-            print(f'start node: {u} and end node: {v}')
             G.edges[(u, v, 0)]['decision_complexity'] = 0
         else:
             G.edges[(u, v, 0)]['decision_complexity'] = float('inf')
         
-
+    # Initialize a counter for the number of edges left
     n_left = len(G.edges())
-
+    
+    # While there are edges in the set E that are not in the set S
     while E.difference(S):
         
-        min_edge = min(E.difference(S), key=lambda e: G.edges[e[0],e[1],0]['decision_complexity'])
-        # Skip edges that have already been processed
-        if min_edge in S:
-            continue
-
-        S.add(min_edge)
-
         n_left -= 1
         if n_left % 1000 == 0:
             print(f'{n_left} edges left')
 
-        out_edges = [e for e in G.out_edges(min_edge[1]) if e not in S]
+        # Find the edge with the smallest weight that is not in the set S as min_edge
+        min_edge = min(E.difference(S), key=lambda e: G.edges[e[0],e[1],0]['decision_complexity'])
 
+        # Add min_edge to the set S
+        S.add(min_edge)
+
+        # Find all edges that go out from the destination node of min_edge and are not in the set S
+        out_edges = [e for e in G.out_edges(min_edge[1]) if e not in S]
+        logging.info(f'edges in S: {len(S)}, min edge: {min_edge}, out edges: {out_edges}')
+        # For every edge in out_edges
         for out_edge in out_edges:
             u, v = min_edge
             _, w = out_edge
+
+            # If the edge pair (min_edge, out_edge) is in E_pairs
             if ((u, v), (v, w)) in E_pairs:
+
+                # Calculate the decision complexity of the edge pair (min_edge, out_edge)
                 decision_complexity, turn_type = calculate_decisionpoint_complexity(G, (u, v), (v, w))
-                #logging.info(f'Calculating complexity for edgepair u, v, with complexity {G.edges[(u, v, 0)]['decision_complexity']} adding {decision_complexity}')
+                logging.info(f'calculating decision complexity for edge pair {(u, v), (v, w)}: {decision_complexity}, {turn_type}')
+                # Compare the new decision complexity of the edge pair (min_edge, out_edge) with the existing decision complexity of the edge_pair
                 old_complexity = G.edges[(v, w, 0)]['decision_complexity']
                 new_complexity = G.edges[(u, v, 0)]['decision_complexity'] + decision_complexity
+                # If the new decision complexity of (min_edge, out_edge) is smaller, update the decision complexity of the edge pair
                 if new_complexity < old_complexity:
-                    #logging.info(f'Updating edge {(v, w)} with complexity {new_complexity} from edge {(u, v)} with turn type {turn_type}')
                     G.edges[(v, w, 0)]['turn_complexity'] = turn_type
                     G.edges[(v, w, 0)]['decision_complexity'] = new_complexity
     return G
-
-
-
-def simplest_path_weight_algorithm(G,start_node):
-    """Calculate the weight of the edges in the graph using the simplest path algorithm.
-    
-    In the simplest path algorithm, the weight of an edge is calculated as the sum of the weights of the edges leading to it.
-    ----
-    Parameters:
-    G: The graph.
-    start_node: The origin node of possible paths.
-    
-    ----
-    Returns:
-    G: The graph with updated edge weights.
-    cs: The evaluation mapping of edges.
-    
-    
-    """
-    print(f'{G.size()} edges in the graph, start node: {start_node}')
-    
-    S = set()
-    E = set(G.edges(keys=False)) 
-    E_pairs = set()
-    cs = {e: float('inf') if e[0] != start_node else 0 for e in E}
-    
-    for u, v in G.edges():
-        G.edges[(u,v,0)]['decision_complexity'] = float('inf')
-        if u == start_node:
-            print(f'start node: {u} and end node: {v}')
-            cs[(u, v)] = 0
-            G.edges[(u,v,0)]['decision_complexity'] = 0
-        for _, w in G.out_edges(v):
-            E_pairs.add(((u, v), (v, w)))
-            
-    n_left = len(E)
-    while E.difference(S):
-
-        min_edge = min(E.difference(S), key=lambda e: cs[e])
-
-        S.add(min_edge)
-        n_left -= 1
-        if n_left % 1000 == 0:
-            print(f'{n_left} edges left')
-        u, v = min_edge
-        
-        out_edges = []
-        for edge in G.out_edges(v):
-            if edge not in S:
-                out_edges.append(edge)
-
-        for out_edge in out_edges:
-            _, w = out_edge
-            if ((u, v), (v, w)) in E_pairs:
-                decision_complexity,turn_type = calculate_decisionpoint_complexity(G, (u, v), (v, w))
-                #logging.info(f'Calculating complexity for edge pair {((u, v), (v, w))} with turn type {turn_type}, decision complexity: {decision_complexity}')
-                new_complexity = G.edges[(u, v, 0)]['decision_complexity'] + decision_complexity
-                old_complexity = G.edges[(v, w, 0)]['decision_complexity']
-                min_complexity = min(old_complexity, new_complexity)
-                #logging.info(f'min complexity for edge pair {((u, v), (v, w))}: {min_complexity}')
-                G.edges[(v, w, 0)]['decision_complexity'] = min_complexity
-                cs[(v, w)] = min_complexity
-
-                if new_complexity < old_complexity:
-                    #logging.info(f'Updating edge {(v, w)} with complexity {min_complexity} from edge {(u, v)} with turn type {turn_type}')
-                    G.edges[(u, v, 0)]['turn_complexity'] = turn_type
-            else:
-                pass
-                #logging.info(f"Edge pair {((u, v), (v, w))} not found in E_pairs")
-
-
-
-    total_edges = len(E)
-    n_inf_edges = sum(1 for u, v, data in G.edges(data=True) if G.edges[u,v,0]['decision_complexity'] == float('inf'))
-    percentage_inf_edges = (n_inf_edges / total_edges) * 100
-
-    max_weight = 0
-    for u,v,data in G.edges(data=True):
-        if data["decision_complexity"] > max_weight:
-            max_weight = data["decision_complexity"]
-
-    #print(f'Percentage of edges with infinite weight_decision_complexity: {percentage_inf_edges:.2f}%')
-    logging.info(f'Percentage of edges with infinite decision_complexity: {percentage_inf_edges:.2f}%')
-    return G,max_weight
 
 
 def add_deviation_from_prototypical_weights(G):
@@ -227,7 +141,6 @@ def get_turn_type(G, origin, intermediate, destination):
 
 def is_t_turn(G,u,v):
     
-    
     successors = set(G.successors(v))
 
     if len(successors) > 3 or len(successors) == 1:
@@ -240,6 +153,8 @@ def is_t_turn(G,u,v):
     if len(successors) == 2 and u in t_turn_successors:
         return False
 
+    # If the intermediate node has three successors, remove the origin node from the set of successors
+    # then check if the remaining two successors are a left and a right turn
     if len(successors) == 3 and u in t_turn_successors:
         t_turn_successors.remove(u)
         turns = []
@@ -250,17 +165,18 @@ def is_t_turn(G,u,v):
         turns.append(turn_type1)
         turns.append(turn_type2)
 
-        #print(f'Turn type 1: {turn_type1} to {w1}, Turn type 2: {turn_type2} to {w2}')
+        # If the turn-types to the two remaining successors contain both a left and a right turn, the node is a T-turn
         if 'left_turn' in turns and 'right_turn' in turns:
             return True
         else:
             return False
-        
+    # If the intermediate node has two successors and the origin node is not one of them
+    # check if the turn-type between the successors and the intermediate node is straight
     elif len(successors) == 2 and u not in t_turn_successors:
         w1 = t_turn_successors.pop()
         w2 = t_turn_successors.pop()
         turn_type1 = get_turn_type(G,w1,v,w2)
-        turn_type2 = get_turn_type(G,w1,v,w2)
+        turn_type2 = get_turn_type(G,w2,v,w1)
         if turn_type1 == 'straight' and turn_type2 == 'straight':
             return True
         else:
@@ -274,17 +190,12 @@ def calculate_decisionpoint_complexity(G,e1,e2):
     intermediate_node_degree = G.out_degree(intermediate_node)
     turn_type = get_turn_type(G,origin_node,intermediate_node,destination_node)
     t_turn = is_t_turn(G,origin_node,intermediate_node)
-    #print(f'Is t turn: {t_turn}')
     turn_complexity = "ERROR"
-    #print(f'Turn type: {turn_type}')
     slots = None
     if turn_type == 'straight' or turn_type == 'slight_left_turn' or turn_type == 'slight_right_turn':
         slots = 1
         if intermediate_node_degree == 1:
             turn_complexity = "1_way_straight"
-            #bearing_origin_to_intermediate = get_azimuth(G, origin_node, intermediate_node)
-            #bearing_intermediate_to_destination = get_azimuth(G, intermediate_node, destination_node)
-            #logging.info(f"Error: Straight u-turn at node {intermediate_node}, azimuth from origin to intermediate: {bearing_origin_to_intermediate}, azimuth from intermediate to destination: {bearing_intermediate_to_destination}")
         elif intermediate_node_degree == 2:
             turn_complexity = "2_way_straight"
         elif intermediate_node_degree >= 3:
@@ -298,7 +209,6 @@ def calculate_decisionpoint_complexity(G,e1,e2):
             turn_complexity = "2_way_turn"
             slots = 4
         elif intermediate_node_degree == 3 and t_turn:
-            #logging.info(f"T-Turn at node {intermediate_node} yay")
             turn_complexity = "t_turn"
             slots = 6
         elif intermediate_node_degree == 3 and not t_turn:

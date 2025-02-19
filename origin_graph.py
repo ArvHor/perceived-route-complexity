@@ -222,7 +222,7 @@ class origin_graph:
     def add_weights(self,weightstrings:List[str]):
         
         if  "decision_complexity" in weightstrings:
-            self.graph = wa.simplest_path_weight_algorithm_optimized(G=self.graph,start_node=self.start_node)
+            self.graph = wa.simplest_path_from_source(G=self.graph,start_node=self.start_node)
             self.remove_infinite_edges()
             self.edge_weights.append("decision_complexity")
 
@@ -315,24 +315,25 @@ class origin_graph:
         nodes_per_bin = n // num_bins
         lap = 1
         max_laps = 10
-        min_nodes_per_lap = 18
+        max_empty_in_row = 18
         while len(sampled_nodes) < n and lap < max_laps:
             start_bin = random.randint(0, num_bins - 1)
             #logging.info(f"lap {lap} beginning at bin {start_bin}")
             lap += 1
-            nodes_sampled_this_lap = 0
-
+            empty_in_row = 0
             for i in range(num_bins):
                 current_bin = (start_bin + i) % num_bins
                 if len(sampled_nodes) < n:
                     new_nodes = set(bin_nodes[current_bin]) - sampled_nodes
                     if new_nodes:
+                        empty_in_row = 0
                         sampled_nodes.add(np.random.choice(list(new_nodes)))
-                        nodes_sampled_this_lap += 1
+                    else:
+                        empty_in_row += 1
+                        if empty_in_row >= max_empty_in_row:
+                            break
                 else:
                     break
-            if nodes_sampled_this_lap < min_nodes_per_lap:
-                break
             
         return sampled_nodes
 
