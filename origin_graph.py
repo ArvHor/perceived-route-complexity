@@ -10,67 +10,135 @@ import pandas as pd
 import weighting_algorithms as wa
 from od_pair import od_pair
 import networkx as nx
+import ast
+from typing import Union, Dict, Any
+
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s',filename='app.log', filemode='w')
 
 class origin_graph:
-    def __init__(self, origin_point:tuple, distance_from_point:int,origin_info:Dict,
+    def __init__(self, origin_point:tuple, distance_from_point:int,city_name:str,
                   edge_attr_diff: Optional[str] = None,network_type: Optional[str] = 'drive',
-                  load_graphml: Optional[str] = None, remove_parallel: Optional[bool] = False,
-                  ):
+                  simplify: Optional[bool] = False,remove_parallel: Optional[bool] = False):
+        
+        
         self.origin_point = origin_point
-        # {"city_name":None,"origin_name":None,"country_name":None,"region_name":None},
-        self.origin_info = origin_info
-        self.city_name = origin_info["city_name"]
+        self.city_name = city_name
         self.distance_from_point = distance_from_point
         self.edge_attr_diff = edge_attr_diff
         self.network_type = network_type
-        self.weights_list = ["length"]
+        self.edge_weights = []
+        self.node_attributes = []
         self.removed_parallel_edges = []
         self.removed_inf_edges = []
         self.od_pairs = []
-        if load_graphml:
-            logging.info(f'Loading graph, {load_graphml}')
-            self.graph = ox.load_graphml(load_graphml)
-            logging.info(f'Loaded graph, {load_graphml}, with {len(self.graph.nodes)} nodes and {len(self.graph.edges)} edges')
-            self.graph_path = load_graphml
-            #logging.info(f'Loaded graph, {load_graphml}')
-        else:
-            logging.info(f'Creating graph, {self.origin_info} with distance {self.distance_from_point} and network type {self.network_type}')
-            self.graph = self.create_graph()
-            logging.info(f'Created graph, {self.origin_info} with {len(self.graph.nodes)} nodes and {len(self.graph.edges)} edges')
 
-
+        self.graph = self.create_graph(simplify=simplify)
         if remove_parallel:
             self.graph = self.remove_parallel_edges()
-            logging.info(f'Removed parallel edges from {self.origin_info["city_name"]}')
-        else:
-            logging.info(f'Not removing parallel edges from {self.origin_info["city_name"]}')
+
         self.start_node = self.find_start_node()
         self.bbox_coords = self.calculate_graph_bounding_box()
+        self.graph.graph['origin_point'] = self.origin_point
+        self.graph.graph['distance_from_point'] = self.distance_from_point
+        self.graph.graph['network_type'] = self.network_type
+        self.graph.graph['edge_attr_diff'] = self.edge_attr_diff
+        self.graph.graph['simplify'] = simplify
+        self.graph.graph['remove_parallel'] = remove_parallel
+        self.graph.graph['city_name'] = self.city_name
+        self.graph.graph['start_node'] = self.start_node
+        self.graph.graph['bbox_coords'] = self.bbox_coords
+        self.graph.graph['edge_weights'] = self.edge_weights
+        self.graph.graph['node_attributes'] = self.node_attributes
+
+
+    @classmethod
+    def from_graphml(cls, graphml_path: str):
+        edge_data_types = {
+            "length": float,
+            "decision_complexity": float,
+            "deviation_from_prototypical": float,
+            "instruction_equivalent": float,
+            "node_degree": float
+        }
+        
+        instance = cls.__new__(cls)
+        instance.graph = ox.load_graphml(graphml_path, edge_dtypes=edge_data_types)
+        instance.graph_path = graphml_path
+        
+        # Define attributes with their expected types
+        attr_types = {
+            'origin_point': tuple,  # e.g., (lat, lon)
+            'distance_from_point': float,
+            'network_type': str,
+            'simplify': bool,
+            'remove_parallel': bool,
+            'city_name': str,
+            'start_node': int,
+            'bbox_coords': tuple,  # e.g., (min_lat, max_lat, min_lon, max_lon)
+            'edge_weights': list,
+            'node_attributes': list
+        }
+        
+        graph_attrs = instance.graph.graph
+        
+        # Check and convert attributes
+        for attr, expected_type in attr_types.items():
+            if attr not in graph_attrs:
+                raise ValueError(f"Missing required graph attribute: {attr}")
+                
+            value = graph_attrs[attr]
+            
+            # Convert string representation to actual type
+            if isinstance(value, str):
+                if expected_type in (dict, list, tuple):
+                    try:
+                        value = ast.literal_eval(value)
+                    except (ValueError, SyntaxError):
+                        raise ValueError(f"Could not parse {attr} as {expected_type}")
+                elif expected_type == bool:
+                    value = value.lower() == 'true'
+                elif expected_type == float:
+                    value = float(value)
+                elif expected_type == int:
+                    value = int(value)
+                    
+            # Verify type
+            if not isinstance(value, expected_type):
+                raise TypeError(f"Attribute {attr} should be {expected_type}, got {type(value)}")
+                
+            setattr(instance, attr, value)
+        
+        return instance
 
         
-    def create_graph(self):
+    def create_graph(self, simplify=False):
         """
         Create a graph from the center point and distance.
 
         Output:
         - Returns a graph object created from the center point and distance.
         """
+        # First, download the graph from OSM via osmnx using the specified network type
         if self.network_type not in ['walk', 'bike', 'drive', 'drive_service', 'all', 'all_private']:
             G = ox.graph_from_point(self.origin_point, dist=self.distance_from_point, custom_filter=self.network_type, simplify=False, truncate_by_edge=True)
             print('Using custom filter to create graph')        
         else:
             G = ox.graph_from_point(self.origin_point, dist=self.distance_from_point, network_type=self.network_type, simplify=False, truncate_by_edge=True)
 
-        if self.edge_attr_diff == 'osmid':
+        G = ox.distance.add_edge_lengths(G)
+        self.edge_weights.append("length")
+        G.graph['length_added'] = "True"
+
+
+        # Then simplify the graph, retaining only the unique osmid if specified
+        if self.edge_attr_diff == 'osmid' and simplify == True:
             G = ox.simplification.simplify_graph(G,edge_attrs_differ=['osmid'])
             print('Simplifying graph retaining unique osmid')
         else:
             G = ox.simplify_graph(G)
 
         G = ox.bearing.add_edge_bearings(G)
-        G = ox.distance.add_edge_lengths(G)
-        G.graph['city_name'] = self.city_name
+        self.node_attributes.append("bearing")
         return G
 
     
@@ -99,34 +167,43 @@ class origin_graph:
 
     def remove_parallel_edges(self):
         """
-        Remove parallel edges from the graph, keeping only the shortest one.
+        Remove parallel edges from the graph, keeping only the shortest one
+        and ensuring the remaining edge has key 0.
 
         Output:
         - Modifies the graph by removing parallel edges.
         """
         G = self.graph
         edges_to_remove = []
-        for u, v, k in G.edges(keys=True):
-            parallel_edges = [(u, v, key) for key in G[u][v]]
-            if len(parallel_edges) > 1:
-                shortest_edge = min(parallel_edges, key=lambda edge: G.edges[edge]['length'])
-                for edge in parallel_edges:
-                    if edge != shortest_edge:
-                        edges_to_remove.append(edge)
-        self.removed_parallel_edges = edges_to_remove
+        edges_to_add = {}  # (u,v) -> edge_data
+        
+        # Identify parallel edges and find shortest ones
+        for u, v, k in list(G.edges(keys=True)):
+            if (u, v) not in edges_to_add:
+                parallel_edges = [(u, v, key) for key in G[u][v]]
+                if len(parallel_edges) > 1:
+                    # Find the shortest edge and store its data
+                    shortest_edge = min(parallel_edges, key=lambda edge: G.edges[edge]['length'])
+                    edges_to_add[(u, v)] = G.edges[shortest_edge].copy()
+                    # Mark all edges between u,v for removal
+                    edges_to_remove.extend(parallel_edges)
+        
+        # Remove all parallel edges
         G.remove_edges_from(edges_to_remove)
-        return G                                                   
+        
+        # Add back shortest edges with key 0
+        for (u, v), edge_data in edges_to_add.items():
+            G.add_edge(u, v, key=0, **edge_data)
+        
+        return G                                        
     
     def remove_infinite_edges(self):
-        #logging.info(f'Removing infinite edges from {self.origin_info["city_name"]}')
         G = self.graph
         edges_to_remove = []
         for (u, v, k, data) in G.edges(keys=True,data=True):
-            #logging.info(f'Checking edge {u} to {v} with decision complexity {data["decision_complexity"]}')
             if data['decision_complexity'] == float('inf'):
                 edges_to_remove.append((u, v, k))
         G.remove_edges_from(edges_to_remove)
-        print(f'Removed {len(edges_to_remove)} edges with infinite decision complexity')
         self.graph = G
         self.removed_inf_edges = edges_to_remove
 
@@ -142,49 +219,27 @@ class origin_graph:
         """
         ox.plot_graph_orientation(self.graph, bbox=self.bbox_coords, save=True, filepath=filepath)
         
-    def add_weights(self,weightstring):
+    def add_weights(self,weightstrings:List[str]):
         
-        if weightstring == "decision_complexity":
-            #logging.info(f'Adding decision complexity weights to {self.origin_info["city_name"]}')
-            
-            try:
-                self.graph = wa.simplest_path_weight_algorithm_optimized(G=self.graph,start_node=self.start_node)
-            except:
-                logging.error(f"Error adding decision complexity weights to {self.origin_info['city_name']}",exc_info=True)
-            
-            try:
-                self.remove_infinite_edges()
-            except:
-                logging.error(f"Error removing infinite edges from {self.origin_info['city_name']}",exc_info=True)
-            self.weights_list.append("decision_complexity")
-            
-        elif weightstring == "deviation_from_prototypical":
-            self.graph, self.max_deviation_from_prototypical = wa.add_deviation_from_prototypical_weights(G=self.graph)
-            self.weights_list.append("deviation_from_prototypical")
-        elif weightstring == "instruction_equivalent":
-            self.graph, self.max_instruction_equivalent = wa.add_instruction_equivalent_weights(G=self.graph)
-            self.weights_list.append("instruction_equivalent")
-        elif weightstring == "node_degree":
-            self.graph, self.max_node_degree = wa.add_node_degree_weights(G=self.graph)
-            self.weights_list.append("node_degree")
-        elif weightstring == "complexity_combined":
-            self.graph, self.max_decision_complexity = wa.simplest_path_weight_algorithm(G=self.graph, start_node=self.start_node)
-            self.graph, self.max_deviation_from_prototypical = wa.add_deviation_from_prototypical_weights(G=self.graph)
-            self.graph, self.max_instruction_equivalent = wa.add_instruction_equivalent_weights(G=self.graph)
-            self.graph, self.max_node_degree = wa.add_node_degree_weights(G=self.graph)
-            
-            max_local_combined = 0
-            for u,v,data in self.graph.edges(data=True):
-                w1 = (data["decision_complexity"]/self.max_decision_complexity)
-                w2 = (data["deviation_from_prototypical"]/self.max_deviation_from_prototypical)
-                w3 = (data["instruction_equivalent"]/self.max_instruction_equivalent)
-                w4 = (data["node_degree"]/self.max_node_degree)
-                
-                combined = (w1 + w2 + w3 + w4) / 4
+        if  "decision_complexity" in weightstrings:
+            self.graph = wa.simplest_path_weight_algorithm_optimized(G=self.graph,start_node=self.start_node)
+            self.remove_infinite_edges()
+            self.edge_weights.append("decision_complexity")
 
-                data["complexity combined"] = combined
-            
-            self.weights_list.append("all_local_combined")
+        if  "deviation_from_prototypical" in weightstrings:
+            self.graph, self.max_deviation_from_prototypical = wa.add_deviation_from_prototypical_weights(G=self.graph)
+            self.edge_weights.append("deviation_from_prototypical")
+
+
+        if "instruction_equivalent" in weightstrings:
+            self.graph, self.max_instruction_equivalent = wa.add_instruction_equivalent_weights(G=self.graph)
+            self.edge_weights.append("instruction_equivalent")
+
+        if "node_degree" in weightstrings:
+            self.graph, self.max_node_degree = wa.add_node_degree_weights(G=self.graph)
+            self.edge_weights.append("node_degree")
+
+        self.graph.graph['edge_weights'] = self.edge_weights
 
     def save_graph(self, filepath=None):
         if filepath is not None:
@@ -217,9 +272,7 @@ class origin_graph:
                 if unprojected_distance >= min_radius and unprojected_distance <= max_radius:
                     if nx.has_path(self.graph,self.start_node,node):
                         possible_destinations.add(node)
-                        logging.info(f'In edges of destination {node}: {self.graph.in_edges(node)}')
-        logging.info(f'Found {len(possible_destinations)} possible destinations in {self.origin_info["city_name"]}')
-
+                       
         if sample:
             return self.sample_destinations(possible_destinations,n=sample)
         else:
@@ -285,13 +338,12 @@ class origin_graph:
 
 
         
-    def create_od_pairs(self,min_radius=3000,max_radius=3500):
-        destinations = self.find_destinations(min_radius=min_radius,max_radius=max_radius,sample=144)
+    def create_od_pairs(self,min_radius=3000,max_radius=3500,sample_size=144):
+        destinations = self.find_destinations(min_radius=min_radius,max_radius=max_radius,sample=sample_size)
         od_pairs = []
         for destination in destinations:
             od_p = od_pair(G=self.graph,origin=self.start_node,destination=destination)
             od_pairs.append(od_p)
-        logging.info(f'Added {len(od_pairs)} od pairs to {self.origin_info["city_name"]}')
         self.od_pairs = od_pairs
         #return od_pairs
 

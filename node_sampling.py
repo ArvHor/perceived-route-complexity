@@ -141,7 +141,7 @@ def download_street_network_and_select_random_nodes(city_name,min_distance_km=3)
 
 def get_random_nodes_for_all_cities(origin_locations, min_distance_km=3):
   # Example usage
-  locations = []
+  samples = []
   for index, row in origin_locations.iterrows():
     city_name = row['city_name']
     try:
@@ -156,8 +156,7 @@ def get_random_nodes_for_all_cities(origin_locations, min_distance_km=3):
       city = row['city_name']
       #country = location_info[location_info['city_name'] == city]['country']
       #region = location_info[location_info['city_name'] == city]['region']
-      node_samples_latlon = []
-      node_samples_ids = []
+      node_samples = []
       for index, node in enumerate(random_nodes):
         print(f"Node: {node}")
         
@@ -165,24 +164,20 @@ def get_random_nodes_for_all_cities(origin_locations, min_distance_km=3):
         node_lon = graph.nodes[node]['x']
         node_latlon = (node_lat, node_lon)
         print(f"Random node coordinates for {city_name}: {node_lat}, {node_lon}")
-        node_samples_latlon.append(node_latlon)
-        node_samples_ids.append(node)
+        node_samples.append({"node_latlon":node_latlon,"node_id":node})
 
-    location = {
-      'city_name': city,
-      'country': row['country'],
-      'region': row['region'],
-      "network_type":"drive",
-      "node1_id": node_samples_ids[0],
-      'node1_latlon': node_samples_latlon[0],
-      'node2_id': node_samples_ids[1],
-      'node2_latlon': node_samples_latlon[1],
-      'node3_id': node_samples_ids[2],
-      'node3_latlon': node_samples_latlon[2]
-    }
-    locations.append(location)
+    for i, node_sample in enumerate(node_samples,start=1):
+      location = {
+        'city_name': city,
+        'country': row['country'],
+        'region': row['region'],
+        "network_type":"drive",
+        "node_id": node_sample['node_id'],
+        'node_latlon': node_sample['node_latlon'],
+      }
+      samples.append(location)
     # Save the random nodes DataFrame to a new CSV file
-  node_samples_df = pd.DataFrame(locations)
+  node_samples_df = pd.DataFrame(samples)
   return node_samples_df 
 
 

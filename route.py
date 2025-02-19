@@ -19,12 +19,18 @@ class route:
         if weighstring == "decision_complexity":
             self.nodes = self.retrieve_simplest_path(self.graph, self.origin_node, self.destination_node)
             self.edges = list(nx.utils.pairwise(self.nodes))
-            self.complexity, self.complexity_list, self.turn_types = self.get_route_complexity(self.graph, self.edges)
+            complexity_dict = self.get_route_complexity(self.graph, self.edges)
+            self.complexity = complexity_dict['sum']
+            self.complexity_list = complexity_dict['complexity_list']
+            self.turn_types = complexity_dict['turn_types']
             self.route_geometry = ox.routing.route_to_gdf(self.graph, self.nodes, weight=weighstring)["geometry"].unary_union
         else:
             self.nodes = ox.routing.shortest_path(self.graph, self.origin_node, self.destination_node, weight=weighstring)
             self.edges = list(nx.utils.pairwise(self.nodes))
-            self.complexity, self.complexity_list, self.turn_types = self.calculate_route_complexity_post_hoc(self.graph, self.edges)
+            complexity_dict = self.get_route_complexity(self.graph, self.edges)
+            self.complexity = complexity_dict['sum']
+            self.complexity_list = complexity_dict['complexity_list']
+            self.turn_types = complexity_dict['turn_types']
             self.route_geometry = ox.routing.route_to_gdf(self.graph, self.nodes, weight=weighstring)["geometry"].unary_union
 
             

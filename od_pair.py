@@ -26,7 +26,7 @@ class od_pair:
         self.polygon = self.shape_dict["polygon"]
         self.bbox = self.shape_dict["bbox"]
         self.length_diff = self.simplest_path.length - self.shortest_path.length
-        self.complexity_diff = self.simplest_path.complexity - self.shortest_path.complexity
+        self.complexity_diff = int(self.simplest_path.complexity) - int(self.shortest_path.complexity)
         self.shortest_diff = self.shortest_path.length - self.od_distance
         self.environment_bearing_dist = None
         self.route_direction_bearing_dist = None

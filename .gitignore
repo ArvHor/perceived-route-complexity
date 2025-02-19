@@ -5,8 +5,15 @@ od_pair_data/
 demonstration/
 cache/
 graph_sets/
+example/
+parameter_data/
+t_turn_tests.py
+test.py
+azimuth_tests.py
 chromedriver
 *.log
 ohno/
 ohno.py
 *.html
+chromedriver
+
