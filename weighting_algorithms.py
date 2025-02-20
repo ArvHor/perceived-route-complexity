@@ -259,17 +259,6 @@ def calculate_instruction_equivalent(bearing_list):
         return 1
     
 def calculate_deviation_from_prototypical(bearing_list):
-    """Calculate the deviation of the bearing from the closest cardinal direction.
-    
-    ----
-    Parameters:
-    bearing: Forward azimuth bearings from a node to its successors.
-    
-    ----
-    Returns:
-    Deviation value: The deviation of the bearing from the closest cardinal direction.
-    
-    """
     deviation_list = []
     if len(bearing_list) > 1:
         for bearing_a, bearing_b in itertools.combinations(bearing_list, 2):
@@ -321,6 +310,7 @@ def get_azimuth(G, node_a, node_b, return_all=False):
     Parameters:
     point_a: The coordinates of the first point.
     point_b: The coordinates of the second point.
+    return_all: If True, return the forward azimuth, back azimuth, and distance. If False, return only the forward azimuth.
     
     ----
     Returns:

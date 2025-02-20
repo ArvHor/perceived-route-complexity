@@ -14,7 +14,7 @@ def get_circular_crosscorrelation_alignment(route_dist,env_dist):
     normalized_max_correlation = max_correlation / np.max(env_dist)
 
     # Align distributions
-    aligned_route_dist = circular_shift(route_dist, lag)
+    aligned_route_dist = np.roll(route_dist, lag)
     
     # Calculate the cosine similarity after aligning the distributions
     cosine_sim = np.dot(env_dist, aligned_route_dist) / (np.linalg.norm(env_dist) * np.linalg.norm(aligned_route_dist))
@@ -44,11 +44,6 @@ def get_EMD_alignment(route_dist, env_dist):
     env_dist = env_dist / np.sum(env_dist)
     EMD_alignment = wasserstein_distance(env_dist, route_dist)
     return EMD_alignment
-
-
-def circular_shift(arr, shift):
-    """Circularly shifts a 1D array."""
-    return np.roll(arr, shift)
 
     
 def circular_cross_correlation(a, b):

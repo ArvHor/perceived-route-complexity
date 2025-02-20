@@ -299,9 +299,6 @@ class origin_graph:
         split_bin_counts, split_bin_edges = np.histogram(bearings, bins=split_bin_edges)
         split_bin_counts = np.roll(split_bin_counts, 1)
 
-        bin_counts = split_bin_counts[::2] + split_bin_counts[1::2]
-        bin_centers = split_bin_edges[range(0, num_split_bins, 2)] 
-
 
          # 3. Create a dictionary to store nodes in each bin
         bin_nodes = defaultdict(list)
@@ -309,7 +306,10 @@ class origin_graph:
             bin_index = int(bearing // 10) % num_bins # Use modulo to wrap around for edge cases
             bin_nodes[bin_index].append(dest)
 
-        
+            
+        print(f"Number of nodes in each bin: {[len(bin_nodes[i]) for i in range(num_bins)]}")
+        bin_counts = split_bin_counts[::2] + split_bin_counts[1::2]
+        bin_centers = split_bin_edges[range(0, num_split_bins - 1, 2)]
         # 4. Retrieve a sample of nodes from each bin
         sampled_nodes = set()
         max_empty_in_row = 18
