@@ -249,14 +249,12 @@ class od_pair:
                 'dijkstra_weight': self.shortest_path.weightstring,
                 'nodes': self.shortest_path.nodes,
                 'edges': self.shortest_path.edges,
-                'subgraph_edges': list(self.shortest_path.subgraph.edges)  # Convert subgraph to a serializable format
             },
             'simplest_path': {
                 'route_length': self.simplest_path.length,
                 'dijkstra_weight': self.simplest_path.weightstring,
                 'nodes': self.simplest_path.nodes,
                 'edges': self.simplest_path.edges,
-                'subgraph_edges': list(self.simplest_path.subgraph.edges)  # Convert subgraph to a serializable format
             }
         }
         return od_dict

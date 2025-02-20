@@ -306,10 +306,6 @@ class origin_graph:
             bin_index = int(bearing // 10) % num_bins # Use modulo to wrap around for edge cases
             bin_nodes[bin_index].append(dest)
 
-            
-        print(f"Number of nodes in each bin: {[len(bin_nodes[i]) for i in range(num_bins)]}")
-        bin_counts = split_bin_counts[::2] + split_bin_counts[1::2]
-        bin_centers = split_bin_edges[range(0, num_split_bins - 1, 2)]
         # 4. Retrieve a sample of nodes from each bin
         sampled_nodes = set()
         max_empty_in_row = 18
@@ -325,7 +321,6 @@ class origin_graph:
                         sampled_nodes.add(np.random.choice(list(new_nodes)))
                     else:
                         empty_in_row += 1
-                        #print(f"Empty in row: {empty_in_row}")
                         if empty_in_row >= max_empty_in_row:
                             break
                 else:
