@@ -217,18 +217,27 @@ class origin_graph:
         - Saves the orientation plot to the specified filepath.
         """
         ox.plot_graph_orientation(self.graph, bbox=self.bbox_coords, save=True, filepath=filepath)
-        
-    def add_weights(self,weightstrings:List[str]):
-        
-        if  "decision_complexity" in weightstrings:
+    
+    def add_simplest_paths_from_origin(self):
+        if "decision_complexity" in self.edge_weights:
+            print("Simplest path already calculated")
+            return
+        else:
             self.graph = wa.simplest_path_from_source(G=self.graph,start_node=self.start_node)
             self.remove_infinite_edges()
             self.edge_weights.append("decision_complexity")
+            self.graph.graph['edge_weights'] = self.edge_weights
+
+
+    def add_weights(self,weightstrings:List[str]):
+        
 
         if  "deviation_from_prototypical" in weightstrings:
-            self.graph, self.max_deviation_from_prototypical = wa.add_deviation_from_prototypical_weights(G=self.graph)
-            self.edge_weights.append("deviation_from_prototypical")
-
+            if "deviation_from_prototypical" in self.edge_weights:
+                print("Deviation from prototypical already calculated")
+            else:
+                self.graph, self.max_deviation_from_prototypical = wa.add_deviation_from_prototypical_weights(G=self.graph)
+                self.edge_weights.append("deviation_from_prototypical")
 
         if "instruction_equivalent" in weightstrings:
             self.graph, self.max_instruction_equivalent = wa.add_instruction_equivalent_weights(G=self.graph)
@@ -248,6 +257,11 @@ class origin_graph:
             ox.save_graphml(self.graph, self.graph_path)
         except Exception as e:
             print(f"Error saving graph: {e}")
+
+    def add_node_elevation(self,api_key=None):
+        self.graph = ox.elevation.add_node_elevations_google(self.graph, api_key=api_key,pause=0.1)
+        self.node_attributes.append("elevation")
+        self.graph.graph['node_attributes'] = self.node_attributes
 
     def save_pickle(self, filepath):
         """

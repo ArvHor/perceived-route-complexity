@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 local_*/
+api_keys.csv/
 od_pair_data/
 demonstration/
 cache/

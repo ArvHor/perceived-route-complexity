@@ -1,3 +1,4 @@
+import ast
 import math
 import numpy as np
 from route import route
@@ -35,6 +36,14 @@ class od_pair:
         self.od_pair_polygon_ug = None
         self.subgraph_stats = None
 
+        node_attribute_list = ast.literal_eval(G.graph['node_attributes'])
+        if "elevation" in node_attribute_list:
+            self.elevation_origin = self.graph.nodes[self.origin_node]['elevation']
+            self.elevation_destination = self.graph.nodes[self.destination_node]['elevation']
+            self.elevation_difference = self.elevation_origin - self.elevation_destination
+        else:
+            self.elevation_origin = None
+            self.elevation_destination = None        
 
     def od_pair_polygon_subgraph(self):
         if self.subgraph is None:
@@ -166,8 +175,11 @@ class od_pair:
             "city_name": self.graph.graph['city_name'],
             'origin_node': self.origin_node,
             "origin_point": self.origin_point,
-            "destination_point": self.destination_point,
+            'origin_elevation': self.elevation_origin,
             'destination_node': self.destination_node,
+            "destination_point": self.destination_point,
+            'destination_elevation': self.elevation_destination,
+            'elevation_difference': self.elevation_difference,
             'od_distance': self.od_distance,
 
             # Shortest path values
