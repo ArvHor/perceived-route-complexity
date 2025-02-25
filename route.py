@@ -28,8 +28,9 @@ class route:
             self.turn_types = complexity_dict['turn_types']
             self.route_geometry = ox.routing.route_to_gdf(self.graph, self.nodes, weight=weighstring)["geometry"].unary_union
 
-            
+        self.turn_count = sum('turn' in s.lower() for s in self.turn_types)
         self.length = self.get_edges_sum('length')
+        self.turn_frequency = self.turn_count/self.length
         self.n_nodes = len(self.nodes)
         self.sum_deviation_from_prototypical = self.get_edges_sum('deviation_from_prototypical')
         self.sum_node_degree = self.get_edges_sum('node_degree')
@@ -42,6 +43,8 @@ class route:
         """Creates a subgraph from the original graph containing only the route nodes and edges."""
         subgraph = graph.subgraph(self.nodes).copy()
         return subgraph
+    
+
 
     def generate_identifier(self):
         """Generates a unique identifier for the route (e.g., using SHA-256)."""
@@ -59,6 +62,10 @@ class route:
         for edge in self.edges:
             edges_avg += float(self.graph.edges[edge].get(weightstring, 0))
         return edges_avg / len(self.graph.edges)
+    
+
+        
+
 
     def get_edges_sum(self,weightstring):
         edges_sum = 0
@@ -151,3 +158,4 @@ class route:
         }
 
         return result
+    
