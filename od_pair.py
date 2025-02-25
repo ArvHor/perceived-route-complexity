@@ -7,6 +7,7 @@ import geo_utilities
 import logging
 import hashlib
 import alignment as alignment
+import network_analysis
 
 from matplotlib.projections.polar import PolarAxes
 
@@ -19,15 +20,24 @@ class od_pair:
         self.destination_node = destination
         self.origin_point = (self.graph.nodes[self.origin_node]['y'], self.graph.nodes[self.origin_node]['x'])
         self.destination_point = (self.graph.nodes[self.destination_node]['y'], self.graph.nodes[self.destination_node]['x'])
+        
+        self.graph = network_analysis.add_betweenness_centrality(self.graph,origin=self.origin_node,destination=self.destination_node,weightstring="length")
+
         self.od_distance = float(ox.distance.great_circle(lat1=self.origin_point[0], lon1=self.origin_point[1], lat2=self.destination_point[0], lon2=self.destination_point[1]))
+        
         self.shortest_path = route(self.graph,origin=self.origin_node,destination=self.destination_node,weighstring='length')
         self.simplest_path = route(self.graph,origin=self.origin_node,destination=self.destination_node,weighstring='decision_complexity')
+        
         self.shape_dict = geo_utilities.get_od_pair_polygon(self.origin_point, self.destination_point)
         self.polygon = self.shape_dict["polygon"]
         self.bbox = self.shape_dict["bbox"]
+
+
         self.length_diff = self.simplest_path.length - self.shortest_path.length
         self.complexity_diff = int(self.simplest_path.complexity) - int(self.shortest_path.complexity)
         self.shortest_diff = self.shortest_path.length - self.od_distance
+
+
         self.environment_bearing_dist = None
         self.route_direction_bearing_dist = None
         self.environment_orientation_entropy = None
@@ -78,6 +88,7 @@ class od_pair:
 
         self.plot_overlaid_distribution(ax, r_dist, num_bins=36, area=True)
         fig.savefig(filepath)
+
 
     def _plot_overlaid_distribution(
         ax: PolarAxes,
@@ -189,6 +200,7 @@ class od_pair:
             'shortest_path_complexity': self.shortest_path.complexity,
             'shortest_path_turn_labels': self.shortest_path.turn_types,
             "shortest_path_n_nodes": self.shortest_path.n_nodes,
+            "shortest_path_avg_betweenness": self.shortest_path.avg_betweenness,
             "shortest_path_deviation_from_prototypical": self.shortest_path.sum_deviation_from_prototypical,
             "shortest_path_instruction_equivalent": self.shortest_path.sum_instruction_equivalent,
             "shortest_path_node_degree": self.shortest_path.sum_node_degree,
@@ -201,6 +213,7 @@ class od_pair:
             'simplest_path_complexity': self.simplest_path.complexity,
             'simplest_path_turn_labels': self.simplest_path.turn_types,
             "simplest_path_n_nodes": self.simplest_path.n_nodes,
+            "simplest_path_avg_betweenness": self.simplest_path.avg_betweenness,
             "simplest_path_deviation_from_prototypical": self.simplest_path.sum_deviation_from_prototypical,
             "simplest_path_instruction_equivalent": self.simplest_path.sum_instruction_equivalent,
             "simplest_path_node_degree": self.simplest_path.sum_node_degree,

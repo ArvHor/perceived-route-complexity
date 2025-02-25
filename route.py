@@ -34,6 +34,7 @@ class route:
         self.sum_deviation_from_prototypical = self.get_edges_sum('deviation_from_prototypical')
         self.sum_node_degree = self.get_edges_sum('node_degree')
         self.sum_instruction_equivalent = self.get_edges_sum('instruction_equivalent')
+        self.avg_betweenness = self.get_nodes_avg("node_betweenness")
         self.identifier = self.generate_identifier()
         self.map_bbox = None
 
@@ -46,6 +47,12 @@ class route:
         """Generates a unique identifier for the route (e.g., using SHA-256)."""
         route_string = str(self.nodes)
         return hashlib.sha256(route_string.encode()).hexdigest()
+
+    def get_nodes_avg(self,weightsting):
+        total_betweenness = sum(self.graph.nodes[node][weightsting] for node in self.nodes)
+        avg_betweenness = total_betweenness / len(self.nodes)
+    
+        return avg_betweenness
 
     def get_edges_avg(self,weightstring):
         edges_avg = 0
