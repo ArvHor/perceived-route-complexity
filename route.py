@@ -37,13 +37,21 @@ class route:
         self.sum_instruction_equivalent = self.get_edges_sum('instruction_equivalent')
         self.avg_betweenness = self.get_nodes_avg("node_betweenness")
         self.identifier = self.generate_identifier()
-        self.map_bbox = None
+        self.map_bbox = self.get_map_bbox()
+        self.map_road_length, self.map_intersection_count, self.map_street_count = self.get_map_clutter()
 
     def get_route_subgraph(self, graph):
         """Creates a subgraph from the original graph containing only the route nodes and edges."""
         subgraph = graph.subgraph(self.nodes).copy()
         return subgraph
     
+    def get_map_clutter(self):
+        undirected_G = ox.convert.to_undirected(self.graph)
+        undirected_G = ox.truncate.truncate_graph_bbox(undirected_G,self.map_bbox)
+        
+        return sum(data["length"] for data in undirected_G.edges(data=True)), len(undirected_G.nodes()),len(undirected_G.edges())
+
+
 
 
     def generate_identifier(self):
@@ -63,9 +71,6 @@ class route:
             edges_avg += float(self.graph.edges[edge].get(weightstring, 0))
         return edges_avg / len(self.graph.edges)
     
-
-        
-
 
     def get_edges_sum(self,weightstring):
         edges_sum = 0

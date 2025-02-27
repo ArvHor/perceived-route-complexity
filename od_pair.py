@@ -208,6 +208,11 @@ class od_pair:
             "shortest_path_node_degree": self.shortest_path.sum_node_degree,
             "shortest_path_geometry": self.shortest_path.route_geometry,
 
+            # Shortest path MAP values
+            'shortest_path_map_intersection_count': self.shortest_path.map_intersection_count,
+            'shortest_path_map_street_count': self.shortest_path.map_street_count,
+            'shortest_path_map_road_length': self.shortest_path.map_road_length,
+
             # Simplest path values
             "simplest_path_nodes": self.simplest_path.nodes,
             'simplest_path_length': self.simplest_path.length,
@@ -222,6 +227,11 @@ class od_pair:
             "simplest_path_instruction_equivalent": self.simplest_path.sum_instruction_equivalent,
             "simplest_path_node_degree": self.simplest_path.sum_node_degree,
             "simplest_path_geometry": self.simplest_path.route_geometry,
+
+            # Simplest path MAP values
+            'simplest_path_map_intersection_count': self.simplest_path.map_intersection_count,
+            'simplest_path_map_street_count': self.simplest_path.map_street_count,
+            'simplest_path_map_road_length': self.simplest_path.map_road_length,
 
             # basic alignment values
             'basic_crosscorrelation_lag': lag,
