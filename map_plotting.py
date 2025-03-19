@@ -71,7 +71,7 @@ def calculate_bounding_box(center_lat, center_lng, zoom=16, width_pixels=1600, h
     east_lng, east_lat = utm_to_wgs84.transform(east_utm, north_utm)  
     west_lng, west_lat = utm_to_wgs84.transform(west_utm, north_utm)  
     
-    bbox = {"north": north_lat, "south": south_lat, "east": east_lng, "west": west_lng}
+    bbox = (west_lng,south_lat,east_lng,north_lat)
 
     return bbox
 
@@ -134,7 +134,8 @@ def plot_route_gdf(G, route_gdf,start_node,end_node,info_text="null",imgpath="ro
         return bbox
     
 
-def get_routegdf_bbox(G, route_gdf, start_node,end_node):
+def get_routegdf_bbox(G, route_nodes, start_node,end_node):
+    route_gdf = ox.routing.route_to_gdf(G,route_nodes)
     geom = route_gdf['geometry'].unary_union
     route_gdf['geometry'] = merge_and_simplify_geometry(geom, 0.0001)
     start_location = (G.nodes[start_node]['y'], G.nodes[start_node]['x'])

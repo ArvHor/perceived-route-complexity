@@ -3,7 +3,7 @@ import hashlib
 import osmnx as ox
 import weighting_algorithms as wa
 import map_plotting as mp
-
+import network_analysis
 class route:
     def __init__(self, graph, origin, destination, weighstring):
         self.graph = graph
@@ -40,6 +40,53 @@ class route:
         self.map_bbox = self.get_map_bbox()
         self.map_road_length, self.map_intersection_count, self.map_street_count = self.get_map_clutter()
 
+
+    @classmethod
+    def from_nodes(cls, graph, nodes, weightstring):
+        # Create instance without calling __init__
+        instance = cls.__new__(cls)
+        
+        # Set the attributes that would normally be set in __init__
+        instance.graph = graph
+        instance.nodes = nodes
+        instance.weightstring = weightstring
+        
+        # Set origin and destination from the nodes list
+        instance.origin_node = nodes[0]
+        instance.destination_node = nodes[-1]
+        
+        #
+        instance.graph = network_analysis.add_betweenness_centrality(instance.graph, origin=instance.origin_node, 
+                                                                    destination=instance.destination_node, weightstring="length")
+        
+
+
+        # Calculate edges and other attributes
+        instance.edges = list(nx.utils.pairwise(instance.nodes))
+        complexity_dict = instance.get_route_complexity(instance.graph, instance.edges)
+        instance.complexity = complexity_dict['sum']
+        instance.complexity_list = complexity_dict['complexity_list']
+        instance.turn_types = complexity_dict['turn_types']
+        instance.route_geometry = ox.routing.route_to_gdf(instance.graph, instance.nodes, weight=weightstring)["geometry"].unary_union
+        
+        # Set all the other attributes that would be set in __init__
+        instance.turn_count = sum('turn' in s.lower() for s in instance.turn_types)
+        instance.length = instance.get_edges_sum('length')
+        instance.turn_frequency = instance.turn_count/instance.length
+        instance.n_nodes = len(instance.nodes)
+        instance.sum_deviation_from_prototypical = instance.get_edges_sum('deviation_from_prototypical')
+        instance.sum_node_degree = instance.get_edges_sum('node_degree')
+        instance.sum_instruction_equivalent = instance.get_edges_sum('instruction_equivalent')
+        instance.avg_betweenness = instance.get_nodes_avg("node_betweenness")
+        instance.identifier = instance.generate_identifier()
+        instance.map_bbox = instance.get_map_bbox()
+        instance.map_road_length, instance.map_intersection_count, instance.map_street_count = instance.get_map_clutter()
+        
+        return instance
+        
+
+
+
     def get_route_subgraph(self, graph):
         """Creates a subgraph from the original graph containing only the route nodes and edges."""
         subgraph = graph.subgraph(self.nodes).copy()
@@ -48,11 +95,11 @@ class route:
     def get_map_clutter(self):
         undirected_G = ox.convert.to_undirected(self.graph)
         undirected_G = ox.truncate.truncate_graph_bbox(undirected_G,self.map_bbox)
-        
-        return sum(data["length"] for data in undirected_G.edges(data=True)), len(undirected_G.nodes()),len(undirected_G.edges())
-
-
-
+        length = sum(data[2]["length"] for data in undirected_G.edges(data=True))
+        intersection_count =len(undirected_G.nodes())
+        street_count = len(undirected_G.edges())
+                           
+        return length,intersection_count,street_count
 
     def generate_identifier(self):
         """Generates a unique identifier for the route (e.g., using SHA-256)."""
@@ -87,13 +134,37 @@ class route:
         self.map_bbox = bbox
     
     def get_map_bbox(self):
-        if self.map_bbox is not None:
-            return self.map_bbox
-        else:
-            bbox = mp.get_routegdf_bbox(self.graph,self.nodes,self.origin_node,self.destination_node)
-            self.map_bbox = bbox
-            return bbox
+        bbox = mp.get_routegdf_bbox(self.graph,self.nodes,self.origin_node,self.destination_node)
+        self.map_bbox = bbox
+        return bbox
 
+    def to_dict(self):
+        """
+        Returns a dictionary containing all attributes of the route.
+        """
+        attributes = {}
+        
+        # Get all attributes that don't start with underscore
+        for attr_name in dir(self):
+            # Skip methods and private attributes
+            if not attr_name.startswith('_') and not callable(getattr(self, attr_name)):
+                attributes[attr_name] = getattr(self, attr_name)
+        
+        # Handle special cases for geometry objects which might not be serializable
+        if 'route_geometry' in attributes:
+            # Convert to WKT (Well-Known Text) format if it's a geometry object
+            try:
+                from shapely.geometry import mapping
+                attributes['route_geometry'] = mapping(attributes['route_geometry'])
+            except (ImportError, AttributeError):
+                # If shapely isn't available or it's not a geometry object
+                attributes['route_geometry'] = str(attributes['route_geometry'])
+        
+        # Handle graph object which is likely not serializable
+        if 'graph' in attributes:
+            attributes['graph'] = "NetworkX graph object (not serialized)"
+        
+        return attributes
 
     @staticmethod
     def retrieve_simplest_path(G,origin,destination):

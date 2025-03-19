@@ -17,4 +17,5 @@ ohno/
 ohno.py
 *.html
 chromedriver
+experiment_routes/
 
