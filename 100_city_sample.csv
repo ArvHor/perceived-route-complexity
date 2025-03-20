@@ -1,92 +1,92 @@
-,country,city_name,region
-0,Nederland,Amsterdam,Europe
-1,United States,Atlanta,US/Canada
-2,United States,Baltimore,US/Canada
-3,ประเทศไทย,Bangkok,Asia/Oceania
-4,España,Barcelona,Europe
-5,中国,Beijing,Asia/Oceania
-6,Deutschland,Berlin,Europe
-7,Colombia,Bogota,Latin America
-8,United States,Boston,US/Canada
-9,Magyarország,Budapest,Europe
-10,Argentina,Buenos Aires,Latin America
-11,مصر,Cairo,Middle East/Africa
-12,South Africa,Cape Town,Middle East/Africa
-13,Venezuela,Caracas,Latin America
-14,Maroc ⵍⵎⵖⵔⵉⴱ المغرب,Casablanca,Middle East/Africa
-15,United States,Charlotte,US/Canada
-16,United States,Chicago,US/Canada
-17,United States,Cleveland,US/Canada
-18,Danmark,Copenhagen,Europe
-19,United States,Dallas,US/Canada
-20,United States,Damascus,US/Canada
-21,United States,Denver,US/Canada
-22,United States,Detroit,US/Canada
-23,الإمارات العربية المتحدة,Dubai,Middle East/Africa
-24,Éire / Ireland,Dublin,Europe
-25,United Kingdom,Glasgow,Europe
-26,Việt Nam,Hanoi,Asia/Oceania
-27,Cuba,Havana,Latin America
-28,Suomi / Finland,Helsinki,Europe
-29,中国,Hong Kong,Asia/Oceania
-30,United States,Houston,US/Canada
-31,Türkiye,Istanbul,Europe
-32,Indonesia,Jakarta,Asia/Oceania
-33,ישראל,Jerusalem,Middle East/Africa
-34,South Africa,Johannesburg,Middle East/Africa
-35,پاکستان,Karachi,Asia/Oceania
-36,Україна,Kiev,Europe
-37,日本,Kyoto,Asia/Oceania
-38,Nigeria,Lagos,Middle East/Africa
-39,United States,Las Vegas,US/Canada
-40,Perú,Lima,Latin America
-41,Portugal,Lisbon,Europe
-42,United Kingdom,London,Europe
-43,United States,Los Angeles,US/Canada
-44,España,Madrid,Europe
-45,United States,Manhattan,US/Canada
-46,Pilipinas,Manila,Asia/Oceania
-47,Australia,Melbourne,Asia/Oceania
-48,México,Mexico City,Latin America
-49,United States,Miami,US/Canada
-50,United States,Minneapolis,US/Canada
-51,Canada,Montreal,US/Canada
-52,Россия,Moscow,Europe
-53,India,Mumbai,Asia/Oceania
-54,Deutschland,Munich,Europe
-55,Kenya,Nairobi,Middle East/Africa
-56,India,New Delhi,Asia/Oceania
-57,United States,New Orleans,US/Canada
-58,United States,Orlando,US/Canada
-59,日本,Osaka,Asia/Oceania
-60,Norge,Oslo,Europe
-61,France,Paris,Europe
-62,United States,Philadelphia,US/Canada
-63,ព្រះរាជាណាចក្រ​កម្ពុជា,Phnom Penh,Asia/Oceania
-64,United States,Phoenix,US/Canada
-65,United States,Pittsburgh,US/Canada
-66,United States,Portland,US/Canada
-67,Česko,Prague,Europe
-68,조선민주주의인민공화국,Pyongyang,Asia/Oceania
-69,Brasil,Rio de Janeiro,Latin America
-70,Italia,Rome,Europe
-71,United States,San Francisco,US/Canada
-72,Brasil,Sao Paulo,Latin America
-73,Bosna i Hercegovina / Босна и Херцеговина,Sarajevo,Europe
-74,United States,Seattle,US/Canada
-75,대한민국,Seoul,Asia/Oceania
-76,中国,Shanghai,Asia/Oceania
-77,Singapore,Singapore,Asia/Oceania
-78,United States,St Louis,US/Canada
-79,Sverige,Stockholm,Europe
-80,Australia,Sydney,Asia/Oceania
-81,臺灣,Taipei,Asia/Oceania
-82,ایران,Tehran,Middle East/Africa
-83,日本,Tokyo,Asia/Oceania
-84,Canada,Toronto,US/Canada
-85,Монгол улс ᠮᠤᠩᠭᠤᠯ ᠤᠯᠤᠰ,Ulaanbaatar,Asia/Oceania
-86,Canada,Vancouver,US/Canada
-87,Italia,Venice,Europe
-88,Österreich,Vienna,Europe
-89,Polska,Warsaw,Europe
-90,United States,Washington,US/Canada
+,Unnamed: 0,country,city_name,region,latitude,longitude
+0,0,Nederland,Amsterdam,Europe,52.3730796,4.8924534
+1,1,United States,Atlanta,US/Canada,33.7489924,-84.3902644
+2,2,United States,Baltimore,US/Canada,39.2908816,-76.610759
+3,3,ประเทศไทย,Bangkok,Asia/Oceania,13.7524938,100.4935089
+4,4,España,Barcelona,Europe,41.3828939,2.1774322
+5,5,中国,Beijing,Asia/Oceania,40.190632,116.412144
+6,6,Deutschland,Berlin,Europe,52.510885,13.3989367
+7,7,Colombia,Bogota,Latin America,4.6533816,-74.0836333
+8,8,United States,Boston,US/Canada,42.3554334,-71.060511
+9,9,Magyarország,Budapest,Europe,47.4978789,19.0402383
+10,10,Argentina,Buenos Aires,Latin America,-34.6083696,-58.4440583
+11,11,مصر,Cairo,Middle East/Africa,30.0443879,31.2357257
+12,12,South Africa,Cape Town,Middle East/Africa,-33.9288301,18.4172197
+13,13,Venezuela,Caracas,Latin America,10.5060934,-66.9146008
+14,14,Maroc ⵍⵎⵖⵔⵉⴱ المغرب,Casablanca,Middle East/Africa,33.5738331,-7.6153131
+15,15,United States,Charlotte,US/Canada,35.2272086,-80.8430827
+16,16,United States,Chicago,US/Canada,41.8755616,-87.6244212
+17,17,United States,Cleveland,US/Canada,41.4996574,-81.6936772
+18,18,Danmark,Copenhagen,Europe,55.6867243,12.5700724
+19,19,United States,Dallas,US/Canada,32.7762719,-96.7968559
+20,20,United States,Damascus,US/Canada,39.2694715,-77.19689408347676
+21,21,United States,Denver,US/Canada,39.7392364,-104.984862
+22,22,United States,Detroit,US/Canada,42.3315509,-83.0466403
+23,23,الإمارات العربية المتحدة,Dubai,Middle East/Africa,25.2653471,55.2924914
+24,24,Éire / Ireland,Dublin,Europe,53.3493795,-6.2605593
+25,25,United Kingdom,Glasgow,Europe,55.861155,-4.2501687
+26,26,Việt Nam,Hanoi,Asia/Oceania,21.0283334,105.854041
+27,27,Cuba,Havana,Latin America,23.135305,-82.3589631
+28,28,Suomi / Finland,Helsinki,Europe,60.1674881,24.9427473
+29,29,中国,Hong Kong,Asia/Oceania,22.2793278,114.1628131
+30,30,United States,Houston,US/Canada,29.7589382,-95.3676974
+31,31,Türkiye,Istanbul,Europe,41.006381,28.9758715
+32,32,Indonesia,Jakarta,Asia/Oceania,-6.1754049,106.827168
+33,33,ישראל,Jerusalem,Middle East/Africa,31.7788242,35.2257626
+34,34,South Africa,Johannesburg,Middle East/Africa,-26.205,28.049722
+35,35,پاکستان,Karachi,Asia/Oceania,24.8546842,67.0207055
+36,36,Україна,Kiev,Europe,50.4500336,30.5241361
+37,37,日本,Kyoto,Asia/Oceania,35.0115754,135.7681441
+38,38,Nigeria,Lagos,Middle East/Africa,6.4550575,3.3941795
+39,39,United States,Las Vegas,US/Canada,36.1672719,-115.1483538
+40,40,Perú,Lima,Latin America,-12.0621065,-77.0365256
+41,41,Portugal,Lisbon,Europe,38.7077507,-9.1365919
+42,42,United Kingdom,London,Europe,51.5074456,-0.1277653
+43,43,United States,Los Angeles,US/Canada,34.0536909,-118.242766
+44,44,España,Madrid,Europe,40.4167047,-3.7035825
+45,45,United States,Manhattan,US/Canada,40.7896239,-73.9598939
+46,46,Pilipinas,Manila,Asia/Oceania,14.5904492,120.9803621
+47,47,Australia,Melbourne,Asia/Oceania,-37.8142454,144.9631732
+48,48,México,Mexico City,Latin America,19.3207722,-99.1514677512441
+49,49,United States,Miami,US/Canada,25.7741728,-80.19362
+50,50,United States,Minneapolis,US/Canada,44.9772995,-93.2654692
+51,51,Canada,Montreal,US/Canada,45.5031824,-73.5698065
+52,52,Россия,Moscow,Europe,55.7505412,37.6174782
+53,53,India,Mumbai,Asia/Oceania,19.054999,72.8692035
+54,54,Deutschland,Munich,Europe,48.1371079,11.5753822
+55,55,Kenya,Nairobi,Middle East/Africa,-1.3026148499999999,36.82884201813725
+56,56,India,New Delhi,Asia/Oceania,28.64308585,77.21926705734865
+57,57,United States,New Orleans,US/Canada,29.9759983,-90.0782127
+58,58,United States,Orlando,US/Canada,28.5421109,-81.3790304
+59,59,日本,Osaka,Asia/Oceania,34.6937569,135.5014539
+60,60,Norge,Oslo,Europe,59.9133301,10.7389701
+61,61,France,Paris,Europe,48.8534951,2.3483915
+62,62,United States,Philadelphia,US/Canada,39.9527237,-75.1635262
+63,63,ព្រះរាជាណាចក្រ​កម្ពុជា,Phnom Penh,Asia/Oceania,11.568271,104.9224426
+64,64,United States,Phoenix,US/Canada,33.4484367,-112.074141
+65,65,United States,Pittsburgh,US/Canada,40.4416941,-79.9900861
+66,66,United States,Portland,US/Canada,45.5202471,-122.674194
+67,67,Česko,Prague,Europe,50.0596288,14.446459273258009
+68,68,조선민주주의인민공화국,Pyongyang,Asia/Oceania,39.0167979,125.7473609
+69,69,Brasil,Rio de Janeiro,Latin America,-22.9110137,-43.2093727
+70,70,Italia,Rome,Europe,41.8933203,12.4829321
+71,71,United States,San Francisco,US/Canada,37.7792588,-122.4193286
+72,72,Brasil,Sao Paulo,Latin America,-23.5506507,-46.6333824
+73,73,Bosna i Hercegovina / Босна и Херцеговина,Sarajevo,Europe,43.8519774,18.3866868
+74,74,United States,Seattle,US/Canada,47.6038321,-122.330062
+75,75,대한민국,Seoul,Asia/Oceania,37.5666791,126.9782914
+76,76,中国,Shanghai,Asia/Oceania,31.2323437,121.4691024
+77,77,Singapore,Singapore,Asia/Oceania,1.357107,103.8194992
+78,78,United States,St Louis,US/Canada,38.6280278,-90.1910154
+79,79,Sverige,Stockholm,Europe,59.3251172,18.0710935
+80,80,Australia,Sydney,Asia/Oceania,-33.8698439,151.2082848
+81,81,臺灣,Taipei,Asia/Oceania,25.0375198,121.5636796
+82,82,ایران,Tehran,Middle East/Africa,35.6892523,51.3896004
+83,83,日本,Tokyo,Asia/Oceania,35.6768601,139.7638947
+84,84,Canada,Toronto,US/Canada,43.6534817,-79.3839347
+85,85,Монгол улс ᠮᠤᠩᠭᠤᠯ ᠤᠯᠤᠰ,Ulaanbaatar,Asia/Oceania,47.9184676,106.9177016
+86,86,Canada,Vancouver,US/Canada,49.2608724,-123.113952
+87,87,Italia,Venice,Europe,45.4371908,12.3345898
+88,88,Österreich,Vienna,Europe,48.2083537,16.3725042
+89,89,Polska,Warsaw,Europe,52.2337172,21.071432235636493
+90,90,United States,Washington,US/Canada,38.8950368,-77.0365427

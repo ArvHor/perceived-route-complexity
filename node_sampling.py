@@ -21,7 +21,7 @@ def get_train_station_coordinates(city):
     city: The name of the city.
 
   Returns:
-    A tuple containing the latitude and longitude of the train station as floats, 
+    A tuple containing the latitude and longitude of the train station as floats,
     or None if no train station is found.
   """
   geolocator = Nominatim(user_agent="train_station_finder")
@@ -99,44 +99,53 @@ def create_train_station_csv(origin_locations):
   new_locations.to_csv('./parameter_data/boeing_locations_with_stations.csv', index=False)
 
 
-def download_street_network_and_select_random_nodes(city_name,min_distance_km=3,sample_size=3):
+def download_street_network_and_select_random_nodes(city_name,city_point,min_distance_km,sample_size,random_seed):
   try:
     # Download the street network graph for the city
-    graph = ox.graph_from_place(city_name, network_type='drive')
-    
+    graph = ox.graph_from_point(city_point, dist=10000, network_type='drive')
+
+    # Check if the graph is smaller than the minimum size
+    if len(graph.nodes) < 100:
+        raise ValueError(f"Graph for {city_name} is too small ({len(graph.nodes)} nodes). Skipping.")
+
+
+
     # Get all the nodes in the graph
     nodes = list(graph.nodes)
-    
-    # Function to check if nodes are at least 4 kilometers apart
+    random.seed(4)
+    # Function to check if nodes are at least min_distance apart
     def nodes_far_enough(node_list, new_node, min_distance_km=min_distance_km):
       for node in node_list:
-        dist = geodesic((graph.nodes[node]['y'], graph.nodes[node]['x']), 
+        dist = geodesic((graph.nodes[node]['y'], graph.nodes[node]['x']),
                         (graph.nodes[new_node]['y'], graph.nodes[new_node]['x'])).km
         if dist < min_distance_km:
           return False
       return True
-    
-    # Select 3 random nodes that are at least 4 kilometers apart
+
+    # Select 3 random nodes that are at least min_distance apart
+    random.seed(random_seed)
     random_nodes = []
-    while len(random_nodes) < sample_size:
+    start_time = time.time()
+    while len(random_nodes) < sample_size and (time.time() - start_time)<60:
       candidate_node = random.choice(nodes)
       if nodes_far_enough(random_nodes, candidate_node):
         random_nodes.append(candidate_node)
-    
+
     print(f"Random nodes for {city_name} that are at least {min_distance_km} km apart: {random_nodes}")
     return graph, random_nodes
-  
+
   except Exception as e:
     print(f"An error occurred while processing {city_name}: {e}")
     return None
 
-def get_random_nodes_for_all_cities(origin_locations, min_distance_km=3, sample_size=3):
+def get_random_nodes_for_all_cities(origin_locations, min_distance_km, sample_size,random_seed):
   # Example usage
   samples = []
   for index, row in origin_locations.iterrows():
     city_name = row['city_name']
+    city_point = (row['latitude'],row['longitude'])
     try:
-      graph, random_nodes = download_street_network_and_select_random_nodes(city_name,min_distance_km=min_distance_km,sample_size=sample_size)
+      graph, random_nodes = download_street_network_and_select_random_nodes(city_name,city_point,min_distance_km=min_distance_km,sample_size=sample_size,random_seed=random_seed)
     except Exception as e:
       print(f"An error occurred while processing {city_name}: {e}")
       continue
@@ -150,7 +159,7 @@ def get_random_nodes_for_all_cities(origin_locations, min_distance_km=3, sample_
       node_samples = []
       for index, node in enumerate(random_nodes):
         print(f"Node: {node}")
-        
+
         node_lat = graph.nodes[node]['y']
         node_lon = graph.nodes[node]['x']
         node_latlon = (node_lat, node_lon)
@@ -169,7 +178,7 @@ def get_random_nodes_for_all_cities(origin_locations, min_distance_km=3, sample_
       samples.append(location)
     # Save the random nodes DataFrame to a new CSV file
   node_samples_df = pd.DataFrame(samples)
-  return node_samples_df 
+  return node_samples_df
 
 
 def get_coord_info(lat, lon, max_retries=3, retry_delay=2):
@@ -183,7 +192,7 @@ def get_coord_info(lat, lon, max_retries=3, retry_delay=2):
         retry_delay: Delay (in seconds) between retries.
 
     Returns:
-        A dictionary containing the city, region, country, and full address in English, 
+        A dictionary containing the city, region, country, and full address in English,
         or None if the request fails after multiple retries.
     """
 
@@ -195,14 +204,14 @@ def get_coord_info(lat, lon, max_retries=3, retry_delay=2):
             address = location.raw.get('address', {})
 
             # Get city, considering alternatives if 'city' is missing
-            city = address.get('city', 
-                               address.get('town', 
-                                           address.get('village', 
+            city = address.get('city',
+                               address.get('town',
+                                           address.get('village',
                                                        address.get('hamlet', ''))))
 
             # Get the region (state, county, or other administrative division)
-            region = address.get('state', 
-                                 address.get('county', 
+            region = address.get('state',
+                                 address.get('county',
                                              address.get('region', '')))
 
             country = address.get('country', '')

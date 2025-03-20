@@ -18,7 +18,7 @@ class origin_graph:
                   edge_attr_diff: Optional[str] = None,network_type: Optional[str] = 'drive',
                   simplify: Optional[bool] = False,remove_parallel: Optional[bool] = False):
         
-        
+        logging.info(f"Creating graph with ")
         self.origin_point = origin_point
         self.city_name = city_name
         self.distance_from_point = distance_from_point
@@ -47,6 +47,9 @@ class origin_graph:
         self.graph.graph['bbox_coords'] = self.bbox_coords
         self.graph.graph['edge_weights'] = self.edge_weights
         self.graph.graph['node_attributes'] = self.node_attributes
+        logging.info(f"Created graph for city: {city_name}, start_node: {self.start_node}")
+
+        
 
 
     @classmethod
