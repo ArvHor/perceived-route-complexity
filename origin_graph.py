@@ -47,7 +47,7 @@ class origin_graph:
         self.graph.graph['bbox_coords'] = self.bbox_coords
         self.graph.graph['edge_weights'] = self.edge_weights
         self.graph.graph['node_attributes'] = self.node_attributes
-
+        logging.info(f"Created graph for city: {city_name}, start_node: {self.start_node}")
 
     @classmethod
     def from_graphml(cls, graphml_path: str):

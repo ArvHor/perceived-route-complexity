@@ -30,15 +30,9 @@ def simplest_path_from_source(G, start_node):
         else:
             G.edges[(u, v, 0)]['decision_complexity'] = float('inf')
         
-    # Initialize a counter for the number of edges left
-    n_left = len(G.edges())
-    
+
     # While there are edges in the set E that are not in the set S
     while E.difference(S):
-        
-        n_left -= 1
-        if n_left % 1000 == 0:
-            print(f'{n_left} edges left')
 
         # Find the edge with the smallest weight that is not in the set S as min_edge
         min_edge = min(E.difference(S), key=lambda e: G.edges[e[0],e[1],0]['decision_complexity'])
