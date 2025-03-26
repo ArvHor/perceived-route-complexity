@@ -18,7 +18,7 @@ class origin_graph:
                   edge_attr_diff: Optional[str] = None,network_type: Optional[str] = 'drive',
                   simplify: Optional[bool] = False,remove_parallel: Optional[bool] = False):
         
-        
+        logging.info(f"Beginning creation of graph: {city_name} origin point {origin_point}")
         self.origin_point = origin_point
         self.city_name = city_name
         self.distance_from_point = distance_from_point
@@ -220,7 +220,7 @@ class origin_graph:
     
     def add_simplest_paths_from_origin(self):
         if "decision_complexity" in self.edge_weights:
-            print("Simplest path already calculated")
+            logging.info(f"Simplest paths from origin already added {self.city_name}")
             return
         else:
             self.graph = wa.simplest_path_from_source(G=self.graph,start_node=self.start_node)
@@ -234,7 +234,7 @@ class origin_graph:
 
         if  "deviation_from_prototypical" in weightstrings:
             if "deviation_from_prototypical" in self.edge_weights:
-                print("Deviation from prototypical already calculated")
+                logging.info(f"Deviation from prototypical already calculated in {self.city_name}")
             else:
                 self.graph, self.max_deviation_from_prototypical = wa.add_deviation_from_prototypical_weights(G=self.graph)
                 self.edge_weights.append("deviation_from_prototypical")
@@ -249,14 +249,12 @@ class origin_graph:
 
         self.graph.graph['edge_weights'] = self.edge_weights
 
-    def save_graph(self, filepath=None):
-        if filepath is not None:
-            self.graph_path = filepath
+    def save_graph(self, filepath):
         try:
-            self.graph.graph["graph_path"] = self.graph_path
-            ox.save_graphml(self.graph, self.graph_path)
+            ox.save_graphml(self.graph, filepath)
+            logging.info(f"Successfully saved to {filepath}")
         except Exception as e:
-            print(f"Error saving graph: {e}")
+            logging.info(f"error {e} saving to {filepath}")
 
     def add_node_elevation(self,api_key=None):
         self.graph = ox.elevation.add_node_elevations_google(self.graph, api_key=api_key,pause=0.1)

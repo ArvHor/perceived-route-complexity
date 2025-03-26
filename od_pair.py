@@ -110,7 +110,7 @@ class od_pair:
             self.subgraph = subgraph
         else:
             subgraph = self.subgraph
-        logging.info(f"Number of edges in the subgraph: {subgraph.number_of_edges()}")
+        #logging.info(f"Number of edges in the subgraph: {subgraph.number_of_edges()}")
         return subgraph
     
     def get_environment_bearing_dist(self):
