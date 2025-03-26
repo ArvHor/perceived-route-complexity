@@ -68,7 +68,6 @@ class origin_graph:
             'origin_point': tuple,  # e.g., (lat, lon)
             'distance_from_point': float,
             'network_type': str,
-            'graph_path': str,
             'simplify': bool,
             'remove_parallel': bool,
             'city_name': str,
