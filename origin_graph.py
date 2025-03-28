@@ -346,12 +346,16 @@ class origin_graph:
 
         
     def create_od_pairs(self,min_radius=3000,max_radius=3500,sample_size=144):
-        destinations = self.find_destinations(min_radius=min_radius,max_radius=max_radius,sample=sample_size)
-        od_pairs = []
-        for destination in destinations:
-            od_p = od_pair(G=self.graph,origin=self.start_node,destination=destination)
-            od_pairs.append(od_p)
-        self.od_pairs = od_pairs
+        try:
+            destinations = self.find_destinations(min_radius=min_radius,max_radius=max_radius,sample=sample_size)
+            od_pairs = []
+            logging.info(f"Creating {len(destinations)} od_pairs in city {self.city_name}")
+            for destination in destinations:
+                od_p = od_pair(G=self.graph,origin=self.start_node,destination=destination)
+                od_pairs.append(od_p)
+            self.od_pairs = od_pairs
+        except Exception as e:
+            logging.info(f"Error creating od_pairs for {self.city_name}: {e}")
 
     def get_od_pair_data(self):
         od_pair_data = []
