@@ -105,7 +105,7 @@ class origin_graph:
                 raise TypeError(f"Attribute {attr} should be {expected_type}, got {type(value)}")
                 
             setattr(instance, attr, value)
-        
+        logging.info(f"loaded graph for city: {instance.city_name}, start_node: {instance.start_node}")
         return instance
 
         
@@ -222,10 +222,13 @@ class origin_graph:
             logging.info(f"Simplest paths from origin already added {self.city_name}")
             return
         else:
-            self.graph = wa.simplest_path_from_source(G=self.graph,start_node=self.start_node)
-            self.remove_infinite_edges()
-            self.edge_weights.append("decision_complexity")
-            self.graph.graph['edge_weights'] = self.edge_weights
+            try:
+                self.graph = wa.simplest_path_from_source(G=self.graph,start_node=self.start_node)
+                self.remove_infinite_edges()
+                self.edge_weights.append("decision_complexity")
+                self.graph.graph['edge_weights'] = self.edge_weights
+            except Exception as e:
+                logging.info(f"Error finding simplest paths for {self.city_name}: {e}")
 
 
     def add_weights(self,weightstrings:List[str]):

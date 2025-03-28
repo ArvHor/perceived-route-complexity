@@ -11,7 +11,7 @@ logging.basicConfig(
 )
 
 def simplest_path_from_source(G, start_node):
-
+    logging.info(f"Finding simplest paths in {G.graph['city_name']}")
     # Define the set of edges of all edges E and the empty set of edges S
     S = set()
     E = set(G.edges(keys=False))
@@ -30,10 +30,14 @@ def simplest_path_from_source(G, start_node):
         else:
             G.edges[(u, v, 0)]['decision_complexity'] = float('inf')
         
-
+    n_left = len(G.edges())
+    n_total = len(G.edges())
     # While there are edges in the set E that are not in the set S
     while E.difference(S):
-
+        n_left -= 1
+        if n_left % 1000 == 0:
+            percentage_left = (n_left / n_total) * 100
+            logging.info(f"percent left {percentage_left} in {G.graph['city_name']}")
         # Find the edge with the smallest weight that is not in the set S as min_edge
         min_edge = min(E.difference(S), key=lambda e: G.edges[e[0],e[1],0]['decision_complexity'])
 
@@ -42,18 +46,19 @@ def simplest_path_from_source(G, start_node):
 
         # Find all edges that go out from the destination node of min_edge and are not in the set S
         out_edges = [e for e in G.out_edges(min_edge[1]) if e not in S]
-        logging.info(f'edges in S: {len(S)}, min edge: {min_edge}, out edges: {out_edges}')
+        #logging.info(f'edges in S: {len(S)}, min edge: {min_edge}, out edges: {out_edges}')
         # For every edge in out_edges
+       
         for out_edge in out_edges:
             u, v = min_edge
             _, w = out_edge
-
+            
             # If the edge pair (min_edge, out_edge) is in E_pairs
             if ((u, v), (v, w)) in E_pairs:
 
                 # Calculate the decision complexity of the edge pair (min_edge, out_edge)
                 decision_complexity, turn_type = calculate_decisionpoint_complexity(G, (u, v), (v, w))
-                logging.info(f'calculating decision complexity for edge pair {(u, v), (v, w)}: {decision_complexity}, {turn_type}')
+                #logging.info(f'calculating decision complexity for edge pair {(u, v), (v, w)}: {decision_complexity}, {turn_type}')
                 # Compare the new decision complexity of the edge pair (min_edge, out_edge) with the existing decision complexity of the edge_pair
                 old_complexity = G.edges[(v, w, 0)]['decision_complexity']
                 new_complexity = G.edges[(u, v, 0)]['decision_complexity'] + decision_complexity
@@ -61,6 +66,8 @@ def simplest_path_from_source(G, start_node):
                 if new_complexity < old_complexity:
                     G.edges[(v, w, 0)]['turn_complexity'] = turn_type
                     G.edges[(v, w, 0)]['decision_complexity'] = new_complexity
+                    
+    logging.info(f"Finished with simplest paths in {G.graph['city_name']} node {G.graph['start_node']}")
     return G
 
 
