@@ -18,7 +18,7 @@ class origin_graph:
                   edge_attr_diff: Optional[str] = None,network_type: Optional[str] = 'drive',
                   simplify: Optional[bool] = False,remove_parallel: Optional[bool] = False):
         
-        logging.info(f"Creating graph with ")
+        
         self.origin_point = origin_point
         self.city_name = city_name
         self.distance_from_point = distance_from_point
@@ -48,9 +48,6 @@ class origin_graph:
         self.graph.graph['edge_weights'] = self.edge_weights
         self.graph.graph['node_attributes'] = self.node_attributes
         logging.info(f"Created graph for city: {city_name}, start_node: {self.start_node}")
-
-        
-
 
     @classmethod
     def from_graphml(cls, graphml_path: str):
@@ -109,7 +106,7 @@ class origin_graph:
                 raise TypeError(f"Attribute {attr} should be {expected_type}, got {type(value)}")
                 
             setattr(instance, attr, value)
-        
+        logging.info(f"loaded graph for city: {instance.city_name}, start_node: {instance.start_node}")
         return instance
 
         
@@ -223,13 +220,16 @@ class origin_graph:
     
     def add_simplest_paths_from_origin(self):
         if "decision_complexity" in self.edge_weights:
-            print("Simplest path already calculated")
+            logging.info(f"Simplest paths from origin already added {self.city_name}")
             return
         else:
-            self.graph = wa.simplest_path_from_source(G=self.graph,start_node=self.start_node)
-            self.remove_infinite_edges()
-            self.edge_weights.append("decision_complexity")
-            self.graph.graph['edge_weights'] = self.edge_weights
+            try:
+                self.graph = wa.simplest_path_from_source(G=self.graph,start_node=self.start_node)
+                self.remove_infinite_edges()
+                self.edge_weights.append("decision_complexity")
+                self.graph.graph['edge_weights'] = self.edge_weights
+            except Exception as e:
+                logging.info(f"Error finding simplest paths for {self.city_name}: {e}")
 
 
     def add_weights(self,weightstrings:List[str]):
@@ -237,7 +237,7 @@ class origin_graph:
 
         if  "deviation_from_prototypical" in weightstrings:
             if "deviation_from_prototypical" in self.edge_weights:
-                print("Deviation from prototypical already calculated")
+                logging.info(f"Deviation from prototypical already calculated in {self.city_name}")
             else:
                 self.graph, self.max_deviation_from_prototypical = wa.add_deviation_from_prototypical_weights(G=self.graph)
                 self.edge_weights.append("deviation_from_prototypical")
@@ -252,14 +252,12 @@ class origin_graph:
 
         self.graph.graph['edge_weights'] = self.edge_weights
 
-    def save_graph(self, filepath=None):
-        if filepath is not None:
-            self.graph_path = filepath
+    def save_graph(self, filepath):
         try:
-            self.graph.graph["graph_path"] = self.graph_path
-            ox.save_graphml(self.graph, self.graph_path)
+            ox.save_graphml(self.graph, filepath)
+            logging.info(f"Successfully saved to {filepath}")
         except Exception as e:
-            print(f"Error saving graph: {e}")
+            logging.info(f"error {e} saving to {filepath}")
 
     def add_node_elevation(self,api_key=None):
         self.graph = ox.elevation.add_node_elevations_google(self.graph, api_key=api_key,pause=0.1)
@@ -349,21 +347,29 @@ class origin_graph:
 
         
     def create_od_pairs(self,min_radius=3000,max_radius=3500,sample_size=144):
-        destinations = self.find_destinations(min_radius=min_radius,max_radius=max_radius,sample=sample_size)
-        od_pairs = []
-        for destination in destinations:
-            od_p = od_pair(G=self.graph,origin=self.start_node,destination=destination)
-            od_pairs.append(od_p)
-        self.od_pairs = od_pairs
+        try:
+            destinations = self.find_destinations(min_radius=min_radius,max_radius=max_radius,sample=sample_size)
+            od_pairs = []
+            logging.info(f"Creating {len(destinations)} od_pairs in city {self.city_name}")
+            for destination in destinations:
+                od_p = od_pair(G=self.graph,origin=self.start_node,destination=destination)
+                od_pairs.append(od_p)
+            self.od_pairs = od_pairs
+        except Exception as e:
+            logging.info(f"Error creating od_pairs for {self.city_name}: {e}")
 
     def get_od_pair_data(self):
-        od_pair_data = []
-        for od_pair in self.od_pairs:
-            od_pair_dict = od_pair.get_comparison_dict()
-            od_pair_dict["graph_path"] = self.graph_path
-            od_pair_data.append(od_pair.get_comparison_dict())
-        od_pair_data = pd.DataFrame(od_pair_data)
-        return od_pair_data
+        try:
+            od_pair_data = []
+            for od_pair in self.od_pairs:
+                od_pair_dict = od_pair.get_comparison_dict()
+                od_pair_dict["graph_path"] = self.graph_path
+                od_pair_data.append(od_pair.get_comparison_dict())
+            od_pair_data = pd.DataFrame(od_pair_data)
+            logging.info(f"Successfully retrieved comparison dict for{self.city_name}: {e}")
+            return od_pair_data
+        except Exception as e:
+            logging.info(f"Error creating comparison dict for {self.city_name}: {e}")
     
     def ensure_data_types(self):
         for u,v, data in self.graph.edges(data=True):
