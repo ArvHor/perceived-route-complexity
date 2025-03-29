@@ -358,13 +358,17 @@ class origin_graph:
             logging.info(f"Error creating od_pairs for {self.city_name}: {e}")
 
     def get_od_pair_data(self):
-        od_pair_data = []
-        for od_pair in self.od_pairs:
-            od_pair_dict = od_pair.get_comparison_dict()
-            od_pair_dict["graph_path"] = self.graph_path
-            od_pair_data.append(od_pair.get_comparison_dict())
-        od_pair_data = pd.DataFrame(od_pair_data)
-        return od_pair_data
+        try:
+            od_pair_data = []
+            for od_pair in self.od_pairs:
+                od_pair_dict = od_pair.get_comparison_dict()
+                od_pair_dict["graph_path"] = self.graph_path
+                od_pair_data.append(od_pair.get_comparison_dict())
+            od_pair_data = pd.DataFrame(od_pair_data)
+            logging.info(f"Successfully retrieved comparison dict for{self.city_name}: {e}")
+            return od_pair_data
+        except Exception as e:
+            logging.info(f"Error creating comparison dict for {self.city_name}: {e}")
     
     def ensure_data_types(self):
         for u,v, data in self.graph.edges(data=True):

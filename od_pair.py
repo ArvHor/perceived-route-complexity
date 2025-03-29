@@ -233,11 +233,11 @@ class od_pair:
             "city_name": self.graph.graph['city_name'],
             'origin_node': self.origin_node,
             "origin_point": self.origin_point,
-            'origin_elevation': self.elevation_origin,
+            #'origin_elevation': self.elevation_origin,
             'destination_node': self.destination_node,
             "destination_point": self.destination_point,
-            'destination_elevation': self.elevation_destination,
-            'elevation_difference': self.elevation_difference,
+            #'destination_elevation': self.elevation_destination,
+            #'elevation_difference': self.elevation_difference,
             'od_distance': self.od_distance,
 
             # Shortest path values
@@ -353,11 +353,11 @@ class od_pair:
             "city_name": self.graph.graph['city_name'],
             'origin_node': self.origin_node,
             "origin_point": self.origin_point,
-            'origin_elevation': self.elevation_origin,
+           # 'origin_elevation': self.elevation_origin,
             'destination_node': self.destination_node,
             "destination_point": self.destination_point,
-            'destination_elevation': self.elevation_destination,
-            'elevation_difference': self.elevation_difference,
+           # 'destination_elevation': self.elevation_destination,
+           # 'elevation_difference': self.elevation_difference,
             'od_distance': self.od_distance,
 
             # Path values
