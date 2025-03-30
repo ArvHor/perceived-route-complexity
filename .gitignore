@@ -1,7 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 .ipynb_checkpoints
-2025-03-A/
 cache/
 =3.0.1
 local_*/

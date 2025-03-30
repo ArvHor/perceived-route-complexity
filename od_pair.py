@@ -29,9 +29,30 @@ class od_pair:
         self.simplest_path = route(self.graph,origin=self.origin_node,destination=self.destination_node,weighstring='decision_complexity')
         
         self.shape_dict = geo_utilities.get_od_pair_polygon(self.origin_point, self.destination_point)
-        self.polygon = self.shape_dict["polygon"]
-        self.bbox = self.shape_dict["bbox"]
+        self.polygon = self.shape_dict["polygon"] # Square origin and destination as the diagonal of a square
+        self.bbox = self.shape_dict["bbox"] #  Bounding box as `(left, bottom, right, top)`.
         self.bbox_polygon = self.shape_dict["bbox_polygon"]
+
+
+        self.subgraph = self.get_subgraph()
+
+        self.area = geo_utilities.calculate_area_with_utm(self.polygon)
+        self.subgraph_stats = ox.stats.basic_stats(self.subgraph, area=self.area)
+
+
+        self.env_bearing_distribution_weighted, _ = ox.bearing._bearings_distribution(G=self.subgraph, num_bins=36,min_length=10, weight="length")
+        self.env_bearing_distribution, _ = ox.bearing._bearings_distribution(G=self.subgraph, num_bins=36, min_length=10,weight=None)
+
+        self.route_direction_bearing_dist = self.get_route_direction_bearing_dist()
+
+        self.environment_orientation_entropy_weighted = ox.bearing.orientation_entropy(self.subgraph, num_bins=36, weight="length")
+        self.environment_orientation_entropy = ox.bearing.orientation_entropy(self.subgraph, num_bins=36)
+
+
+
+
+        self.order_weighted = self.get_environment_orientation_order(self.environment_orientation_entropy_weighted)
+        self.order = self.get_environment_orientation_order(self.environment_orientation_entropy)
 
 
         self.length_diff = self.simplest_path.length - self.shortest_path.length
@@ -100,36 +121,23 @@ class od_pair:
 
         return instance
 
-
-
-    def od_pair_polygon_subgraph(self):
-        if self.subgraph is None:
+    def get_subgraph(self):
+        try:
             subgraph = ox.truncate.truncate_graph_polygon(G=self.graph, polygon=self.polygon, truncate_by_edge=True)
-            self.area = geo_utilities.calculate_area_with_utm(self.polygon)
-            self.subgraph_stats = ox.stats.basic_stats(subgraph, area=self.area)
-            self.subgraph = subgraph
-        else:
-            subgraph = self.subgraph
-        #logging.info(f"Number of edges in the subgraph: {subgraph.number_of_edges()}")
-        return subgraph
-    
-    def get_environment_bearing_dist(self):
-        od_pair_polygon_g = self.od_pair_polygon_subgraph()
-        od_pair_polygon_g = ox.convert.to_undirected(od_pair_polygon_g)
-        od_pair_polygon_g = ox.bearing.add_edge_bearings(od_pair_polygon_g)
+            return subgraph
+        except Exception as e:
+            logging.error(f"Error truncating graph: {e}, polygon: {self.polygon}")
+            return None
 
-        env_bearing_distribution_weighted,_ = ox.bearing._bearings_distribution(G=od_pair_polygon_g,num_bins=36,min_length=10,weight="length")
-        env_bearing_distribution,_ = ox.bearing._bearings_distribution(G=od_pair_polygon_g,num_bins=36,min_length=10,weight=None)
-        if self.environment_orientation_entropy is None:
-            self.od_pair_polygon_ug = od_pair_polygon_g
-            self.environment_orientation_entropy_weighted = ox.bearing.orientation_entropy(od_pair_polygon_g,num_bins=36,weight="length",min_length=10)
-            self.environment_orientation_entropy = ox.bearing.orientation_entropy(od_pair_polygon_g,num_bins=36,min_length=10)
-        
-        
-        return env_bearing_distribution, env_bearing_distribution_weighted
+    def get_environment_orientation_order(self,env_entropy,num_bins=36):
+        max_nats = math.log(num_bins)
+        min_nats = math.log(4)
+        orientation_order = 1 - ((env_entropy - min_nats) / (max_nats - min_nats))**2
+        return orientation_order
+
     
     def create_orientation_plot(self,filepath):
-        fig,ax = ox.plot_orientation(self.od_pair_polygon_g,filepath=filepath,weight="length",min_length=10,save=True,show=False)
+        fig,ax = ox.plot_orientation(self.subgraph,filepath=filepath,weight="length",min_length=10,save=True,show=False)
 
         r_dist = self.get_route_direction_bearing_dist()
 
@@ -194,18 +202,11 @@ class od_pair:
 
         return bin_counts
 
-    def get_environment_orientation_order(self,env_entropy,num_bins=36):
-        max_nats = math.log(num_bins)
-        min_nats = math.log(4)
-        orientation_order = 1 - ((env_entropy - min_nats) / (max_nats - min_nats))**2
-        return orientation_order
-    
-
-
     
     def get_comparison_dict(self):
-        env_dist, env_dist_weighted = self.get_environment_bearing_dist()
-        route_dist = self.get_route_direction_bearing_dist()
+        env_dist = self.environment_bearing_dist
+        route_dist = self.route_direction_bearing_dist
+        env_dist_weighted = self.environment_orientation_entropy_weighted
 
         # basic cross-correlation
         lag, max_correlation = alignment.get_crosscorrelation_alignment(route_dist, env_dist_weighted)
@@ -297,7 +298,7 @@ class od_pair:
             # Street orientation values
             "orientation_entropy": self.environment_orientation_entropy,
             "orientation_entropy_weighted": self.environment_orientation_entropy_weighted,
-            "environment_orientation_order": self.get_environment_orientation_order(self.environment_orientation_entropy),
+            "environment_orientation_order_order": self.order_weighted,
             "route_bearings_distribution": route_dist.tolist(),
             "route_bearings": [str(self.shape_dict["fwd_bearing"]), str(self.shape_dict["bwd_bearing"])],
             "environment_bearings_distribution": env_dist.tolist(),
