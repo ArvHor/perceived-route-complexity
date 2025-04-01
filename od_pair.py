@@ -8,7 +8,7 @@ import logging
 import hashlib
 import alignment as alignment
 import network_analysis
-
+from shapely import LineString
 from matplotlib.projections.polar import PolarAxes
 
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s',filename='app.log', filemode='w')
@@ -35,18 +35,18 @@ class od_pair:
 
 
         self.subgraph = self.get_subgraph()
-
+        self.undirected_subgraph = ox.convert.to_undirected(self.subgraph)
         self.area = geo_utilities.calculate_area_with_utm(self.polygon)
         self.subgraph_stats = ox.stats.basic_stats(self.subgraph, area=self.area)
 
 
-        self.env_bearing_distribution_weighted, _ = ox.bearing._bearings_distribution(G=self.subgraph, num_bins=36,min_length=10, weight="length")
-        self.env_bearing_distribution, _ = ox.bearing._bearings_distribution(G=self.subgraph, num_bins=36, min_length=10,weight=None)
+        self.env_bearing_dist_weighted, _ = ox.bearing._bearings_distribution(G=self.undirected_subgraph , num_bins=36,min_length=10, weight="length")
+        self.env_bearing_dist, _ = ox.bearing._bearings_distribution(G=self.undirected_subgraph , num_bins=36, min_length=10,weight=None)
 
         self.route_direction_bearing_dist = self.get_route_direction_bearing_dist()
 
-        self.environment_orientation_entropy_weighted = ox.bearing.orientation_entropy(self.subgraph, num_bins=36, weight="length")
-        self.environment_orientation_entropy = ox.bearing.orientation_entropy(self.subgraph, num_bins=36)
+        self.environment_orientation_entropy_weighted = ox.bearing.orientation_entropy(self.undirected_subgraph , num_bins=36, weight="length")
+        self.environment_orientation_entropy = ox.bearing.orientation_entropy(self.undirected_subgraph , num_bins=36)
 
 
 
@@ -204,9 +204,9 @@ class od_pair:
 
     
     def get_comparison_dict(self):
-        env_dist = self.environment_bearing_dist
+        env_dist = self.env_bearing_dist
         route_dist = self.route_direction_bearing_dist
-        env_dist_weighted = self.environment_orientation_entropy_weighted
+        env_dist_weighted = self.env_bearing_dist_weighted
 
         # basic cross-correlation
         lag, max_correlation = alignment.get_crosscorrelation_alignment(route_dist, env_dist_weighted)
@@ -276,6 +276,9 @@ class od_pair:
             "simplest_path_node_degree": self.simplest_path.sum_node_degree,
             "simplest_path_geometry": self.simplest_path.route_geometry,
 
+            # Difference values
+            "shortest_simplest_hausdorff_distance": hausdorff_distance(self.shortest_path.route_geometry,self.simplest_path.route_geometry),
+            
             # Simplest path MAP values
             'simplest_path_map_intersection_count': self.simplest_path.map_intersection_count,
             'simplest_path_map_street_count': self.simplest_path.map_street_count,

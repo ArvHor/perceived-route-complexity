@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -A HPC2n2025-083
 #SBATCH -n 1
-#SBATCH -n 28
+#SBATCH -n 64
 #SBATCH --time=24:00:00
 
 export DATA_PATH="/proj/nobackup/streetnetwork-alignment/"

@@ -28,6 +28,7 @@ class route:
             self.turn_types = complexity_dict['turn_types']
             self.route_geometry = ox.routing.route_to_gdf(self.graph, self.nodes, weight=weighstring)["geometry"].unary_union
 
+
         self.turn_count = sum('turn' in s.lower() for s in self.turn_types)
         self.length = self.get_edges_sum('length')
         self.turn_frequency = self.turn_count/self.length
@@ -85,8 +86,7 @@ class route:
         return instance
         
 
-
-
+        
     def get_route_subgraph(self, graph):
         """Creates a subgraph from the original graph containing only the route nodes and edges."""
         subgraph = graph.subgraph(self.nodes).copy()

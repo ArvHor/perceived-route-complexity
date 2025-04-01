@@ -62,13 +62,12 @@ class origin_graph:
         instance = cls.__new__(cls)
         instance.graph = ox.load_graphml(graphml_path, edge_dtypes=edge_data_types)
         instance.graph_path = graphml_path
-        
+        instance.graph.graph["graph_path"] = graphml_path
         # Define attributes with their expected types
         attr_types = {
             'origin_point': tuple,  # e.g., (lat, lon)
             'distance_from_point': float,
             'network_type': str,
-            'graph_path': str,
             'simplify': bool,
             'remove_parallel': bool,
             'city_name': str,
@@ -224,7 +223,8 @@ class origin_graph:
             return
         else:
             try:
-                self.graph = wa.simplest_path_from_source(G=self.graph,start_node=self.start_node)
+                self.graph = self.remove_parallel_edges()
+                self.graph = wa.simplest_path_from_source_heapq(G=self.graph,start_node=self.start_node)
                 self.remove_infinite_edges()
                 self.edge_weights.append("decision_complexity")
                 self.graph.graph['edge_weights'] = self.edge_weights

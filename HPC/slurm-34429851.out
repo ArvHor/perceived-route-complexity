@@ -1,0 +1,74 @@
+[I 2025-03-30 12:05:44.241 ServerApp] jupyter_lsp | extension was successfully linked.
+[I 2025-03-30 12:05:44.263 ServerApp] jupyter_server_terminals | extension was successfully linked.
+[I 2025-03-30 12:05:44.292 ServerApp] jupyterlab | extension was successfully linked.
+[I 2025-03-30 12:05:46.017 ServerApp] notebook_shim | extension was successfully linked.
+[I 2025-03-30 12:05:46.117 ServerApp] notebook_shim | extension was successfully loaded.
+[I 2025-03-30 12:05:46.121 ServerApp] jupyter_lsp | extension was successfully loaded.
+[I 2025-03-30 12:05:46.129 ServerApp] jupyter_server_terminals | extension was successfully loaded.
+[I 2025-03-30 12:05:46.133 LabApp] JupyterLab extension loaded from /hpc2n/eb/software/JupyterLab/4.2.0-GCCcore-13.2.0/lib/python3.11/site-packages/jupyterlab
+[I 2025-03-30 12:05:46.133 LabApp] JupyterLab application directory is /cvmfs/ebsw.hpc2n.umu.se/amd64_ubuntu2004_skx/software/JupyterLab/4.2.0-GCCcore-13.2.0/share/jupyter/lab
+[I 2025-03-30 12:05:46.134 LabApp] Extension Manager is 'pypi'.
+[I 2025-03-30 12:05:46.147 ServerApp] jupyterlab | extension was successfully loaded.
+[I 2025-03-30 12:05:46.148 ServerApp] Serving notebooks from local directory: /pfs/stor10/users/home/a/arvidh/Documents/perceived-route-complexity/HPC
+[I 2025-03-30 12:05:46.148 ServerApp] Jupyter Server 2.14.0 is running at:
+[I 2025-03-30 12:05:46.148 ServerApp] http://b-cn1423.hpc2n.umu.se:8888/lab?token=8c4fdc87c04aed2075940fc1b4ab61a10d54259a1afad787
+[I 2025-03-30 12:05:46.148 ServerApp]     http://127.0.0.1:8888/lab?token=8c4fdc87c04aed2075940fc1b4ab61a10d54259a1afad787
+[I 2025-03-30 12:05:46.148 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 2025-03-30 12:05:46.197 ServerApp] 
+    
+    To access the server, open this file in a browser:
+        file:///pfs/stor10/users/home/a/arvidh/.local/share/jupyter/runtime/jpserver-530678-open.html
+    Or copy and paste one of these URLs:
+        http://b-cn1423.hpc2n.umu.se:8888/lab?token=8c4fdc87c04aed2075940fc1b4ab61a10d54259a1afad787
+        http://127.0.0.1:8888/lab?token=8c4fdc87c04aed2075940fc1b4ab61a10d54259a1afad787
+[I 2025-03-30 12:05:46.326 ServerApp] Skipped non-installed server(s): bash-language-server, dockerfile-language-server-nodejs, javascript-typescript-langserver, jedi-language-server, julia-language-server, pyright, python-language-server, python-lsp-server, r-languageserver, sql-language-server, texlab, typescript-language-server, unified-language-server, vscode-css-languageserver-bin, vscode-html-languageserver-bin, vscode-json-languageserver-bin, yaml-language-server
+[W 2025-03-30 12:06:12.698 LabApp] Could not determine jupyterlab build status without nodejs
+[W 2025-03-30 12:06:13.281 ServerApp] 404 GET /api/contents/perceived-route-complexity?content=0&hash=0&1743329173278 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.71ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.281 ServerApp] 404 GET /api/contents/perceived-route-complexity?content=0&hash=0&1743329173278 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity
+[W 2025-03-30 12:06:13.284 ServerApp] 404 GET /api/contents/perceived-route-complexity/route.py?content=0&hash=0&1743329173279 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.27ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.284 ServerApp] 404 GET /api/contents/perceived-route-complexity/route.py?content=0&hash=0&1743329173279 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/route.py
+[W 2025-03-30 12:06:13.285 ServerApp] 404 GET /api/contents/perceived-route-complexity/full_analysis.ipynb?content=0&hash=0&1743329173278 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.75ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.285 ServerApp] 404 GET /api/contents/perceived-route-complexity/full_analysis.ipynb?content=0&hash=0&1743329173278 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/full_analysis.ipynb
+[W 2025-03-30 12:06:13.286 ServerApp] 404 GET /api/contents/perceived-route-complexity/origin_graph.py?content=0&hash=0&1743329173278 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.17ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.286 ServerApp] 404 GET /api/contents/perceived-route-complexity/origin_graph.py?content=0&hash=0&1743329173278 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/origin_graph.py
+[W 2025-03-30 12:06:13.287 ServerApp] 404 GET /api/contents/perceived-route-complexity/od_pair.py?content=0&hash=0&1743329173279 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.55ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.287 ServerApp] 404 GET /api/contents/perceived-route-complexity/od_pair.py?content=0&hash=0&1743329173279 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/od_pair.py
+[W 2025-03-30 12:06:13.287 ServerApp] 404 GET /api/contents/perceived-route-complexity/weighting_algorithms.py?content=0&hash=0&1743329173279 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.91ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.288 ServerApp] 404 GET /api/contents/perceived-route-complexity/weighting_algorithms.py?content=0&hash=0&1743329173279 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/weighting_algorithms.py
+[W 2025-03-30 12:06:13.289 ServerApp] 404 GET /api/contents/perceived-route-complexity/100_city_sample.csv?content=0&hash=0&1743329173280 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 0.98ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.289 ServerApp] 404 GET /api/contents/perceived-route-complexity/100_city_sample.csv?content=0&hash=0&1743329173280 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/100_city_sample.csv
+[W 2025-03-30 12:06:13.289 ServerApp] 404 GET /api/contents/perceived-route-complexity/node_sampling.py?content=0&hash=0&1743329173280 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.36ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.289 ServerApp] 404 GET /api/contents/perceived-route-complexity/node_sampling.py?content=0&hash=0&1743329173280 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/node_sampling.py
+[W 2025-03-30 12:06:13.291 ServerApp] 404 GET /api/contents/perceived-route-complexity/api_keys.csv?content=0&hash=0&1743329173281 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.17ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.291 ServerApp] 404 GET /api/contents/perceived-route-complexity/api_keys.csv?content=0&hash=0&1743329173281 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/api_keys.csv
+[W 2025-03-30 12:06:13.291 ServerApp] 404 GET /api/contents/perceived-route-complexity/weighting_algorithms.py?content=0&hash=0&1743329173281 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.49ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.292 ServerApp] 404 GET /api/contents/perceived-route-complexity/weighting_algorithms.py?content=0&hash=0&1743329173281 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/weighting_algorithms.py
+[W 2025-03-30 12:06:13.292 ServerApp] 404 GET /api/contents/perceived-route-complexity/route.py?content=0&hash=0&1743329173282 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.85ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.292 ServerApp] 404 GET /api/contents/perceived-route-complexity/route.py?content=0&hash=0&1743329173282 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/route.py
+[W 2025-03-30 12:06:13.293 ServerApp] 404 GET /api/contents/perceived-route-complexity/od_pair.py?content=0&hash=0&1743329173282 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.02ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.293 ServerApp] 404 GET /api/contents/perceived-route-complexity/od_pair.py?content=0&hash=0&1743329173282 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/od_pair.py
+[W 2025-03-30 12:06:13.294 ServerApp] 404 GET /api/contents/perceived-route-complexity/origin_graph.py?content=0&hash=0&1743329173282 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.40ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.294 ServerApp] 404 GET /api/contents/perceived-route-complexity/origin_graph.py?content=0&hash=0&1743329173282 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/origin_graph.py
+[W 2025-03-30 12:06:13.295 ServerApp] 404 GET /api/contents/perceived-route-complexity/node_sampling.py?content=0&hash=0&1743329173282 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.16ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.296 ServerApp] 404 GET /api/contents/perceived-route-complexity/node_sampling.py?content=0&hash=0&1743329173282 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/node_sampling.py
+[W 2025-03-30 12:06:13.296 ServerApp] 404 GET /api/contents/perceived-route-complexity/api_keys.csv?content=0&hash=0&1743329173283 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.47ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.296 ServerApp] 404 GET /api/contents/perceived-route-complexity/api_keys.csv?content=0&hash=0&1743329173283 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/api_keys.csv
+[W 2025-03-30 12:06:13.297 ServerApp] 404 GET /api/contents/perceived-route-complexity/100_city_sample.csv?content=0&hash=0&1743329173283 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.89ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.297 ServerApp] 404 GET /api/contents/perceived-route-complexity/100_city_sample.csv?content=0&hash=0&1743329173283 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/100_city_sample.csv
+[W 2025-03-30 12:06:13.298 ServerApp] 404 GET /api/contents/perceived-route-complexity/%3D3.0.1?content=0&hash=0&1743329173283 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.26ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.298 ServerApp] 404 GET /api/contents/perceived-route-complexity/%3D3.0.1?content=0&hash=0&1743329173283 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/=3.0.1
+[W 2025-03-30 12:06:13.299 ServerApp] 404 GET /api/contents/perceived-route-complexity/platform_verify.py?content=0&hash=0&1743329173284 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.41ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.299 ServerApp] 404 GET /api/contents/perceived-route-complexity/platform_verify.py?content=0&hash=0&1743329173284 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/platform_verify.py
+[W 2025-03-30 12:06:13.300 ServerApp] 404 GET /api/contents/perceived-route-complexity/100_city_sample.csv?content=0&hash=0&1743329173284 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.16ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.300 ServerApp] 404 GET /api/contents/perceived-route-complexity/100_city_sample.csv?content=0&hash=0&1743329173284 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/100_city_sample.csv
+[W 2025-03-30 12:06:13.301 ServerApp] 404 GET /api/contents/perceived-route-complexity/full_analysis.ipynb?content=0&hash=0&1743329173294 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.51ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.301 ServerApp] 404 GET /api/contents/perceived-route-complexity/full_analysis.ipynb?content=0&hash=0&1743329173294 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/full_analysis.ipynb
+[W 2025-03-30 12:06:13.302 ServerApp] 404 GET /api/contents/perceived-route-complexity/od_pair.py?content=0&hash=0&1743329173295 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 1.90ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.302 ServerApp] 404 GET /api/contents/perceived-route-complexity/od_pair.py?content=0&hash=0&1743329173295 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/od_pair.py
+[W 2025-03-30 12:06:13.303 ServerApp] 404 GET /api/contents/perceived-route-complexity/origin_graph.py?content=0&hash=0&1743329173295 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 0.70ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:13.303 ServerApp] 404 GET /api/contents/perceived-route-complexity/origin_graph.py?content=0&hash=0&1743329173295 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity/origin_graph.py
+[W 2025-03-30 12:06:14.418 ServerApp] 404 GET /api/contents/perceived-route-complexity?1743329174413 (40d5e03133a94ab8b37bb4c28271eca6@2001:6b0:e:4240::243:103) 0.72ms referer=http://b-cn1423.hpc2n.umu.se:8888/lab
+[W 2025-03-30 12:06:14.418 ServerApp] 404 GET /api/contents/perceived-route-complexity?1743329174413 (2001:6b0:e:4240::243:103): No such file or directory: perceived-route-complexity
+[W 2025-03-30 12:07:23.665 LabApp] Could not determine jupyterlab build status without nodejs
+[W 2025-03-30 12:07:41.157 LabApp] Could not determine jupyterlab build status without nodejs
+slurmstepd: error: *** JOB 34429851 ON b-cn1423 CANCELLED AT 2025-03-30T12:07:54 ***
