@@ -1,7 +1,8 @@
 import numpy as np
 from scipy.stats import wasserstein_distance
-
+import logging
 import numpy as np
+
 def get_circular_crosscorrelation_alignment(route_dist,env_dist):
     """
     Calculates alignment using circular cross-correlation and finds peak distances.
@@ -65,18 +66,24 @@ def find_circular_max_correlation_and_lag(a, b):
     return max_correlation, lag
 
 def find_strongest_and_closest_correlation(route_dist,env_dist):
+    import logging
+    if route_dist is None or len(route_dist) == 0 or env_dist is None or len(env_dist) == 0:
+
+        logging.error(f"route_dist or env_dist are None or empty. route_dist: {route_dist}, env_dist: {env_dist}")
+        return None, None, None, None
+
     route_dist = route_dist / np.sum(route_dist)
     env_dist = env_dist / np.sum(env_dist)
     max_len = max(len(route_dist), len(env_dist))
 
     circ_cross_corr = circular_cross_correlation(route_dist, env_dist)
-
+    logging.error(f"Circular cross-correlation: {circ_cross_corr}")
     normalized_circ_cross_corr = circ_cross_corr / np.max(circ_cross_corr)
 
     lag_range = np.arange(len(normalized_circ_cross_corr))
 
     scores = []
-    max_lag = max_len//2
+    max_lag = max_len // 2
     for i, lag_index in enumerate(lag_range):
         lag = lag_index if lag_index < max_len // 2 else lag_index - max_len  # Adjust lag
         correlation_strength = normalized_circ_cross_corr[i]

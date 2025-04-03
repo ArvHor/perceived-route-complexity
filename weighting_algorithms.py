@@ -4,7 +4,6 @@ import osmnx as ox
 import pyproj
 import logging
 
-
 logging.basicConfig(
     filename='app.log',          # Log file name
     filemode='a',                # 'a' for append, 'w' for overwrite

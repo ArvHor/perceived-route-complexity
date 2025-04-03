@@ -21,7 +21,7 @@ class od_pair:
         self.origin_point = (self.graph.nodes[self.origin_node]['y'], self.graph.nodes[self.origin_node]['x'])
         self.destination_point = (self.graph.nodes[self.destination_node]['y'], self.graph.nodes[self.destination_node]['x'])
         
-        self.graph = network_analysis.add_betweenness_centrality(self.graph,origin=self.origin_node,destination=self.destination_node,weightstring="length")
+        self.graph = network_analysis.add_origin_destination_betweenness_centrality(self.graph,origin=self.origin_node,destination=self.destination_node,weightstring="length")
 
         self.od_distance = float(ox.distance.great_circle(lat1=self.origin_point[0], lon1=self.origin_point[1], lat2=self.destination_point[0], lon2=self.destination_point[1]))
         
@@ -30,16 +30,17 @@ class od_pair:
         
         self.shape_dict = geo_utilities.get_od_pair_polygon(self.origin_point, self.destination_point)
         self.polygon = self.shape_dict["polygon"] # Square origin and destination as the diagonal of a square
-        self.bbox = self.shape_dict["bbox"] #  Bounding box as `(left, bottom, right, top)`.
+        self.bbox = self.shape_dict["bbox"] # Bounding box as `(left, bottom, right, top)`.
         self.bbox_polygon = self.shape_dict["bbox_polygon"]
+        self.map_bbox = self.shortest_path.map_bbox
 
-
-        self.subgraph = self.get_subgraph()
+        self.subgraph = self.get_subgraph(bbox=False)
         self.undirected_subgraph = ox.convert.to_undirected(self.subgraph)
         self.area = geo_utilities.calculate_area_with_utm(self.polygon)
         self.subgraph_stats = ox.stats.basic_stats(self.subgraph, area=self.area)
 
 
+        logging.error(f"Creating od_pair for graph {self.graph.graph['city_name']} with n subgraph edges: {len(self.subgraph.edges)}, {len(self.undirected_subgraph.edges)}")
         self.env_bearing_dist_weighted, _ = ox.bearing._bearings_distribution(G=self.undirected_subgraph , num_bins=36,min_length=10, weight="length")
         self.env_bearing_dist, _ = ox.bearing._bearings_distribution(G=self.undirected_subgraph , num_bins=36, min_length=10,weight=None)
 
@@ -59,14 +60,6 @@ class od_pair:
         self.complexity_diff = int(self.simplest_path.complexity) - int(self.shortest_path.complexity)
         self.shortest_diff = self.shortest_path.length - self.od_distance
 
-
-        self.environment_bearing_dist = None
-        self.route_direction_bearing_dist = None
-        self.environment_orientation_entropy = None
-        self.subgraph = None
-        self.area = None
-        self.od_pair_polygon_ug = None
-        self.subgraph_stats = None
 
         node_attribute_list = ast.literal_eval(G.graph['node_attributes'])
         if "elevation" in node_attribute_list:
@@ -102,32 +95,44 @@ class od_pair:
         instance.shape_dict = geo_utilities.get_od_pair_polygon(instance.origin_point, instance.destination_point)
         instance.polygon = instance.shape_dict["polygon"]
         instance.bbox = instance.shape_dict["bbox"]
-        
-        
-        # Initialize empty attributes
-        instance.environment_bearing_dist = None
-        instance.route_direction_bearing_dist = None
-        instance.environment_orientation_entropy = None
-        instance.subgraph = None
-        instance.area = None
-        instance.od_pair_polygon_ug = None
-        instance.subgraph_stats = None
+        instance.bbox_polygon = instance.shape_dict["bbox_polygon"]
+        instance.map_bbox = instance.path.map_bbox
+
+
+        instance.subgraph = instance.get_subgraph(bbox=True)
+        instance.undirected_subgraph = ox.convert.to_undirected(instance.subgraph)
+        instance.area = geo_utilities.calculate_area_with_utm(instance.polygon)
+        instance.subgraph_stats = ox.stats.basic_stats(instance.subgraph, area=instance.area)
+
+        instance.env_bearing_dist_weighted, _ = ox.bearing._bearings_distribution(G=instance.undirected_subgraph, num_bins=36,min_length=10, weight="length")
+        instance.env_bearing_dist, _ = ox.bearing._bearings_distribution(G=instance.undirected_subgraph, num_bins=36,min_length=10, weight=None)
+
+        instance.route_direction_bearing_dist = instance.get_route_direction_bearing_dist()
+
+        instance.environment_orientation_entropy_weighted = ox.bearing.orientation_entropy(instance.undirected_subgraph, num_bins=36,weight="length")
+        instance.environment_orientation_entropy = ox.bearing.orientation_entropy(instance.undirected_subgraph, num_bins=36)
+
+        instance.order_weighted = instance.get_environment_orientation_order(instance.environment_orientation_entropy_weighted)
+        instance.order = instance.get_environment_orientation_order(instance.environment_orientation_entropy)
+
+        #instance.subgraph_stats = None
         
         # Handle elevation if available
 
-        instance.elevation_origin = instance.graph.nodes[instance.origin_node]['elevation']
-        instance.elevation_destination = instance.graph.nodes[instance.destination_node]['elevation']
-        instance.elevation_difference = instance.elevation_origin - instance.elevation_destination
+        #instance.elevation_origin = instance.graph.nodes[instance.origin_node]['elevation']
+        #instance.elevation_destination = instance.graph.nodes[instance.destination_node]['elevation']
+        #instance.elevation_difference = instance.elevation_origin - instance.elevation_destination
 
         return instance
 
-    def get_subgraph(self):
-        try:
+    def get_subgraph(self,bbox=False):
+        if bbox:
+            subgraph = ox.truncate.truncate_graph_bbox(G=self.graph, bbox=self.map_bbox, truncate_by_edge=True)
+            #logging.info(f"Subgraph truncated for {self.map_bbox}, n edges = {len(subgraph.edges)} ")
+        else:
             subgraph = ox.truncate.truncate_graph_polygon(G=self.graph, polygon=self.polygon, truncate_by_edge=True)
-            return subgraph
-        except Exception as e:
-            logging.error(f"Error truncating graph: {e}, polygon: {self.polygon}")
-            return None
+            #logging.info(f"Subgraph truncated for {self.polygon}, n edges = {len(subgraph.edges)}")
+        return subgraph
 
     def get_environment_orientation_order(self,env_entropy,num_bins=36):
         max_nats = math.log(num_bins)
@@ -208,6 +213,15 @@ class od_pair:
         route_dist = self.route_direction_bearing_dist
         env_dist_weighted = self.env_bearing_dist_weighted
 
+
+        # Check for None distributions and print their contents if any
+        if self.env_bearing_dist is None:
+            logging.error(f"env_bearing_dist is None. Number of edges in subgraph: {len(self.subgraph.edges)}")
+        if self.route_direction_bearing_dist is None:
+            logging.error(f"route_direction_bearing_dist is None. Distribution: {self.route_direction_bearing_dist}, Number of edges in subgraph: {len(self.subgraph.edges)}")
+        if self.env_bearing_dist_weighted is None:
+            logging.error(f"env_bearing_dist_weighted is None. Distribution: {self.env_bearing_dist_weighted}, Number of edges in subgraph: {len(self.subgraph.edges)}")
+
         # basic cross-correlation
         lag, max_correlation = alignment.get_crosscorrelation_alignment(route_dist, env_dist_weighted)
 
@@ -251,6 +265,7 @@ class od_pair:
             'shortest_path_turn_frequency': self.shortest_path.turn_frequency,
             "shortest_path_n_nodes": self.shortest_path.n_nodes,
             "shortest_path_avg_betweenness": self.shortest_path.avg_betweenness,
+            "shortest_path_avg_od_betweenness": self.shortest_path.avg_od_betweenness,
             "shortest_path_deviation_from_prototypical": self.shortest_path.sum_deviation_from_prototypical,
             "shortest_path_instruction_equivalent": self.shortest_path.sum_instruction_equivalent,
             "shortest_path_node_degree": self.shortest_path.sum_node_degree,
@@ -271,14 +286,15 @@ class od_pair:
             'simplest_path_turn_frequency': self.simplest_path.turn_frequency,
             "simplest_path_n_nodes": self.simplest_path.n_nodes,
             "simplest_path_avg_betweenness": self.simplest_path.avg_betweenness,
+            "simplest_path_avg_od_betweenness": self.simplest_path.avg_od_betweenness,
             "simplest_path_deviation_from_prototypical": self.simplest_path.sum_deviation_from_prototypical,
             "simplest_path_instruction_equivalent": self.simplest_path.sum_instruction_equivalent,
             "simplest_path_node_degree": self.simplest_path.sum_node_degree,
             "simplest_path_geometry": self.simplest_path.route_geometry,
 
             # Difference values
-            "shortest_simplest_hausdorff_distance": hausdorff_distance(self.shortest_path.route_geometry,self.simplest_path.route_geometry),
-            
+            "shortest_simplest_hausdorff_distance": self.shortest_path.route_geometry.hausdorff_distance(self.simplest_path.route_geometry),
+
             # Simplest path MAP values
             'simplest_path_map_intersection_count': self.simplest_path.map_intersection_count,
             'simplest_path_map_street_count': self.simplest_path.map_street_count,
@@ -329,8 +345,9 @@ class od_pair:
         return comparison_dict
 
     def get_comparison_dict_single_path(self):
-        env_dist, env_dist_weighted = self.get_environment_bearing_dist()
-        route_dist = self.get_route_direction_bearing_dist()
+        env_dist = self.env_bearing_dist
+        route_dist = self.route_direction_bearing_dist
+        env_dist_weighted = self.env_bearing_dist_weighted
 
         # basic cross-correlation
         lag, max_correlation = alignment.get_crosscorrelation_alignment(route_dist, env_dist_weighted)

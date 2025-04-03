@@ -1,6 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-.ipynb_checkpoints
+.ipynb_checkpoints/
 cache/
 =3.0.1
 local_*/
@@ -21,3 +21,4 @@ ohno.py
 *.html
 chromedriver
 experiment_routes/
+bug_testing/

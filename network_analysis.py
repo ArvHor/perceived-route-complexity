@@ -1,9 +1,9 @@
 import networkx as nx
 import numpy as np
 
-def add_betweenness_centrality(graph, origin, destination, weightstring):
+def add_origin_destination_betweenness_centrality(graph, origin, destination, weightstring):
     for node in graph.nodes():
-        graph.nodes[node]['node_betweenness'] = 0.0
+        graph.nodes[node]['od_betweenness'] = 0.0
     try:
         all_shortest_paths = list(nx.all_shortest_paths(graph, origin, destination,weight=weightstring))
     except nx.NetworkXNoPath:
@@ -25,6 +25,6 @@ def add_betweenness_centrality(graph, origin, destination, weightstring):
     
     # Calculate point-to-point betweenness for each node
     for node, count in path_counts.items():
-        graph.nodes[node]['node_betweenness'] = count / num_shortest_paths
+        graph.nodes[node]['od_betweenness'] = count / num_shortest_paths
     
     return graph

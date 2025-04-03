@@ -141,12 +141,6 @@ class origin_graph:
 
     
     def calculate_graph_bounding_box(self):
-        """
-        Calculate the bounding box of the graph.
-
-        Output:
-        - Returns the bounding box of the graph.
-        """
         return ox.convert.graph_to_gdfs(self.graph, nodes=False).unary_union.bounds
 
     def find_start_node(self):
@@ -233,8 +227,6 @@ class origin_graph:
 
 
     def add_weights(self,weightstrings:List[str]):
-        
-
         if  "deviation_from_prototypical" in weightstrings:
             if "deviation_from_prototypical" in self.edge_weights:
                 logging.info(f"Deviation from prototypical already calculated in {self.city_name}")
@@ -249,6 +241,11 @@ class origin_graph:
         if "node_degree" in weightstrings:
             self.graph, self.max_node_degree = wa.add_node_degree_weights(G=self.graph)
             self.edge_weights.append("node_degree")
+
+        if "betweenness_centrality" in weightstrings:
+            betweenness = nx.betweenness_centrality(self.graph,normalized=True)
+            nx.set_node_attributes(self.graph, betweenness, 'betweenness_centrality')
+            self.edge_weights.append("betweenness_centrality")
 
         self.graph.graph['edge_weights'] = self.edge_weights
 
@@ -347,29 +344,24 @@ class origin_graph:
 
         
     def create_od_pairs(self,min_radius=3000,max_radius=3500,sample_size=144):
-        try:
-            destinations = self.find_destinations(min_radius=min_radius,max_radius=max_radius,sample=sample_size)
-            od_pairs = []
-            logging.info(f"Creating {len(destinations)} od_pairs in city {self.city_name}")
-            for destination in destinations:
-                od_p = od_pair(G=self.graph,origin=self.start_node,destination=destination)
-                od_pairs.append(od_p)
-            self.od_pairs = od_pairs
-        except Exception as e:
-            logging.info(f"Error creating od_pairs for {self.city_name}: {e}")
+
+        destinations = self.find_destinations(min_radius=min_radius,max_radius=max_radius,sample=sample_size)
+        od_pairs = []
+        logging.info(f"Creating {len(destinations)} od_pairs in city {self.city_name}")
+        for destination in destinations:
+            od_p = od_pair(G=self.graph,origin=self.start_node,destination=destination)
+            od_pairs.append(od_p)
+        self.od_pairs = od_pairs
+
 
     def get_od_pair_data(self):
-        try:
             od_pair_data = []
-            for od_pair in self.od_pairs:
-                od_pair_dict = od_pair.get_comparison_dict()
+            for od_p in self.od_pairs:
+                od_pair_dict = od_p.get_comparison_dict()
                 od_pair_dict["graph_path"] = self.graph_path
-                od_pair_data.append(od_pair.get_comparison_dict())
+                od_pair_data.append(od_p.get_comparison_dict())
             od_pair_data = pd.DataFrame(od_pair_data)
-            logging.info(f"Successfully retrieved comparison dict for{self.city_name}: {e}")
             return od_pair_data
-        except Exception as e:
-            logging.info(f"Error creating comparison dict for {self.city_name}: {e}")
     
     def ensure_data_types(self):
         for u,v, data in self.graph.edges(data=True):
