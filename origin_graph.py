@@ -57,7 +57,8 @@ class origin_graph:
             "decision_complexity": float,
             "deviation_from_prototypical": float,
             "instruction_equivalent": float,
-            "node_degree": float
+            "node_degree": int,
+            "betweenness_centrality": float
         }
 
         instance = cls.__new__(cls)
