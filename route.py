@@ -41,7 +41,7 @@ class route:
         self.sum_betweenness = self.get_nodes_sum("betweenness_centrality")
         
         self.avg_od_betweenness = self.sum_od_betweenness / self.n_nodes
-        self.avg_betweenness = self.sum_betweenness_centrality / self.n_nodes
+        self.avg_betweenness = self.sum_betweenness / self.n_nodes
         
         self.identifier = self.generate_identifier()
         self.map_bbox = self.get_map_bbox()
