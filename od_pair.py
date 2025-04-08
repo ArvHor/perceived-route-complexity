@@ -87,10 +87,11 @@ class od_pair:
         # Calculate OD distance
         instance.od_distance = float(ox.distance.great_circle(lat1=instance.origin_point[0], lon1=instance.origin_point[1], 
                                                             lat2=instance.destination_point[0], lon2=instance.destination_point[1]))
-        
-        # Store the route directly instead of creating new routes
-        
-        
+
+        instance.graph = network_analysis.add_origin_destination_betweenness_centrality(instance.graph, origin=instance.origin_node,
+                                                                                    destination=instance.destination_node,
+                                                                                    weightstring="length")
+
         # Generate geometry
         instance.shape_dict = geo_utilities.get_od_pair_polygon(instance.origin_point, instance.destination_point)
         instance.polygon = instance.shape_dict["polygon"]
@@ -264,6 +265,8 @@ class od_pair:
             'shortest_path_turn_count': self.shortest_path.turn_count,
             'shortest_path_turn_frequency': self.shortest_path.turn_frequency,
             "shortest_path_n_nodes": self.shortest_path.n_nodes,
+            "shortest_path_sum_betweenness": self.shortest_path.sum_betweenness,
+            "shortest_path_sum_od_betweenness": self.shortest_path.sum_od_betweenness,
             "shortest_path_avg_betweenness": self.shortest_path.avg_betweenness,
             "shortest_path_avg_od_betweenness": self.shortest_path.avg_od_betweenness,
             "shortest_path_deviation_from_prototypical": self.shortest_path.sum_deviation_from_prototypical,
@@ -285,6 +288,8 @@ class od_pair:
             'simplest_path_turn_count': self.simplest_path.turn_count,
             'simplest_path_turn_frequency': self.simplest_path.turn_frequency,
             "simplest_path_n_nodes": self.simplest_path.n_nodes,
+            "simplest_path_sum_betweenness": self.simplest_path.sum_betweenness,
+            "simplest_path_sum_od_betweenness": self.simplest_path.sum_od_betweenness,
             "simplest_path_avg_betweenness": self.simplest_path.avg_betweenness,
             "simplest_path_avg_od_betweenness": self.simplest_path.avg_od_betweenness,
             "simplest_path_deviation_from_prototypical": self.simplest_path.sum_deviation_from_prototypical,
@@ -390,11 +395,12 @@ class od_pair:
             'path_turn_count': self.path.turn_count,
             'path_turn_frequency': self.path.turn_frequency,
             "path_n_nodes": self.path.n_nodes,
-            "path_avg_betweenness": self.path.avg_betweenness,
+            "simplest_path_avg_betweenness": self.path.avg_betweenness,
+            "simplest_path_avg_od_betweenness": self.path.avg_od_betweenness,
             "path_deviation_from_prototypical": self.path.sum_deviation_from_prototypical,
             "path_instruction_equivalent": self.path.sum_instruction_equivalent,
             "path_node_degree": self.path.sum_node_degree,
-            #"path_geometry": self.path.route_geometry,
+            "path_geometry": self.path.route_geometry,
 
             # Path MAP values
             'path_map_intersection_count': self.path.map_intersection_count,

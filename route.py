@@ -36,7 +36,13 @@ class route:
         self.sum_deviation_from_prototypical = self.get_edges_sum('deviation_from_prototypical')
         self.sum_node_degree = self.get_edges_sum('node_degree')
         self.sum_instruction_equivalent = self.get_edges_sum('instruction_equivalent')
-        self.avg_betweenness = self.get_nodes_avg("node_betweenness")
+        
+        self.sum_od_betweenness = self.get_nodes_sum("od_betweenness")
+        self.sum_betweenness = self.get_nodes_sum("betweenness_centrality")
+        
+        self.avg_od_betweenness = self.sum_od_betweenness / self.n_nodes
+        self.avg_betweenness = self.sum_betweenness_centrality / self.n_nodes
+        
         self.identifier = self.generate_identifier()
         self.map_bbox = self.get_map_bbox()
         self.map_road_length, self.map_intersection_count, self.map_street_count = self.get_map_clutter()
@@ -55,12 +61,6 @@ class route:
         # Set origin and destination from the nodes list
         instance.origin_node = nodes[0]
         instance.destination_node = nodes[-1]
-        
-        #
-        instance.graph = network_analysis.add_betweenness_centrality(instance.graph, origin=instance.origin_node, 
-                                                                    destination=instance.destination_node, weightstring="length")
-        
-
 
         # Calculate edges and other attributes
         instance.edges = list(nx.utils.pairwise(instance.nodes))
@@ -78,8 +78,12 @@ class route:
         instance.sum_deviation_from_prototypical = instance.get_edges_sum('deviation_from_prototypical')
         instance.sum_node_degree = instance.get_edges_sum('node_degree')
         instance.sum_instruction_equivalent = instance.get_edges_sum('instruction_equivalent')
-        instance.avg_od_betweenness = instance.get_nodes_avg("od_betweenness")
-        instance.avg_betweenness = instance.get_nodes_avg("betweenness_centrality")
+
+        instance.sum_betweenness = instance.get_nodes_sum("betweenness_centrality")
+        instance.sum_od_betweenness = instance.get_nodes_sum("od_betweenness")
+        instance.avg_od_betweenness = instance.sum_od_betweenness / instance.n_nodes
+        instance.avg_betweenness = instance.sum_betweenness / instance.n_nodes
+
         instance.identifier = instance.generate_identifier()
         instance.map_bbox = instance.get_map_bbox()
         instance.map_road_length, instance.map_intersection_count, instance.map_street_count = instance.get_map_clutter()
@@ -107,11 +111,15 @@ class route:
         route_string = str(self.nodes)
         return hashlib.sha256(route_string.encode()).hexdigest()
 
-    def get_nodes_avg(self,weightsting):
+    def get_nodes_avg(self, weightsting):
         total_betweenness = sum(self.graph.nodes[node][weightsting] for node in self.nodes)
         avg_betweenness = total_betweenness / len(self.nodes)
-    
+
         return avg_betweenness
+
+    def get_nodes_sum(self, weightstring):
+        total_sum = sum(self.graph.nodes[node].get(weightstring, 0) for node in self.nodes)
+        return total_sum
 
     def get_edges_avg(self,weightstring):
         edges_avg = 0
