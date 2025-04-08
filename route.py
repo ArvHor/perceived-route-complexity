@@ -112,14 +112,19 @@ class route:
         return hashlib.sha256(route_string.encode()).hexdigest()
 
     def get_nodes_avg(self, weightsting):
-        total_betweenness = sum(self.graph.nodes[node][weightsting] for node in self.nodes)
-        avg_betweenness = total_betweenness / len(self.nodes)
+        nodes_sum = 0
+        for node in self.nodes:
+            nodes_weight = float(self.graph.nodes[node].get(weightsting, 0))
+            nodes_sum += nodes_weight
+        return nodes_sum / len(self.nodes)
 
-        return avg_betweenness
 
     def get_nodes_sum(self, weightstring):
-        total_sum = sum(self.graph.nodes[node].get(weightstring, 0) for node in self.nodes)
-        return total_sum
+        nodes_sum = 0
+        for node in self.nodes:
+            nodes_weight = float(self.graph.nodes[node].get(weightstring, 0))
+            nodes_sum += nodes_weight
+        return nodes_sum
 
     def get_edges_avg(self,weightstring):
         edges_avg = 0
