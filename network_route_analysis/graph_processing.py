@@ -6,7 +6,7 @@ import logging
 import os
 import multiprocessing
 import osmnx as ox
-logging.basicConfig(level=logging.info, format='%(asctime)s - %(levelname)s - %(message)s',filename='app.log', filemode='w')
+logging.basicConfig(level=logging.info, format='%(asctime)s - %(levelname)s - %(message)s', filename='../app.log', filemode='w')
 
 error_handler = logging.FileHandler('error.log', mode='w')
 error_handler.setLevel(logging.ERROR)

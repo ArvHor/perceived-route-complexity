@@ -12,7 +12,7 @@ import networkx as nx
 import ast
 import os
 
-logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s',filename='app.log', filemode='w')
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s', filename='../app.log', filemode='w')
 
 class origin_graph:
     def __init__(self, origin_point:tuple, distance_from_point:int,city_name:str,
@@ -20,7 +20,7 @@ class origin_graph:
                   simplify: Optional[bool] = False,remove_parallel: Optional[bool] = False):
 
 
-        self.origin_point = origin_point
+        self.origin_point = origin_point # For OSMNX the order is lat,lon
         self.city_name = city_name
         self.distance_from_point = distance_from_point
         self.edge_attr_diff = edge_attr_diff
@@ -202,15 +202,6 @@ class origin_graph:
         self.removed_inf_edges = edges_to_remove
 
     def create_orientation_plot(self,filepath=None):
-        """
-        Create an orientation plot of the graph.
-
-        Parameters:
-        - filepath: str, path to save the orientation plot.
-
-        Output:
-        - Saves the orientation plot to the specified filepath.
-        """
         ox.plot_graph_orientation(self.graph, bbox=self.bbox_coords, save=True, filepath=filepath)
 
     def add_simplest_paths_from_origin(self):
@@ -274,15 +265,7 @@ class origin_graph:
         self.graph.graph['node_attributes'] = self.node_attributes
 
     def save_pickle(self, filepath):
-        """
-        Save the routing_graph object to a pickle file.
 
-        Parameters:
-        - filepath: str, path to save the pickle file.
-
-        Output:
-        - Saves the routing_graph object to the specified filepath.
-        """
         with open(filepath, 'wb') as f:
             pickle.dump(self, f)
 

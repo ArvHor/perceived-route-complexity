@@ -3,6 +3,10 @@ from shapely.geometry import Polygon
 from shapely.geometry.polygon import orient
 import osmnx as ox
 from shapely.ops import transform
+from shapely.geometry import LineString, MultiLineString, Point
+from shapely.ops import linemerge
+import numpy as np
+
 def find_utm_zone(lat, lon):
     """
     Find the UTM zone for a given latitude and longitude.
@@ -78,6 +82,8 @@ def get_od_pair_polygon(origin_point, destination_point,padding=0.25):
 
     fwd_bearing = ox.bearing.calculate_bearing(lat1, lon1, lat2, lon2)
     bwd_bearing = ox.bearing.calculate_bearing(lat2, lon2, lat1, lon1)
+    print(f"fwd: {fwd_bearing}")
+    print(f"bwd: {bwd_bearing}")
     perpendicular_fwd_bearing = ox.bearing.calculate_bearing(perp_point1[1], perp_point1[0], perp_point2[1], perp_point2[0])
     perpendicular_bwd_bearing = ox.bearing.calculate_bearing(perp_point2[1], perp_point2[0], perp_point1[1], perp_point1[0])
 
@@ -94,7 +100,10 @@ def get_od_pair_polygon(origin_point, destination_point,padding=0.25):
         "osmnx_bbox": bbox_tuple
     }
 
-    #print(f"dict polygon: {shape_dict['polygon']}")
+    print(f"fwd: {shape_dict['fwd_bearing']}")
+    print(f"bwd: {shape_dict['bwd_bearing']}")
+    print(f"perp fwd: {shape_dict['perpendicular_fwd_bearing']}")
+    print(f"perp bwd: {shape_dict['perpendicular_bwd_bearing']}")
     return shape_dict
 
 
@@ -127,3 +136,86 @@ def calculate_area_with_utm(polygon):
 
     # Calculate the area of the projected polygon in square meters
     return projected_polygon.area
+
+
+def get_azimuth(G, node_a, node_b, return_all=False):
+    """Calculate the azimuth and distance between two points.
+
+    Pyproj uses an equidistant azimuthal projection with the north pole as the center of a flat circle.
+    This means that the azimuth
+    ----
+    Parameters:
+    point_a: The coordinates of the first point.
+    point_b: The coordinates of the second point.
+    return_all: If True, return the forward azimuth, back azimuth, and distance. If False, return only the forward azimuth.
+
+    ----
+    Returns:
+    fwd_azimuth: The forward azimuth from point_a to point_b.
+    back_azimuth: The back azimuth from point_b to point_a.
+    distance: The distance between the two points.
+
+    """
+    point_a = [G.nodes[node_a]['y'], G.nodes[node_a]['x']]
+    point_b = [G.nodes[node_b]['y'], G.nodes[node_b]['x']]
+    if ox.projection.is_projected(G.graph['crs']):
+        lat1, lat2, long1, long2 = point_a[0], point_b[0], point_a[1], point_b[1]
+        transformer = pyproj.Transformer.from_crs(G.graph['crs'], "EPSG:4326", always_xy=True)
+        lon1, lat1 = transformer.transform(long1, lat1)
+        lon2, lat2 = transformer.transform(long2, lat2)
+        geodesic = pyproj.Geod(ellps='WGS84')
+        fwd_azimuth, back_azimuth, distance = geodesic.inv(lon1, lat1, lon2, lat2)
+        if return_all:
+            return fwd_azimuth, back_azimuth, distance
+        else:
+            return fwd_azimuth
+    else:
+        lat1, lat2, long1, long2 = point_a[0], point_b[0], point_a[1], point_b[1]
+        geodesic = pyproj.Geod(ellps='WGS84')
+        fwd_azimuth, back_azimuth, distance = geodesic.inv(long1, lat1, long2, lat2)
+        if return_all:
+            return fwd_azimuth, back_azimuth, distance
+        else:
+            return fwd_azimuth
+
+
+def merge_and_simplify_geometry(geometry,tolerance):
+    # Merge the MultiLineString into a single LineString
+    line = linemerge(geometry)
+    # Simplify the merged LineString
+    simplified = line.simplify(tolerance, preserve_topology=True)
+
+    return simplified
+
+def perpendicular_distance(point, line_start, line_end):
+
+    p = Point(point)
+    line = LineString([line_start, line_end])
+
+    nearest_line_point = line.interpolate(line.project(p))
+
+    distance = ox.distance.great_circle(lat1=point[1], lon1=point[0], lat2=nearest_line_point.y, lon2=nearest_line_point.x)
+
+    return distance
+
+def Douglas_Peucker(route_points, thold):
+    dmax = 0.0
+    index = 0
+    end = len(route_points)
+    for i in range(1, end):
+        d = perpendicular_distance(route_points[i - 1], route_points[i], route_points[end])
+        if d > dmax:
+            index = i
+            dmax = d
+
+    results = []
+
+    if (dmax >= thold):
+        recResults1 = Douglas_Peucker(route_points[:index + 1],thold)
+        recResults2 = Douglas_Peucker(route_points[index:],thold)
+
+        results = recResults1[:-1] + recResults2
+    else:
+        results = route_points[:index + 1]
+
+    return results

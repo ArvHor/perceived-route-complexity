@@ -6,80 +6,22 @@ import osmnx as ox
 import time
 import pandas as pd
 import pyproj
-from shapely.geometry import LineString, MultiLineString, Point
-from shapely.ops import linemerge
+
 import selenium.webdriver as webdriver
 from selenium.webdriver import Firefox, FirefoxOptions
 from folium.features import DivIcon
-from pyproj import CRS
-from pyproj.aoi import AreaOfInterest
-from pyproj.database import query_utm_crs_info
+
 from folium.elements import *
 import folium
-import math
+import geo_util as geo_util
+import map_analysis as map_analysis
 
-def calculate_bounding_box(center_lat, center_lng, zoom=16, width_pixels=1600, height_pixels=1200):
-    """
-    Calculates the bounding box coordinates for a Leaflet map with UTM projection.
-    https://wiki.openstreetmap.org/wiki/Zoom_levels
-    Args:
-      center_lat: Latitude of the map's center point.
-      center_lng: Longitude of the map's center point.
-      zoom: Zoom level of the map (default 16).
-      width_pixels: Width of the map in pixels (default 1600).
-      height_pixels: Height of the map in pixels (default 1200).
-
-    Returns:
-      A tuple containing the (north, south, east, west) coordinates of the
-      bounding box in WGS84 (latitude, longitude).
-    """
-
-    meters_per_pixel = 156543.03 * math.cos(math.radians(center_lat)) / (2 ** zoom)
-
-    width_meters = width_pixels * meters_per_pixel
-    height_meters = height_pixels * meters_per_pixel
-
-
-    # --- UTM Projection ---
-    wgs84 = CRS.from_epsg(4326)
-    utm_crs_list = query_utm_crs_info(
-        datum_name="WGS 84",
-        area_of_interest=AreaOfInterest(
-            west_lon_degree=center_lng,
-            south_lat_degree=center_lat,
-            east_lon_degree=center_lng,
-            north_lat_degree=center_lat,
-        ),
-    )
-    utm_crs = CRS.from_epsg(utm_crs_list[0].code)
-
-    wgs84_to_utm = pyproj.Transformer.from_crs(wgs84, utm_crs, always_xy=True)
-    utm_to_wgs84 = pyproj.Transformer.from_crs(utm_crs, wgs84, always_xy=True)
-
-    center_x_utm, center_y_utm = wgs84_to_utm.transform(center_lng, center_lat)
-    # --- End UTM Projection ---
-
-    # Calculate corner coordinates in UTM
-    north_utm = center_y_utm + (height_meters / 2)
-    south_utm = center_y_utm - (height_meters / 2)
-    east_utm = center_x_utm + (width_meters / 2)
-    west_utm = center_x_utm - (width_meters / 2)
-
-    # Convert UTM corners back to WGS84 (lat, lng)
-    north_lng, north_lat = utm_to_wgs84.transform(east_utm, north_utm)
-    south_lng, south_lat = utm_to_wgs84.transform(east_utm, south_utm)
-    east_lng, east_lat = utm_to_wgs84.transform(east_utm, north_utm)
-    west_lng, west_lat = utm_to_wgs84.transform(west_utm, north_utm)
-
-    bbox = (west_lng,south_lat,east_lng,north_lat)
-
-    return bbox
 
 def plot_route_gdf(G, route_gdf,start_node,end_node,info_text="null",imgpath="route_on_map.png",file_path="route_on_map.png",map_tiles="CartoDB.VoyagerNoLabels",return_bbox=False, flip=False):
     #print(map_tiles)
     #apikey = '54NexSXPLjyL0FsLdsoy'
     geom = route_gdf['geometry'].unary_union
-    route_gdf['geometry'] = merge_and_simplify_geometry(geom, 0.0001)
+    route_gdf['geometry'] = geo_util.merge_and_simplify_geometry(geom, 0.0001)
     start_location = (G.nodes[start_node]['y'], G.nodes[start_node]['x'])
     end_location = (G.nodes[end_node]['y'], G.nodes[end_node]['x'])
 
@@ -103,7 +45,7 @@ def plot_route_gdf(G, route_gdf,start_node,end_node,info_text="null",imgpath="ro
 
 
     midpoint = ((start_location[0] + end_location[0]) / 2, (start_location[1] + end_location[1]) / 2)
-    bbox = calculate_bounding_box(midpoint[0], midpoint[1], width_pixels=1600, height_pixels=1200, zoom=16)
+    bbox = map_analysis.calculate_bounding_box(midpoint[0], midpoint[1], width_pixels=1600, height_pixels=1200, zoom=16)
     if info_text != "null":
             folium.map.Marker(
             [midpoint[0], midpoint[1]],
@@ -132,19 +74,6 @@ def plot_route_gdf(G, route_gdf,start_node,end_node,info_text="null",imgpath="ro
     screenshot_map(full_path, imgpath)
     if return_bbox:
         return bbox
-
-
-def get_routegdf_bbox(G, route_nodes, start_node,end_node):
-    route_gdf = ox.routing.route_to_gdf(G,route_nodes)
-    geom = route_gdf['geometry'].unary_union
-    route_gdf['geometry'] = merge_and_simplify_geometry(geom, 0.0001)
-    start_location = (G.nodes[start_node]['y'], G.nodes[start_node]['x'])
-    end_location = (G.nodes[end_node]['y'], G.nodes[end_node]['x'])
-
-    midpoint = ((start_location[0] + end_location[0]) / 2, (start_location[1] + end_location[1]) / 2)
-    bbox = calculate_bounding_box(midpoint[0], midpoint[1], width_pixels=1600, height_pixels=1200, zoom=16)
-
-    return bbox
 
 def flip_map(m,end_location,start_location):
 
@@ -258,15 +187,6 @@ def add_rotation_to_map(m, rotation_angle):
 
     m.get_root().html.add_child(folium.Element(js))
     return m
-
-
-def merge_and_simplify_geometry(geometry,tolerance):
-    # Merge the MultiLineString into a single LineString
-    line = linemerge(geometry)
-    # Simplify the merged LineString
-    simplified = line.simplify(tolerance, preserve_topology=True)
-
-    return simplified
 
 
 def plot_all_routes_complexity(G, routes, map_path,startnode):
@@ -479,11 +399,7 @@ def add_padding_to_bbox(bbox, padding_meters):
 
 
 
-def get_route_bearing(route_gdf):
-    origin = route_gdf['geometry'].iloc[0].coords[0]
-    destination = route_gdf['geometry'].iloc[-1].coords[-1]
-    bearing = ox.bearing.calculate_bearing(origin[1],origin[0], destination[1], destination[0])
-    return bearing
+
 
 def screenshot_map(full_path,imgpath):
     opts = webdriver.FirefoxOptions()
