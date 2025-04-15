@@ -138,7 +138,7 @@ def calculate_area_with_utm(polygon):
     return projected_polygon.area
 
 
-def get_azimuth(G, node_a, node_b, return_all=False):
+def get_azimuth(G, point_a, point_b, return_all=False):
     """Calculate the azimuth and distance between two points.
 
     Pyproj uses an equidistant azimuthal projection with the north pole as the center of a flat circle.
@@ -156,8 +156,14 @@ def get_azimuth(G, node_a, node_b, return_all=False):
     distance: The distance between the two points.
 
     """
-    point_a = [G.nodes[node_a]['y'], G.nodes[node_a]['x']]
-    point_b = [G.nodes[node_b]['y'], G.nodes[node_b]['x']]
+    if isinstance(point_a,int) and isinstance(point_b,int):
+        point_a = (G.nodes[point_a]['y'], G.nodes[point_a]['x'])
+        point_b = (G.nodes[point_a]['y'], G.nodes[point_a]['x'])
+
+    if not isinstance(point_a,tuple) and not isinstance(point_b,tuple):
+        msg = "point_a and point_b must either both be node_ids or coordinates."
+        raise ValueError(msg)
+
     if ox.projection.is_projected(G.graph['crs']):
         lat1, lat2, long1, long2 = point_a[0], point_b[0], point_a[1], point_b[1]
         transformer = pyproj.Transformer.from_crs(G.graph['crs'], "EPSG:4326", always_xy=True)
@@ -198,12 +204,13 @@ def perpendicular_distance(point, line_start, line_end):
 
     return distance
 
-def Douglas_Peucker(route_points, thold):
+def douglas_peucker(route_linestring, thold):
     dmax = 0.0
     index = 0
-    end = len(route_points)
-    for i in range(1, end):
-        d = perpendicular_distance(route_points[i - 1], route_points[i], route_points[end])
+    first,last = route_linestring[0],route_linestring[-1]
+
+    for i in range(1, last):
+        d = perpendicular_distance(route_linestring[i - 1], route_linestring[i], route_linestring[end])
         if d > dmax:
             index = i
             dmax = d
@@ -211,11 +218,30 @@ def Douglas_Peucker(route_points, thold):
     results = []
 
     if (dmax >= thold):
-        recResults1 = Douglas_Peucker(route_points[:index + 1],thold)
-        recResults2 = Douglas_Peucker(route_points[index:],thold)
+        recResults1 = douglas_peucker(route_linestring[:index + 1],thold)
+        recResults2 = douglas_peucker(route_linestring[index:],thold)
 
         results = recResults1[:-1] + recResults2
     else:
-        results = route_points[:index + 1]
+        results = route_linestring[:index + 1]
 
     return results
+
+def get_bearing_difference(G, origin, intermediate, destination):
+    if isinstance(origin, int) and isinstance(destination, int) and isinstance(intermediate, int):
+        origin = [G.nodes[origin]['y'], G.nodes[origin]['x']]
+        destination = [G.nodes[destination]['y'], G.nodes[destination]['x']]
+        intermediate = [G.nodes[intermediate]['y'], G.nodes[intermediate]['x']]
+
+    bearing_origin_to_intermediate = get_azimuth(G, origin, intermediate)
+    bearing_intermediate_to_destination = get_azimuth(G, intermediate, destination)
+
+    bearing_difference = (bearing_intermediate_to_destination - bearing_origin_to_intermediate)
+
+    bearing_difference = bearing_difference % 360
+
+    if bearing_difference > 180:
+        bearing_difference -= 360
+    elif bearing_difference < -180:
+        bearing_difference += 360
+    return bearing_difference

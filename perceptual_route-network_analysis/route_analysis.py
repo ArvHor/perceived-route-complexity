@@ -1,10 +1,10 @@
 import networkx as nx
 import hashlib
 import osmnx as ox
-import map_analysis as map_analysis
+from shapely.lib import get_num_points, get_num_coordinates
 import logging
 import geo_util as geo_util
-
+import path_search
 logging.basicConfig(
     filename='../app.log',          # Log file name
     filemode='a',                # 'a' for append, 'w' for overwrite
@@ -50,7 +50,7 @@ def get_route_complexity(G,route_edges):
         v, w = route_edges[i + 1]  # Correct indexing for consecutive edges
 
         # 1. Calculate the complexity of the turn between the edges
-        decision_complexity, turn = wa.calculate_decisionpoint_complexity(G, (u, v), (v, w))
+        decision_complexity, turn = path_search.calculate_decisionpoint_complexity(G, (u, v), (v, w))
 
         # 2. Calculate the complexity of this edge segment
         current_edge_complexity = previous_edge_complexity + decision_complexity
@@ -102,9 +102,23 @@ def get_origin_destination_betweenness_centrality(graph, route_nodes, origin, de
     return od_betweenness_sum
 
 
-def get_n_route_segments(G,route_nodes):
-    route_points = [(G.nodes[node]['x'], G.nodes[node]['y']) for node in route_nodes]
-    n_before = len(route_points)
+def get_n_route_segments(route_linestring,thold=50):
 
-    route_points = geo_util.Douglas_Peucker(route_points,thold=50)
+    n_before = get_num_coordinates(route_linestring)
+    route_linestring= geo_util.douglas_peucker(route_linestring,thold=thold)
+    n_after = get_num_coordinates(route_linestring)
+
+    return n_after
+
+
+def get_route_bearing_sum(G, route_linestring):
+    sum_difference = 0
+    for i in range(len(route_linestring)):
+        origin = route_linestring.coords[i]
+        intermediate = route_linestring.coords[i+1]
+        destination = route_linestring.coords[i+2]
+        bearing_difference = geo_util.get_bearing_difference(G,origin,destination,intermediate)
+        sum_difference += bearing_difference
+
+    return sum_difference
 

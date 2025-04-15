@@ -6,8 +6,18 @@ import geo_util
 import logging
 import hashlib
 import alignment as alignment
-import network_analysis
+import street_network_analysis
+import geo_util
 
+from performance_tracker import *
+
+graph_metrics = {
+    'nodes': get_node_count,
+    'edges': get_edge_count,
+    'avg_degree': get_avg_degree,
+    'density': get_density
+}
+tracker = PerformanceTracker(output_file='street_network_performance.json')
 
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s', filename='../app.log', filemode='w')
 
@@ -29,7 +39,7 @@ class od_pair:
 
         # Get geometric properties of the origin and destination
 
-        self.shape_dict = geo_utilities.get_od_pair_polygon(self.origin_point, self.destination_point)
+        self.shape_dict = geo_util.get_od_pair_polygon(self.origin_point, self.destination_point)
         self.polygon = self.shape_dict["polygon"] # Square origin and destination as the diagonal of a square
         self.bbox = self.shape_dict["bbox"] # Bounding box as `(left, bottom, right, top)`.
         self.bbox_polygon = self.shape_dict["bbox_polygon"]
@@ -39,7 +49,7 @@ class od_pair:
 
         self.subgraph = self.get_subgraph(bbox=False)
         self.undirected_subgraph = ox.convert.to_undirected(self.subgraph)
-        self.area = geo_utilities.calculate_area_with_utm(self.polygon)
+        self.area = geo_util.calculate_area_with_utm(self.polygon)
         self.subgraph_stats = ox.stats.basic_stats(self.subgraph, area=self.area)
 
 
@@ -47,7 +57,7 @@ class od_pair:
         self.env_bearing_dist_weighted, _ = ox.bearing._bearings_distribution(G=self.undirected_subgraph , num_bins=36,min_length=10, weight="length")
         self.env_bearing_dist, _ = ox.bearing._bearings_distribution(G=self.undirected_subgraph , num_bins=36, min_length=10,weight=None)
 
-        self.route_direction_bearing_dist = self.get_route_direction_bearing_dist()
+        self.route_direction_bearing_dist = o.get_route_direction_bearing_dist()
 
         self.environment_orientation_entropy_weighted = ox.bearing.orientation_entropy(self.undirected_subgraph , num_bins=36, weight="length")
         self.environment_orientation_entropy = ox.bearing.orientation_entropy(self.undirected_subgraph , num_bins=36)

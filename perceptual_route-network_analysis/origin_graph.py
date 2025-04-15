@@ -6,11 +6,12 @@ import logging
 import numpy as np
 import osmnx as ox
 import pandas as pd
-import weighting_algorithms as wa
 from od_pair import od_pair
 import networkx as nx
 import ast
 import os
+import path_search
+import street_network_analysis
 
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s', filename='../app.log', filemode='w')
 
@@ -211,7 +212,7 @@ class origin_graph:
         else:
             try:
                 self.graph = self.remove_parallel_edges()
-                self.graph = wa.simplest_path_from_source_heapq(G=self.graph,start_node=self.start_node)
+                self.graph = path_search.simplest_path_from_source_heapq(G=self.graph,start_node=self.start_node)
                 self.remove_infinite_edges()
                 self.edge_weights.append("decision_complexity")
                 self.graph.graph['edge_weights'] = self.edge_weights
@@ -225,20 +226,20 @@ class origin_graph:
             if "deviation_from_prototypical" in self.edge_weights:
                 logging.info(f"Deviation from prototypical already calculated in {self.city_name}")
             else:
-                self.graph, self.max_deviation_from_prototypical = wa.add_deviation_from_prototypical_weights(G=self.graph)
+                self.graph, self.max_deviation_from_prototypical = street_network_analysis.add_deviation_from_prototypical_weights(G=self.graph)
                 self.edge_weights.append("deviation_from_prototypical")
 
         if "instruction_equivalent" in weightstrings:
             if "instruction_equivalent" in self.edge_weights:
                 logging.info(f"Instruction equivalent already calculated in {self.city_name}")
             else:
-                self.graph, self.max_instruction_equivalent = wa.add_instruction_equivalent_weights(G=self.graph)
+                self.graph, self.max_instruction_equivalent = street_network_analysis.add_instruction_equivalent_weights(G=self.graph)
                 self.edge_weights.append("instruction_equivalent")
         if "node_degree" in weightstrings:
             if "node_degree" in self.edge_weights:
                 logging.info(f"Node degree already added in {self.city_name}")
             else:
-                self.graph, self.max_node_degree = wa.add_node_degree_weights(G=self.graph)
+                self.graph, self.max_node_degree = street_network_analysis.add_node_degree_weights(G=self.graph)
                 self.edge_weights.append("node_degree")
 
         if "betweenness_centrality" in weightstrings:
@@ -260,9 +261,12 @@ class origin_graph:
             logging.info(f"error {e} saving to {filepath}")
 
     def add_node_elevation(self,api_key=None):
-        self.graph = ox.elevation.add_node_elevations_google(self.graph, api_key=api_key,pause=0.1)
-        self.node_attributes.append("elevation")
-        self.graph.graph['node_attributes'] = self.node_attributes
+        if api_key:
+            self.graph = ox.elevation.add_node_elevations_google(self.graph, api_key=api_key,pause=0.1)
+            self.node_attributes.append("elevation")
+            self.graph.graph['node_attributes'] = self.node_attributes
+        else:
+            return None
 
     def save_pickle(self, filepath):
 
