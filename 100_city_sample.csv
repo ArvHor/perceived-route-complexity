@@ -1,0 +1,101 @@
+city_name_en,country_name_en,region,city_name,country_name,continent,latitude,longitude
+Bangkok,Thailand,Asia/Oceania,กรุงเทพมหานคร,ประเทศไทย,Asia,13.7524938,100.4935089
+Beijing,China,Asia/Oceania,Beijing,中国,Asia,40.190632,116.412144
+Hanoi,Vietnam,Asia/Oceania,Thành phố Hà Nội,Việt Nam,Asia,21.0283334,105.854041
+Hong Kong,China,Asia/Oceania,Hong Kong,中国,Asia,22.350627,114.1849161
+Jakarta,Indonesia,Asia/Oceania,Daerah Khusus ibukota Jakarta,Indonesia,Asia,-6.1817,106.8207194
+Kabul,Afghanistan,Asia/Oceania,کابل,افغانستان,Asia,34.5266431,69.1849082
+Karachi,Pakistan,Asia/Oceania,کراچی ڈویژن,پاکستان,Asia,24.8546842,67.0207055
+Kathmandu,Nepal,Asia/Oceania,काठमाडौँ महानगरपालिका,नेपाल,Asia,27.708317,85.3205817
+Kyoto,Japan,Asia/Oceania,京都市,日本,Asia,34.9741067,135.7516775
+Manila,Philippines,Asia/Oceania,Manila,Pilipinas,Asia,14.5904492,120.9803621
+Melbourne,Australia,Asia/Oceania,Melbourne,Australia,Oceania,-37.8142454,144.9631732
+Mumbai,India,Asia/Oceania,Mumbai Suburban,India,Asia,19.054999,72.8692035
+New Delhi,India,Asia/Oceania,Delhi,India,Asia,28.6430858,77.2192671
+Osaka,Japan,Asia/Oceania,大阪市,日本,Asia,34.6937569,135.5014539
+Phnom Penh,Cambodia,Asia/Oceania,Phnom Penh,ព្រះរាជាណាចក្រ​កម្ពុជា,Asia,11.549112,104.896529
+Pyongyang,North Korea,Asia/Oceania,평양시,조선민주주의인민공화국,Asia,39.0167979,125.7473609
+Seoul,South Korea,Asia/Oceania,서울특별시,대한민국,Asia,37.5666791,126.9782914
+Shanghai,China,Asia/Oceania,Shanghai,中国,Asia,31.2312707,121.4700152
+Singapore,Singapore,Asia/Oceania,Singapore,Singapore,Asia,1.357107,103.8194992
+Sydney,Australia,Asia/Oceania,Sydney,Australia,Oceania,-33.8698439,151.2082848
+Taipei,Taiwan,Asia/Oceania,臺北市,臺灣,Asia,25.0375198,121.5636796
+Tokyo,Japan,Asia/Oceania,Tokyo,日本,Asia,35.6768601,139.7638947
+Ulaanbaatar,Mongolia,Asia/Oceania,Улаанбаатар ᠤᠯᠠᠭᠠᠨᠪᠠᠭᠠᠲᠤᠷ,Монгол улс ᠮᠤᠩᠭᠤᠯ ᠤᠯᠤᠰ,Asia,47.9184676,106.9177016
+Amsterdam,Netherlands,Europe,Amsterdam,Nederland,Europe,52.3730796,4.8924534
+Athens,United States,Europe,Athens,United States,Europe,33.9597677,-83.376398
+Barcelona,Spain,Europe,Barcelona,España,Europe,41.3828939,2.1774322
+Berlin,Germany,Europe,Berlin,Deutschland,Europe,52.510885,13.3989367
+Budapest,Hungary,Europe,Budapest,Magyarország,Europe,47.4978789,19.0402383
+Copenhagen,Denmark,Europe,København,Danmark,Europe,55.6867243,12.5700724
+Dublin,Ireland,Europe,Dublin,Éire / Ireland,Europe,53.3493795,-6.2605593
+Glasgow,United Kingdom,Europe,Glasgow,United Kingdom,Europe,55.861155,-4.2501687
+Helsinki,Suomi / Finland,Europe,Helsinki,Suomi / Finland,Europe,60.1674881,24.9427473
+Kiev,Ukraine,Europe,Київ,Україна,Europe,50.4485578,30.5271623
+Lisbon,Portugal,Europe,Lisboa,Portugal,Europe,38.7077507,-9.1365919
+London,United Kingdom,Europe,London,United Kingdom,Europe,51.5074456,-0.1277653
+Madrid,Spain,Europe,Madrid,España,Europe,40.4167047,-3.7035825
+Moscow,Russia,Europe,Moscow,Россия,Europe,55.625578,37.6063916
+Munich,Germany,Europe,München,Deutschland,Europe,48.1371079,11.5753822
+Oslo,Norway,Europe,Oslo,Norge,Europe,59.9133301,10.7389701
+Paris,France,Europe,Paris,France,Europe,48.8588897,2.320041
+Prague,Czech Republic,Europe,Hlavní město Praha,Česko,Europe,50.0596288,14.4464593
+Reykjavik,Iceland,Europe,Reykjavíkurborg,Ísland,Europe,64.1055168,-21.8228825
+Rome,Italy,Europe,Roma,Italia,Europe,41.8933203,12.4829321
+Sarajevo,Bosnia and Herzegovina,Europe,Sarajevo,Bosna i Hercegovina / Босна и Херцеговина,Europe,43.8519774,18.3866868
+Stockholm,Sweden,Europe,Stockholm,Sverige,Europe,59.3251172,18.0710935
+Venice,Italy,Europe,Venezia,Italia,Europe,45.4371908,12.3345898
+Vienna,Austria,Europe,Wien,Österreich,Europe,48.2083537,16.3725042
+Warsaw,Poland,Europe,Warszawa,Polska,Europe,52.2337172,21.0714322
+Bogota,Colombia,Latin America,Bogotá,Colombia,South America,4.6533816,-74.0836333
+Buenos Aires,Argentina,Latin America,Buenos Aires,Argentina,South America,-33.3657998,-60.19955
+Caracas,Venezuela,Latin America,Caracas,Venezuela,South America,10.5060934,-66.9146008
+Havana,Cuba,Latin America,La Habana,Cuba,South America,23.1607191,-82.2953585
+Lima,Peru,Latin America,Lima,Perú,South America,-11.967575,-77.0113689
+Mexico City,Mexico,Latin America,Mexico City,México,South America,19.3207722,-99.1514678
+Port au Prince,Haiti,Latin America,Arrondissement de Port-au-Prince,Ayiti,South America,18.547327,-72.3395928
+Rio de Janeiro,Brazil,Latin America,Rio de Janeiro,Brasil,South America,-22.9110137,-43.2093727
+Sao Paulo,Brazil,Latin America,Sao Paulo,Brasil,South America,-23.5506507,-46.6333824
+Baghdad,Iraq,Middle East/Africa,بغداد,العراق,Asia,33.036132,44.263504
+Beirut,Lebanon,Middle East/Africa,البسطة التحتا,لبنان,Asia,33.8892265,35.5025585
+Cairo,Egypt,Middle East/Africa,القاهرة,مصر,Asia,30.0443879,31.2357257
+Cape Town,South Africa,Middle East/Africa,Cape Town,South Africa,Asia,-33.9288301,18.4172197
+Casablanca,Morocco,Middle East/Africa,Casablanca ⵜⴰⴷⴷⴰⵔⵜ ⵜⵓⵎⵍⵉⵍⵜ الدار البيضاء,Maroc ⵍⵎⵖⵔⵉⴱ المغرب,Asia,33.5945144,-7.6200284
+Damascus,United States,Middle East/Africa,Damascus,United States,Asia,39.2694715,-77.1968941
+Dubai,United Arab Emirates,Middle East/Africa,Dubai,الإمارات العربية المتحدة,Asia,25.2277355,55.1749996
+Istanbul,Turkey,Middle East/Africa,İstanbul,Türkiye,Asia,41.006381,28.9758715
+Jerusalem,Israel,Middle East/Africa,ירושלים | القدس,ישראל,Asia,31.7788242,35.2257626
+Johannesburg,South Africa,Middle East/Africa,Johannesburg,South Africa,Asia,-26.205,28.049722
+Lagos,Nigeria,Middle East/Africa,Lagos,Nigeria,Asia,6.4550575,3.3941795
+Mogadishu,Somalia,Middle East/Africa,Muqdisho مقديشو,Soomaaliya الصومال,Asia,2.0349312,45.3419183
+Nairobi,Kenya,Middle East/Africa,Nairobi,Kenya,Asia,-1.2832533,36.8172449
+Tehran,Iran,Middle East/Africa,شهر تهران,ایران,Asia,35.6877195,51.4396385
+Atlanta,United States,US/Canada,Atlanta,United States,North America,33.7489924,-84.3902644
+Baltimore,United States,US/Canada,Baltimore,United States,North America,39.2908816,-76.610759
+Boston,United States,US/Canada,Boston,United States,North America,42.3554334,-71.060511
+Charlotte,United States,US/Canada,Charlotte,United States,North America,35.2272086,-80.8430827
+Chicago,United States,US/Canada,Chicago,United States,North America,41.8755616,-87.6244212
+Cleveland,United States,US/Canada,Cleveland,United States,North America,41.4996574,-81.6936772
+Dallas,United States,US/Canada,Dallas,United States,North America,32.7762719,-96.7968559
+Denver,United States,US/Canada,Denver,United States,North America,39.7392364,-104.984862
+Detroit,United States,US/Canada,Detroit,United States,North America,42.3315509,-83.0466403
+Honolulu,United States,US/Canada,Honolulu,United States,North America,21.304547,-157.855676
+Houston,United States,US/Canada,Houston,United States,North America,29.7589382,-95.3676974
+Las Vegas,United States,US/Canada,Las Vegas,United States,North America,36.1672719,-115.1483538
+Los Angeles,United States,US/Canada,Los Angeles,United States,North America,34.0536909,-118.242766
+Manhattan,United States,US/Canada,City of New York,United States,North America,40.7896239,-73.9598939
+Miami,United States,US/Canada,Miami,United States,North America,25.7741728,-80.19362
+Minneapolis,United States,US/Canada,Minneapolis,United States,North America,44.9772995,-93.2654692
+Montreal,Canada,US/Canada,Montréal,Canada,North America,45.5031824,-73.5698065
+New Orleans,United States,US/Canada,New Orleans,United States,North America,29.9759983,-90.0782127
+Orlando,United States,US/Canada,Orlando,United States,North America,28.5421109,-81.3790304
+Philadelphia,United States,US/Canada,Philadelphia,United States,North America,39.9527237,-75.1635262
+Phoenix,United States,US/Canada,Phoenix,United States,North America,33.4484367,-112.074141
+Pittsburgh,United States,US/Canada,Pittsburgh,United States,North America,40.4416941,-79.9900861
+Portland,United States,US/Canada,Portland,United States,North America,45.5202471,-122.674194
+San Francisco,United States,US/Canada,San Francisco,United States,North America,37.7792588,-122.4193286
+Seattle,United States,US/Canada,Seattle,United States,North America,47.6038321,-122.330062
+St Louis,United States,US/Canada,Saint Louis,United States,North America,38.6280278,-90.1910154
+Toronto,Canada,US/Canada,Toronto,Canada,North America,43.6534817,-79.3839347
+Vancouver,Canada,US/Canada,Vancouver,Canada,North America,49.2608724,-123.113952
+Washington,United States,US/Canada,Washington,United States,North America,38.8950368,-77.0365427
