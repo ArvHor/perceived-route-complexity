@@ -1,4 +1,5 @@
 from scipy.stats import wasserstein_distance
+from scipy.spatial.distance import cosine, euclidean
 import numpy as np
 
 # Local modules
@@ -36,7 +37,7 @@ def get_EMD_alignment(route_dist, env_dist):
     EMD_alignment = wasserstein_distance(env_dist, route_dist)
     return EMD_alignment
 
-    
+@track_performance(alignment_tracker, metrics_funcs=alignment_metrics)
 def circular_cross_correlation(route,env):
     """Calculates the circular cross-correlation using FFT."""
     route = np.asarray(route)
@@ -60,7 +61,12 @@ def circular_cross_correlation(route,env):
     return result
 
 @track_performance(alignment_tracker, metrics_funcs=alignment_metrics)
-def find_optimal_correlation(route_dist,env_dist,proximity_weight):
+def find_optimal_correlation(route_dist,env_dist,proximity_weight=1):
+    """Calculate optimal correlation and distances between distributions.
+    
+    Returns:
+        tuple: (strongest_correlation, closest_strongest_correlation, cosine_distance, euclidean_distance)
+    """
     import logging
     if route_dist is None or len(route_dist) == 0 or env_dist is None or len(env_dist) == 0:
 
@@ -73,10 +79,7 @@ def find_optimal_correlation(route_dist,env_dist,proximity_weight):
 
     circ_cross_corr = circular_cross_correlation(route_dist, env_dist)
 
-    strongest_correlation = {
-        "lag": np.argmax(circ_cross_corr),
-        "strength": circ_cross_corr[np.argmax(circ_cross_corr)],
-    }
+
     #logging.error(f"Circular cross-correlation: {circ_cross_corr}")
 
     n_circ_cross_corr = np.abs(circ_cross_corr) / np.max(np.abs(circ_cross_corr))
@@ -90,10 +93,28 @@ def find_optimal_correlation(route_dist,env_dist,proximity_weight):
         weighted_correlation = strength - penalty
         weighted_n_circ_cross_corr[i] = weighted_correlation
 
+    cos_dist = cosine(route_dist, env_dist)
+    euc_dist = euclidean(route_dist, env_dist)
+
+    # Shift env_dist by the optimal lag
+    shifted_env_dist = np.roll(env_dist, int(np.argmax(weighted_n_circ_cross_corr)))
+    shifted_cos_dist = cosine(route_dist, shifted_env_dist)
+    shifted_euc_dist = euclidean(route_dist, shifted_env_dist)
+
+    strongest_correlation = {
+        "lag": np.argmax(circ_cross_corr),
+        "strength": circ_cross_corr[np.argmax(circ_cross_corr)],
+    }
 
     closest_strongest_correlation = {
         "lag": np.argmax(weighted_n_circ_cross_corr),
         "strength": weighted_n_circ_cross_corr[np.argmax(weighted_n_circ_cross_corr)],
+        "cosine_distance": cos_dist,
+        "euclidean_distance": euc_dist,
+        "shifted_cosine_distance": shifted_cos_dist,
+        "shifted_euclidean_distance": shifted_euc_dist,
     }
+
+
 
     return strongest_correlation, closest_strongest_correlation,

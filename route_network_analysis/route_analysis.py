@@ -20,7 +20,9 @@ def get_start_node(graph):
     return graph.graph['start_node']
 
 def get_avg_degree(graph):
-    degrees = [d for _, d in graph.out_degree()]
+    degrees = []
+    for node in graph.nodes():
+        degrees.append(graph.out_degree(node))
     return sum(degrees) / len(degrees) if degrees else 0
 
 def get_node_count(graph):

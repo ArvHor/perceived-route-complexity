@@ -85,8 +85,7 @@ def get_od_pair_polygon(origin_point, destination_point,padding=0.25):
 
     fwd_bearing = ox.bearing.calculate_bearing(lat1, lon1, lat2, lon2)
     bwd_bearing = ox.bearing.calculate_bearing(lat2, lon2, lat1, lon1)
-    print(f"fwd: {fwd_bearing}")
-    print(f"bwd: {bwd_bearing}")
+
     perpendicular_fwd_bearing = ox.bearing.calculate_bearing(perp_point1[1], perp_point1[0], perp_point2[1], perp_point2[0])
     perpendicular_bwd_bearing = ox.bearing.calculate_bearing(perp_point2[1], perp_point2[0], perp_point1[1], perp_point1[0])
 
@@ -98,15 +97,11 @@ def get_od_pair_polygon(origin_point, destination_point,padding=0.25):
         "perpendicular_fwd_bearing": bearings[2],
         "perpendicular_bwd_bearing": bearings[3],
         "polygon": polygon,
-        "bbox" : bbox,
+        "wsen_bbox" : bbox,
         "bbox_polygon": bbox_polygon,
-        "osmnx_bbox": bbox_tuple
+        "sewe_bbox": bbox_tuple
     }
 
-    print(f"fwd: {shape_dict['fwd_bearing']}")
-    print(f"bwd: {shape_dict['bwd_bearing']}")
-    print(f"perp fwd: {shape_dict['perpendicular_fwd_bearing']}")
-    print(f"perp bwd: {shape_dict['perpendicular_bwd_bearing']}")
     return shape_dict
 
 
@@ -234,7 +229,7 @@ def douglas_peucker(route_linestring_coords, thold):
     return results
 
 def get_bearing_difference(G, origin, intermediate, destination):
-    print(f'origin: {origin},intermediate: {intermediate},destination: {destination}')
+
     if isinstance(origin, int) or isinstance(origin,np.int64):
         origin = (G.nodes[origin]['x'], G.nodes[origin]['y'])
 
@@ -243,10 +238,6 @@ def get_bearing_difference(G, origin, intermediate, destination):
 
     if isinstance(destination, int) or isinstance(destination,np.int64):
         destination = (G.nodes[destination]['x'], G.nodes[destination]['y'])
-
-
-
-    print(f'origin: {type(origin)},intermediate: {type(intermediate)},destination: {type(destination)}')
 
     bearing_origin_to_intermediate = get_azimuth(G, origin, intermediate)
     bearing_intermediate_to_destination = get_azimuth(G, intermediate, destination)

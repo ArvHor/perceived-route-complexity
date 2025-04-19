@@ -35,9 +35,9 @@ def plot_route_gdf(G, route_gdf,start_node,end_node,info_text="null",imgpath="ro
                             "weight": 7,"opacity":0.7,
                             'dashArray':'1,20'},
                         height="100%",
-                        zoom_start=16,
-                        min_zoom=16,
-                        max_zoom=16,
+                        zoom_start=14,
+                        min_zoom=14,
+                        max_zoom=14,
                         legend=False,
                         attr=None)
 
@@ -70,10 +70,32 @@ def plot_route_gdf(G, route_gdf,start_node,end_node,info_text="null",imgpath="ro
         ).add_to(m)
     m.save(file_path)
     full_path = os.path.abspath(file_path)
+    imgpath = full_path.replace('.html', '.png')
+
     screenshot_map(full_path, imgpath)
     if return_bbox:
         return bbox
 
+def screenshot_map(full_path,imgpath):
+    opts = webdriver.FirefoxOptions()
+    opts.add_argument("--width=1600")
+    opts.add_argument("--height=1286")
+    opts.add_argument("--headless")
+    opts.add_argument("--window-size=1600,1286")
+
+    opts.binary_location = "/usr/local/bin/geckodriver"
+
+    driver = Firefox(options=opts)
+    driver.set_page_load_timeout(60)
+
+    #driver.set_window_size(1600, 1200)
+    print(f'full path: {full_path}')
+    driver.get(f'file://{full_path}')
+    driver.set_window_size(1600, 1286)
+    time.sleep(2)
+    driver.save_screenshot(imgpath)
+
+    driver.quit()
 def flip_map(m,end_location,start_location):
 
     css = None
@@ -400,24 +422,3 @@ def add_padding_to_bbox(bbox, padding_meters):
 
 
 
-def screenshot_map(full_path,imgpath):
-    opts = webdriver.FirefoxOptions()
-    opts.add_argument("--width=1600")
-    opts.add_argument("--height=1286")
-    opts.add_argument("--headless")
-    opts.add_argument("--window-size=1600,1286")
-    driver = Firefox(options=opts)
-    driver.set_page_load_timeout(60)
-
-    try:
-        #driver.set_window_size(1600, 1200)
-        driver.get(f'file://{full_path}')
-        driver.set_window_size(1600, 1286)
-        time.sleep(2)
-        driver.save_screenshot(imgpath)
-    except Exception as e:
-        print("Error loading map")
-        print(e)
-
-
-    driver.quit()

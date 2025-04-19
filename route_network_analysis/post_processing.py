@@ -14,28 +14,28 @@ def get_turn_count(turn_list):
 
 def normalize_complexity(df):
     
-    shortest_max = df['shortest_path_complexity'].max()
-    simplest_max = df['simplest_path_complexity'].max()
+    shortest_max = df['shortest_complexity'].max()
+    simplest_max = df['simplest_complexity'].max()
 
     max_complexity = max(shortest_max,simplest_max)
-    print(f"max complexity: {df['shortest_path_complexity'].max()} sum of columns: {df['shortest_path_complexity'].sum()}, mean: {df['shortest_path_complexity'].mean()}, median: {df['shortest_path_complexity'].median()}")
+    print(f"max complexity: {df['shortest_complexity'].max()} sum of columns: {df['shortest_complexity'].sum()}, mean: {df['shortest_complexity'].mean()}, median: {df['shortest_complexity'].median()}")
     # now for the shortest path
-    print(f"max complexity: {df['simplest_path_complexity'].max()} sum of columns: {df['simplest_path_complexity'].sum()}, mean: {df['simplest_path_complexity'].mean()}, median: {df['simplest_path_complexity'].median()}")
-    df['simplest_path_complexity'] = df['simplest_path_complexity'] / max_complexity
-    df['shortest_path_complexity'] = df['shortest_path_complexity'] / max_complexity
-    print(f"max complexity: {df['shortest_path_complexity'].max()} sum of columns: {df['shortest_path_complexity'].sum()}, mean: {df['shortest_path_complexity'].mean()}, median: {df['shortest_path_complexity'].median()}")
+    print(f"max complexity: {df['simplest_complexity'].max()} sum of columns: {df['simplest_complexity'].sum()}, mean: {df['simplest_complexity'].mean()}, median: {df['simplest_complexity'].median()}")
+    df['simplest_complexity'] = df['simplest_complexity'] / max_complexity
+    df['shortest_complexity'] = df['shortest_complexity'] / max_complexity
+    print(f"max complexity: {df['shortest_complexity'].max()} sum of columns: {df['shortest_complexity'].sum()}, mean: {df['shortest_complexity'].mean()}, median: {df['shortest_complexity'].median()}")
     # now for the shortest path
-    print(f"max complexity: {df['simplest_path_complexity'].max()} sum of columns: {df['simplest_path_complexity'].sum()}, mean: {df['simplest_path_complexity'].mean()}, median: {df['simplest_path_complexity'].median()}")
+    print(f"max complexity: {df['simplest_complexity'].max()} sum of columns: {df['simplest_complexity'].sum()}, mean: {df['simplest_complexity'].mean()}, median: {df['simplest_complexity'].median()}")
     return df
 
 def label_length_outliers(df):
-    Q1 = df[['simplest_path_length', 'shortest_path_length']].quantile(0.25)
-    Q3 = df[['simplest_path_length', 'shortest_path_length']].quantile(0.75)
+    Q1 = df[['simplest_length', 'shortest_length']].quantile(0.25)
+    Q3 = df[['simplest_length', 'shortest_length']].quantile(0.75)
     IQR = Q3 - Q1
     def is_outlier(row):
         return (
-            (row['shortest_path_length'] < (Q1['shortest_path_length'] - 1.5 * IQR['shortest_path_length'])) or
-            (row['shortest_path_length'] > (Q3['shortest_path_length'] + 1.5 * IQR['shortest_path_length']))
+            (row['shortest_length'] < (Q1['shortest_length'] - 1.5 * IQR['shortest_length'])) or
+            (row['shortest_length'] > (Q3['shortest_length'] + 1.5 * IQR['shortest_length']))
         )
     df['length_outliers'] = df.apply(is_outlier, axis=1)
     return df

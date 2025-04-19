@@ -3,12 +3,49 @@ import math
 import numpy as np
 import numpy.typing as npt
 import networkx as nx
-from typing import overload
+import osmnx as ox
 from osmnx import projection
 from warnings import warn
 import scipy
 # Local modules
 from . import geo_util
+from .performance_tracker import PerformanceTracker, track_performance
+
+
+def get_node_count(graph):
+    return len(graph.nodes)
+
+def get_edge_count(graph):
+    return len(graph.edges)
+
+def get_avg_degree(graph):
+    degrees = []
+    for node in graph.nodes():
+        degrees.append(graph.out_degree(node))
+    return sum(degrees) / len(degrees) if degrees else 0
+
+def get_density(graph):
+    return nx.density(graph)
+
+def get_city_name(graph):
+    return graph.graph['city_name']
+
+def get_start_node(graph):
+    return graph.graph['start_node']
+
+def get_len(array_type):
+    return len(array_type)
+
+street_network_metrics = {
+    'city_name': get_city_name,
+    'start_node': get_start_node,
+    'nodes': get_node_count,
+    'edges': get_edge_count,
+    'avg_degree': get_avg_degree,
+    'density': get_density
+}
+
+street_network_tracker = PerformanceTracker(output_file='street_network_performance.json')
 
 def add_deviation_from_prototypical_weights(G):
     max_weight = 0
@@ -267,7 +304,7 @@ def extract_edge_bearings(
     weights_array = np.concatenate([weights_array, weights_array])
     return bearings_array, weights_array
 
-
+@track_performance(street_network_tracker, metrics_funcs=street_network_metrics)
 def bearings_distribution(
     G: nx.MultiGraph | nx.MultiDiGraph,
     num_bins: int,
@@ -325,3 +362,42 @@ def bearings_distribution(
     # Every other edge of the split bins is the center of a merged bin.
     bin_centers = split_bin_edges[range(0, num_split_bins - 1, 2)]
     return bin_counts, bin_centers
+
+@track_performance(street_network_tracker, metrics_funcs=street_network_metrics)
+def add_edge_bearings(G: nx.MultiDiGraph) -> nx.MultiDiGraph:
+    """
+    Calculate and add compass `bearing` attributes to all graph edges.
+
+    Vectorized function to calculate (initial) bearing from origin node to
+    destination node for each edge in a directed, unprojected graph then add
+    these bearings as new `bearing` edge attributes. Bearing represents angle
+    in degrees (clockwise) between north and the geodesic line from the origin
+    node to the destination node. Ignores self-loop edges as their bearings
+    are undefined.
+
+    Parameters
+    ----------
+    G
+        Unprojected graph.
+
+    Returns
+    -------
+    G
+        Graph with `bearing` attributes on the edges.
+    """
+    if projection.is_projected(G.graph["crs"]):  # pragma: no cover
+        msg = "Graph must be unprojected to add edge bearings."
+        raise ValueError(msg)
+
+    # extract edge IDs and corresponding coordinates from their nodes
+    uvk = [(u, v, k) for u, v, k in G.edges if u != v]
+    x = G.nodes(data="x")
+    y = G.nodes(data="y")
+    coords = np.array([(y[u], x[u], y[v], x[v]) for u, v, k in uvk])
+
+    # calculate bearings then set as edge attributes
+    bearings = ox.bearing.calculate_bearing(coords[:, 0], coords[:, 1], coords[:, 2], coords[:, 3])
+    values = zip(uvk, bearings)
+    nx.set_edge_attributes(G, dict(values), name="bearing")
+
+    return G

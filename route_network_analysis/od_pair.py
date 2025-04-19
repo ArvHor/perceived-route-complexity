@@ -30,13 +30,13 @@ class od_pair:
         self.od_distance = float(ox.distance.great_circle(lat1=self.origin_point[0], lon1=self.origin_point[1], lat2=self.destination_point[0], lon2=self.destination_point[1]))
 
         # Find the simplest and shortest route from the origin to the destination
-        self.shortest_path = route(self.graph,origin=self.origin_node,destination=self.destination_node,weighstring='length')
-        self.simplest_path = route(self.graph,origin=self.origin_node,destination=self.destination_node,weighstring='decision_complexity')
+        self.shortest_path = route(self.graph,origin=self.origin_node,destination=self.destination_node,weightstring='length')
+        self.simplest_path = route(self.graph,origin=self.origin_node,destination=self.destination_node,weightstring='decision_complexity')
 
         # Get geometric properties of the origin and destination
         self.shape_dict = geo_util.get_od_pair_polygon(self.origin_point, self.destination_point)
         self.polygon = self.shape_dict["polygon"] # Square origin and destination as the diagonal of a square
-        self.bbox = self.shape_dict["osmnx_bbox"] # Bounding box as `(left, bottom, right, top)`.
+        self.bbox = self.shape_dict["wsen_bbox"] # Bounding box as `(left, bottom, right, top)`.
         self.bbox_polygon = self.shape_dict["bbox_polygon"]
 
         self.cardinal_direction = od_pair_analysis.get_od_cardinal_direction(G=self.graph,origin=self.origin_node,destination=self.destination_node)
@@ -94,7 +94,7 @@ class od_pair:
         # Generate geometry
         instance.shape_dict = geo_util.get_od_pair_polygon(instance.origin_point, instance.destination_point)
         instance.polygon = instance.shape_dict["polygon"]
-        instance.bbox = instance.shape_dict["osmnx_bbox"]
+        instance.bbox = instance.shape_dict["wsen_bbox"]
         instance.bbox_polygon = instance.shape_dict["bbox_polygon"]
         instance.map_bbox = instance.path.map_bbox
 
@@ -145,7 +145,7 @@ class od_pair:
 
 
         # Circular cross-correlation to find the strongest and closest correlation
-        max_correlation, best_lag, best_score, best_score_lag = alignment.find_optimal_correlation(route_dist, env_dist_weighted)
+        strongest_correlation, closest_strongest_correlation = alignment.find_optimal_correlation(route_dist, env_dist_weighted)
 
         # Cosine similarity
         cosine_similarity_weighted = alignment.get_cosine_similarity_alignment(route_dist, env_dist_weighted)
@@ -172,16 +172,22 @@ class od_pair:
             "shortest_simplest_hausdorff_distance": self.shortest_path.route_linestring.hausdorff_distance(self.simplest_path.route_linestring),
 
             # Alignment values
-            "closest_strongest_lag": best_score_lag,
-            "closest_strongest_correlation": best_score,
-            "strongest_correlation_lag": best_lag,
+            "closest_strongest_lag": closest_strongest_correlation["lag"],
+            "closest_strongest_correlation": closest_strongest_correlation["strength"],
+            "strongest_correlation_lag": strongest_correlation["lag"],
+            "strongest_correlation": strongest_correlation["strength"],
+            "cosine_distance": closest_strongest_correlation["cosine_distance"],
+            "euclidean_distance": closest_strongest_correlation["euclidean_distance"],
+            "shifted_cosine_distance": closest_strongest_correlation["shifted_cosine_distance"],
+            "shifted_euclidean_distance": closest_strongest_correlation["shifted_euclidean_distance"],
+
             'wasserstein_distance': wasserstein_distance,
-            'cosine_similarity': cosine_similarity_weighted,
+            '_cosine_similarity': cosine_similarity_weighted,
 
             # Street orientation values
             "orientation_entropy": self.environment_orientation_entropy,
             "orientation_entropy_weighted": self.environment_orientation_entropy_weighted,
-            "environment_orientation_order_order": self.order_weighted,
+            "environment_orientation_order": self.order_weighted,
             "route_bearings_distribution": route_dist.tolist(),
             "route_bearings": [str(self.shape_dict["fwd_bearing"]), str(self.shape_dict["bwd_bearing"])],
             "environment_bearings_distribution": env_dist.tolist(),
@@ -206,9 +212,9 @@ class od_pair:
             "circuity_avg": self.subgraph_stats['circuity_avg'],
             "node_density_km": self.subgraph_stats['node_density_km'],
         }
-
-        shortest_path_dict = vars(self.simplest_path)
-        simplest_path_dict = vars(self.shortest_path)
+        print("now adding the route dicts")
+        shortest_path_dict = {f"shortest_{key}": value for key, value in vars(self.shortest_path).items()}
+        simplest_path_dict = {f"simplest_{key}": value for key, value in vars(self.simplest_path).items()}
 
         comparison_dict.update(shortest_path_dict)
         comparison_dict.update(simplest_path_dict)
@@ -230,7 +236,7 @@ class od_pair:
                 f"env_bearing_dist_weighted is None. Distribution: {self.env_bearing_dist_weighted}, Number of edges in subgraph: {len(self.subgraph.edges)}")
 
         # Circular cross-correlation to find the strongest and closest correlation
-        max_correlation, best_lag, best_score, best_score_lag = alignment.find_optimal_correlation(route_dist,
+        strongest_correlation, closest_strongest_correlation = alignment.find_optimal_correlation(route_dist,
                                                                                                    env_dist_weighted)
 
         # Cosine similarity
@@ -253,18 +259,23 @@ class od_pair:
             "destination_point": self.destination_point,
             'od_distance': self.od_distance,
 
-
             # Alignment values
-            "closest_strongest_lag": best_score_lag,
-            "closest_strongest_correlation": best_score,
-            "strongest_correlation_lag": best_lag,
+            "closest_strongest_lag": closest_strongest_correlation["lag"],
+            "closest_strongest_correlation": closest_strongest_correlation["strength"],
+            "strongest_correlation_lag": strongest_correlation["lag"],
+            "strongest_correlation": strongest_correlation["strength"],
+            "cosine_distance": closest_strongest_correlation["cosine_distance"],
+            "euclidean_distance": closest_strongest_correlation["euclidean_distance"],
+            "shifted_cosine_distance": closest_strongest_correlation["shifted_cosine_distance"],
+            "shifted_euclidean_distance": closest_strongest_correlation["shifted_euclidean_distance"],
+
             'wasserstein_distance': wasserstein_distance,
             'cosine_similarity': cosine_similarity_weighted,
 
             # Street orientation values
             "orientation_entropy": self.environment_orientation_entropy,
             "orientation_entropy_weighted": self.environment_orientation_entropy_weighted,
-            "environment_orientation_order_order": self.order_weighted,
+            "environment_orientation_order": self.order_weighted,
             "route_bearings_distribution": route_dist.tolist(),
             "route_bearings": [str(self.shape_dict["fwd_bearing"]), str(self.shape_dict["bwd_bearing"])],
             "environment_bearings_distribution": env_dist.tolist(),

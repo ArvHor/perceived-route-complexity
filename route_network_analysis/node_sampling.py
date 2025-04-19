@@ -168,7 +168,10 @@ def get_random_nodes_for_all_cities(origin_locations, min_distance_km, sample_si
     for i, node_sample in enumerate(node_samples,start=1):
       location = {
         'city_name': city,
-        'country': row['country'],
+        'city_name_en': row['city_name_en'],
+        'country_name': row['country_name'],
+        'country_name_en': row['country_name_en'],
+        'continent': row['continent'],
         'region': row['region'],
         "network_type":"drive",
         "node_id": node_sample['node_id'],
@@ -231,6 +234,7 @@ def get_coord_info(lat, lon, max_retries=3, retry_delay=2):
             else:
                 print(f"Geocoding failed after multiple retries for coordinates: {lat}, {lon}")
                 return None
+    return None
 
 def fix_unknown(origin_locations):
   for index, row in origin_locations.iterrows():
@@ -244,3 +248,118 @@ def fix_unknown(origin_locations):
         origin_locations.at[index, 'country'] = coord_info['country']
         origin_locations.at[index, 'region'] = coord_info['region']
   origin_locations.to_csv('./parameter_data/boeing_locations_3node_sample_B.csv', index=False)
+
+
+  import overpy
+  import time
+
+
+def enrich_city_data(df):
+  """
+  Enrich a dataframe containing city and region information with additional geographic data
+  using targeted OpenStreetMap queries and geocoding.
+  """
+  # Create a copy of the dataframe
+  result_df = df.copy()
+
+  # Initialize columns
+  result_df['city_name'] = df['City']
+  result_df['city_name_en'] = df['City']
+  result_df['country_name'] = None
+  result_df['country_name_en'] = None
+  result_df['continent'] = None
+
+  # Initialize APIs
+  overpass_api = overpy.Overpass()
+  geolocator = Nominatim(user_agent="city_enricher")
+
+  # Country to continent mapping
+  country_to_continent = {
+    # Same mapping as before
+    'Thailand': 'Asia',
+    # Add other countries as needed
+  }
+
+  for idx, row in result_df.iterrows():
+    city = row['City']
+    region = row['Region']
+
+    try:
+      # Step 1: Use Nominatim for basic geocoding - more reliable than direct Overpass query
+      location = geolocator.geocode(city, exactly_one=True, addressdetails=True)
+
+      if location and hasattr(location, 'raw') and 'address' in location.raw:
+        address = location.raw['address']
+
+        # Get city name
+        if 'city' in address:
+          result_df.at[idx, 'city_name'] = address['city']
+          result_df.at[idx, 'city_name_en'] = address['city']
+
+        # Get country name
+        if 'country' in address:
+          result_df.at[idx, 'country_name'] = address['country']
+          result_df.at[idx, 'country_name_en'] = address['country']
+
+        # Step 2: Only use Overpass for more specific data with a targeted query
+        if 'country_code' in address and 'city' in address:
+          country_code = address['country_code'].upper()
+
+          # More targeted query - get only city relation with exact name match
+          query = f"""
+                  [out:json][timeout:25];
+                  // Only query for the relation (most cities are stored as relations)
+                  relation["place"="city"]["name"="{city}"]["admin_level"~"4|6|8"]["ISO3166-1"~".*{country_code}.*"];
+                  out body;
+                  """
+
+          try:
+            result = overpass_api.query(query)
+
+            if result.relations:
+              relation = result.relations[0]
+              tags = relation.tags
+
+              # Get localized and English names
+              if 'name' in tags:
+                result_df.at[idx, 'city_name'] = tags['name']
+
+              if 'name:en' in tags:
+                result_df.at[idx, 'city_name_en'] = tags['name:en']
+
+              # Get country information if available
+              if 'is_in:country' in tags:
+                result_df.at[idx, 'country_name'] = tags['is_in:country']
+
+              if 'is_in:country:en' in tags:
+                result_df.at[idx, 'country_name_en'] = tags['is_in:country:en']
+          except Exception as e:
+            print(f"Overpass error for {city}: {str(e)}")
+
+      # Step 3: Determine continent (same as before)
+      if result_df.at[idx, 'country_name'] in country_to_continent:
+        result_df.at[idx, 'continent'] = country_to_continent[result_df.at[idx, 'country_name']]
+      elif result_df.at[idx, 'country_name_en'] in country_to_continent:
+        result_df.at[idx, 'continent'] = country_to_continent[result_df.at[idx, 'country_name_en']]
+      else:
+        # Extract from region field as before
+        if "Asia" in region:
+          if "Oceania" in region:
+            oceania_countries = ['Australia', 'Papua New Guinea', 'New Zealand', 'Fiji']
+            if (result_df.at[idx, 'country_name'] in oceania_countries or
+                    result_df.at[idx, 'country_name_en'] in oceania_countries):
+              result_df.at[idx, 'continent'] = "Oceania"
+            else:
+              result_df.at[idx, 'continent'] = "Asia"
+          else:
+            result_df.at[idx, 'continent'] = "Asia"
+        # Other regions as before
+
+      # Avoid hitting rate limits
+      time.sleep(1.5)
+      print(f"finished {city}")
+
+    except Exception as e:
+      print(f"Error processing {city}: {str(e)}")
+
+  return result_df

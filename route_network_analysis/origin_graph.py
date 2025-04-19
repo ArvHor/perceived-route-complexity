@@ -147,7 +147,7 @@ class origin_graph:
         else:
             G = ox.simplify_graph(G)
 
-        G = ox.bearing.add_edge_bearings(G)
+        G = street_network_analysis.add_edge_bearings(G)
         self.node_attributes.append("bearing")
         return G
 
@@ -215,18 +215,15 @@ class origin_graph:
         ox.plot_graph_orientation(self.graph, bbox=self.bbox_coords, save=True, filepath=filepath)
 
     def add_simplest_paths_from_origin(self):
-        if "decision_complexity" in self.edge_weights:
+        if "decision_complexity_naaaaaah" in self.edge_weights:
             logging.info(f"Simplest paths from origin already added {self.city_name}")
             return
         else:
-            try:
-                self.graph = self.remove_parallel_edges()
-                self.graph = path_search.simplest_path_from_source_heapq(G=self.graph,start_node=self.start_node)
-                self.remove_infinite_edges()
-                self.edge_weights.append("decision_complexity")
-                self.graph.graph['edge_weights'] = self.edge_weights
-            except Exception as e:
-                logging.info(f"Error finding simplest paths for {self.city_name}: {e}")
+            self.graph = self.remove_parallel_edges()
+            self.graph = path_search.simplest_path_from_source_heapq(G=self.graph,start_node=self.start_node)
+            self.remove_infinite_edges()
+            self.edge_weights.append("decision_complexity")
+            self.graph.graph['edge_weights'] = self.edge_weights
 
 
     def add_weights(self,weightstrings:List[str]):
