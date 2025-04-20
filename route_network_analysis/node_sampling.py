@@ -79,7 +79,7 @@ def create_train_station_csv(origin_locations):
   new_locations = []
 
   for index, row in origin_locations.iterrows():
-    city_name = row['city_name']
+    city_name = row['city_name_en']
     train_station_coords = get_train_station_coordinates(city_name)
     if train_station_coords:
       location = {
@@ -141,7 +141,7 @@ def get_random_nodes_for_all_cities(origin_locations, min_distance_km, sample_si
   # Example usage
   samples = []
   for index, row in origin_locations.iterrows():
-    city_name = row['city_name']
+    city_name = row['city_name_en']
     city_point = (row['latitude'],row['longitude'])
     try:
       graph, random_nodes = download_street_network_and_select_random_nodes(city_name,city_point,min_distance_km=min_distance_km,sample_size=sample_size,random_seed=random_seed)
@@ -152,7 +152,7 @@ def get_random_nodes_for_all_cities(origin_locations, min_distance_km, sample_si
       print(f"Random nodes for {city_name}: {random_nodes}")
     #time.sleep(1)  # Sleep for 1 second to avoid making too many requests in a short period of time
     if random_nodes:
-      city = row['city_name']
+      city = row['city_name_en']
       #country = location_info[location_info['city_name'] == city]['country']
       #region = location_info[location_info['city_name'] == city]['region']
       node_samples = []
@@ -238,7 +238,7 @@ def get_coord_info(lat, lon, max_retries=3, retry_delay=2):
 
 def fix_unknown(origin_locations):
   for index, row in origin_locations.iterrows():
-    city = row['city_name']
+    city = row['city_name_en']
     if row['country'] == 'Unknown':
       print(f"City: {city}")
       lat,lon = ast.literal_eval(row['node1_latlon'])
