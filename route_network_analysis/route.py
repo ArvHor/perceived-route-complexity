@@ -1,3 +1,4 @@
+import os
 import networkx as nx
 import hashlib
 import osmnx as ox
@@ -9,6 +10,7 @@ from . import map_plotting as mp
 from . import route_analysis
 from . import path_search
 from . import map_analysis
+from . import map_plotting
 
 class route:
     def __init__(self, graph, origin, destination, weightstring):
@@ -71,7 +73,6 @@ class route:
 
         # Get the bbox containing the route and get cartographic clutter metrics
         self.map_bbox = map_analysis.get_routegdf_bbox(graph,self.nodes,buffer_percentage=0.1)
-        print(self.map_bbox)
         self.map_road_length, self.map_intersection_count, self.map_street_count = map_analysis.get_map_clutter(G=graph,map_bbox=self.map_bbox)
 
         # Generate a unique identifier
@@ -94,6 +95,7 @@ class route:
         origin_node = nodes[0]
         destination_node = nodes[-1]
 
+        instance.identifier = instance.generate_identifier()
         # Get the edges, geometry and length of the route
         geometry = ox.routing.route_to_gdf(graph, instance.nodes, weight=weightstring)["geometry"].unary_union
 
@@ -137,11 +139,18 @@ class route:
         instance.avg_od_betweenness = instance.sum_od_betweenness / instance.n_nodes
 
         # Get the bbox containing the route and get cartographic clutter metrics
-        instance.map_bbox = map_analysis.get_routegdf_bbox(graph,instance.nodes)
+        # For the experiment: 
+        route_gdf = ox.routing.route_to_gdf(graph, instance.nodes, weight=weightstring)
+        cwd = os.getcwd()
+        city_name = graph.graph["city_name"]
+        filepath = os.path.join(cwd, f"{city_name}_route_map.html")
+
+        instance.map_bbox = mp.plot_route_gdf(graph, route_gdf, origin_node, destination_node, file_path=filepath, info_text=city_name, return_bbox=True)
+
         instance.map_road_length, instance.map_intersection_count, instance.map_street_count = map_analysis.get_map_clutter(G=graph,map_bbox=instance.map_bbox)
 
         # Generate a unique identifier for the route
-        instance.identifier = instance.generate_identifier()
+        
 
         return instance
 

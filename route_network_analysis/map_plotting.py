@@ -16,7 +16,7 @@ import folium
 from . import geo_util
 from . import map_analysis
 
-def plot_route_gdf(G, route_gdf,start_node,end_node,info_text="null",imgpath="route_on_map.png",file_path="route_on_map.png",map_tiles="CartoDB.VoyagerNoLabels",return_bbox=False, flip=False):
+def plot_route_gdf(G, route_gdf,start_node,end_node,info_text="null",imgpath="route_on_map.png",file_path="route_on_map.html",map_tiles="CartoDB.VoyagerNoLabels",return_bbox=False, flip=False):
     #print(map_tiles)
     #apikey = '54NexSXPLjyL0FsLdsoy'
     geom = route_gdf['geometry'].unary_union
@@ -83,7 +83,7 @@ def screenshot_map(full_path,imgpath):
     opts.add_argument("--headless")
     opts.add_argument("--window-size=1600,1286")
 
-    opts.binary_location = "/usr/local/bin/geckodriver"
+    opts.binary_location = "/snap/bin/geckodriver"
 
     driver = Firefox(options=opts)
     driver.set_page_load_timeout(60)

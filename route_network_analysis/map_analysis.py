@@ -25,7 +25,7 @@ def get_routegdf_bbox(G, route_nodes, buffer_percentage=0.1):
         # Combine all geometries in the route
         geom = route_gdf['geometry'].unary_union
     else:
-        geom = route_gdf['geometry'].iloc[0]
+        geom = route_gdf['geometry'].iloc[0].unary_union
 
     # Get the bounds of the geometry (minx, miny, maxx, maxy)
     bounds = geom.bounds
