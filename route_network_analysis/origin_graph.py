@@ -208,14 +208,14 @@ class origin_graph:
             if data['decision_complexity'] == float('inf'):
                 edges_to_remove.append((u, v, k))
         G.remove_edges_from(edges_to_remove)
+        G.graph['n_inf_edges'] = len(edges_to_remove)
         self.graph = G
-        self.removed_inf_edges = edges_to_remove
 
     def create_orientation_plot(self,filepath=None):
         ox.plot_graph_orientation(self.graph, bbox=self.bbox_coords, save=True, filepath=filepath)
 
     def add_simplest_paths_from_origin(self):
-        if "decision_complexity_naaaaaah" in self.edge_weights:
+        if "decision_complexity" in self.edge_weights:
             logging.info(f"Simplest paths from origin already added {self.city_name}")
             return
         else:

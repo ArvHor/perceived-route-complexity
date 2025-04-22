@@ -78,9 +78,9 @@ def track_performance(tracker, metrics_funcs=None):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             # Detailed debugging of arguments
-            print(f"Function {func.__name__} called with:")
-            print(f"  - Positional args: {len(args)} {[type(a).__name__ for a in args]}")
-            print(f"  - Keyword args: {len(kwargs)} {list(kwargs.keys())}")
+            #print(f"Function {func.__name__} called with:")
+            #print(f"  - Positional args: {len(args)} {[type(a).__name__ for a in args]}")
+            #print(f"  - Keyword args: {len(kwargs)} {list(kwargs.keys())}")
 
             computed_metrics = {}
 
@@ -93,12 +93,12 @@ def track_performance(tracker, metrics_funcs=None):
             if "city_name" in list(metrics_funcs.keys()):
                 if len(args) > 0:
                     graph_arg = args[0]
-                    print(f"Graph type in decorator: {type(graph_arg).__name__}")
-                    print(f"Is directed: {graph_arg.is_directed() if hasattr(graph_arg, 'is_directed') else 'Unknown'}")
+                    #print(f"Graph type in decorator: {type(graph_arg).__name__}")
+                    #print(f"Is directed: {graph_arg.is_directed() if hasattr(graph_arg, 'is_directed') else 'Unknown'}")
                 elif "G" in kwargs:
                     graph_arg = kwargs["G"]
-                    print(f"Graph type in decorator (from kwargs): {type(graph_arg).__name__}")
-                    print(f"Is directed: {graph_arg.is_directed() if hasattr(graph_arg, 'is_directed') else 'Unknown'}")
+                    #print(f"Graph type in decorator (from kwargs): {type(graph_arg).__name__}")
+                    #print(f"Is directed: {graph_arg.is_directed() if hasattr(graph_arg, 'is_directed') else 'Unknown'}")
 
             if "n_count" in list(metrics_funcs.keys()):
                 if len(args) > 1:

@@ -46,5 +46,3005 @@
     "function": "add_edge_bearings",
     "execution_time": 0.20607757568359375,
     "instance_id": "run_20250420014102"
+  },
+  {
+    "timestamp": "2025-04-21T00:20:11.976471",
+    "function": "add_edge_bearings",
+    "execution_time": 0.46524548530578613,
+    "instance_id": "run_20250421002011"
+  },
+  {
+    "timestamp": "2025-04-21T00:27:01.252187",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4530966281890869,
+    "instance_id": "run_20250421002700"
+  },
+  {
+    "timestamp": "2025-04-21T00:28:06.753530",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4718601703643799,
+    "instance_id": "run_20250421002806"
+  },
+  {
+    "timestamp": "2025-04-21T00:29:09.128313",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4173240661621094,
+    "instance_id": "run_20250421002908"
+  },
+  {
+    "timestamp": "2025-04-21T00:30:03.045177",
+    "function": "add_edge_bearings",
+    "execution_time": 0.371748685836792,
+    "instance_id": "run_20250421003002"
+  },
+  {
+    "timestamp": "2025-04-21T00:30:23.484624",
+    "function": "add_edge_bearings",
+    "execution_time": 0.02143096923828125,
+    "instance_id": "run_20250421003023"
+  },
+  {
+    "timestamp": "2025-04-21T00:30:29.595876",
+    "function": "add_edge_bearings",
+    "execution_time": 0.026499032974243164,
+    "instance_id": "run_20250421003029"
+  },
+  {
+    "timestamp": "2025-04-21T00:30:37.107117",
+    "function": "add_edge_bearings",
+    "execution_time": 0.03306984901428223,
+    "instance_id": "run_20250421003037"
+  },
+  {
+    "timestamp": "2025-04-21T00:30:46.147872",
+    "function": "add_edge_bearings",
+    "execution_time": 0.04094386100769043,
+    "instance_id": "run_20250421003046"
+  },
+  {
+    "timestamp": "2025-04-21T00:30:53.845503",
+    "function": "add_edge_bearings",
+    "execution_time": 0.026378870010375977,
+    "instance_id": "run_20250421003053"
+  },
+  {
+    "timestamp": "2025-04-21T00:31:22.221815",
+    "function": "add_edge_bearings",
+    "execution_time": 0.33090734481811523,
+    "instance_id": "run_20250421003121"
+  },
+  {
+    "timestamp": "2025-04-21T00:31:58.503906",
+    "function": "add_edge_bearings",
+    "execution_time": 0.18758440017700195,
+    "instance_id": "run_20250421003158"
+  },
+  {
+    "timestamp": "2025-04-21T00:32:33.612061",
+    "function": "add_edge_bearings",
+    "execution_time": 0.202958345413208,
+    "instance_id": "run_20250421003233"
+  },
+  {
+    "timestamp": "2025-04-21T00:33:09.299962",
+    "function": "add_edge_bearings",
+    "execution_time": 0.24453353881835938,
+    "instance_id": "run_20250421003309"
+  },
+  {
+    "timestamp": "2025-04-21T00:33:47.753894",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21344423294067383,
+    "instance_id": "run_20250421003347"
+  },
+  {
+    "timestamp": "2025-04-21T00:34:22.851669",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06185126304626465,
+    "instance_id": "run_20250421003422"
+  },
+  {
+    "timestamp": "2025-04-21T00:34:46.590424",
+    "function": "add_edge_bearings",
+    "execution_time": 0.05219316482543945,
+    "instance_id": "run_20250421003446"
+  },
+  {
+    "timestamp": "2025-04-21T00:35:14.427018",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08021998405456543,
+    "instance_id": "run_20250421003514"
+  },
+  {
+    "timestamp": "2025-04-21T00:35:41.719130",
+    "function": "add_edge_bearings",
+    "execution_time": 0.05672502517700195,
+    "instance_id": "run_20250421003541"
+  },
+  {
+    "timestamp": "2025-04-21T00:36:09.215748",
+    "function": "add_edge_bearings",
+    "execution_time": 0.059446096420288086,
+    "instance_id": "run_20250421003609"
+  },
+  {
+    "timestamp": "2025-04-21T00:37:01.316279",
+    "function": "add_edge_bearings",
+    "execution_time": 0.3615758419036865,
+    "instance_id": "run_20250421003700"
+  },
+  {
+    "timestamp": "2025-04-21T00:38:24.804055",
+    "function": "add_edge_bearings",
+    "execution_time": 0.5588185787200928,
+    "instance_id": "run_20250421003824"
+  },
+  {
+    "timestamp": "2025-04-21T00:39:45.439709",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4219942092895508,
+    "instance_id": "run_20250421003945"
+  },
+  {
+    "timestamp": "2025-04-21T00:41:24.186885",
+    "function": "add_edge_bearings",
+    "execution_time": 0.6346526145935059,
+    "instance_id": "run_20250421004123"
+  },
+  {
+    "timestamp": "2025-04-21T00:42:31.914188",
+    "function": "add_edge_bearings",
+    "execution_time": 0.28485727310180664,
+    "instance_id": "run_20250421004231"
+  },
+  {
+    "timestamp": "2025-04-21T00:43:07.704350",
+    "function": "add_edge_bearings",
+    "execution_time": 0.23275446891784668,
+    "instance_id": "run_20250421004307"
+  },
+  {
+    "timestamp": "2025-04-21T00:43:39.596880",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21641278266906738,
+    "instance_id": "run_20250421004339"
+  },
+  {
+    "timestamp": "2025-04-21T00:44:12.074045",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21999168395996094,
+    "instance_id": "run_20250421004411"
+  },
+  {
+    "timestamp": "2025-04-21T00:44:39.967700",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17383599281311035,
+    "instance_id": "run_20250421004439"
+  },
+  {
+    "timestamp": "2025-04-21T00:45:10.862564",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21872496604919434,
+    "instance_id": "run_20250421004510"
+  },
+  {
+    "timestamp": "2025-04-21T00:46:02.863436",
+    "function": "add_edge_bearings",
+    "execution_time": 0.7369153499603271,
+    "instance_id": "run_20250421004602"
+  },
+  {
+    "timestamp": "2025-04-21T00:47:02.815995",
+    "function": "add_edge_bearings",
+    "execution_time": 0.48412656784057617,
+    "instance_id": "run_20250421004702"
+  },
+  {
+    "timestamp": "2025-04-21T00:48:02.968774",
+    "function": "add_edge_bearings",
+    "execution_time": 0.6367697715759277,
+    "instance_id": "run_20250421004802"
+  },
+  {
+    "timestamp": "2025-04-21T00:48:58.977052",
+    "function": "add_edge_bearings",
+    "execution_time": 0.5120360851287842,
+    "instance_id": "run_20250421004858"
+  },
+  {
+    "timestamp": "2025-04-21T00:49:49.163353",
+    "function": "add_edge_bearings",
+    "execution_time": 0.5570361614227295,
+    "instance_id": "run_20250421004948"
+  },
+  {
+    "timestamp": "2025-04-21T00:50:46.552940",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14130520820617676,
+    "instance_id": "run_20250421005046"
+  },
+  {
+    "timestamp": "2025-04-21T00:51:41.524922",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2700510025024414,
+    "instance_id": "run_20250421005141"
+  },
+  {
+    "timestamp": "2025-04-21T00:52:41.931804",
+    "function": "add_edge_bearings",
+    "execution_time": 0.24809503555297852,
+    "instance_id": "run_20250421005241"
+  },
+  {
+    "timestamp": "2025-04-21T00:53:42.029745",
+    "function": "add_edge_bearings",
+    "execution_time": 0.22322320938110352,
+    "instance_id": "run_20250421005341"
+  },
+  {
+    "timestamp": "2025-04-21T00:54:25.529746",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13934087753295898,
+    "instance_id": "run_20250421005425"
+  },
+  {
+    "timestamp": "2025-04-21T00:55:09.651941",
+    "function": "add_edge_bearings",
+    "execution_time": 0.3672604560852051,
+    "instance_id": "run_20250421005509"
+  },
+  {
+    "timestamp": "2025-04-21T00:56:09.937093",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4425384998321533,
+    "instance_id": "run_20250421005609"
+  },
+  {
+    "timestamp": "2025-04-21T00:57:08.494883",
+    "function": "add_edge_bearings",
+    "execution_time": 0.34159255027770996,
+    "instance_id": "run_20250421005708"
+  },
+  {
+    "timestamp": "2025-04-21T00:57:57.317705",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2946896553039551,
+    "instance_id": "run_20250421005757"
+  },
+  {
+    "timestamp": "2025-04-21T00:58:59.177330",
+    "function": "add_edge_bearings",
+    "execution_time": 0.5141100883483887,
+    "instance_id": "run_20250421005858"
+  },
+  {
+    "timestamp": "2025-04-21T01:00:00.736954",
+    "function": "add_edge_bearings",
+    "execution_time": 0.29802942276000977,
+    "instance_id": "run_20250421010000"
+  },
+  {
+    "timestamp": "2025-04-21T01:00:41.384460",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20405840873718262,
+    "instance_id": "run_20250421010041"
+  },
+  {
+    "timestamp": "2025-04-21T01:01:23.022165",
+    "function": "add_edge_bearings",
+    "execution_time": 0.24573087692260742,
+    "instance_id": "run_20250421010122"
+  },
+  {
+    "timestamp": "2025-04-21T01:02:02.416731",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20141935348510742,
+    "instance_id": "run_20250421010202"
+  },
+  {
+    "timestamp": "2025-04-21T01:02:49.164859",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2874755859375,
+    "instance_id": "run_20250421010248"
+  },
+  {
+    "timestamp": "2025-04-21T01:03:38.011745",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1749427318572998,
+    "instance_id": "run_20250421010337"
+  },
+  {
+    "timestamp": "2025-04-21T01:04:34.290853",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2927117347717285,
+    "instance_id": "run_20250421010433"
+  },
+  {
+    "timestamp": "2025-04-21T01:05:25.316195",
+    "function": "add_edge_bearings",
+    "execution_time": 0.250136137008667,
+    "instance_id": "run_20250421010525"
+  },
+  {
+    "timestamp": "2025-04-21T01:06:15.719195",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2303907871246338,
+    "instance_id": "run_20250421010615"
+  },
+  {
+    "timestamp": "2025-04-21T01:07:15.296203",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2664825916290283,
+    "instance_id": "run_20250421010715"
+  },
+  {
+    "timestamp": "2025-04-21T01:07:43.294591",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11701130867004395,
+    "instance_id": "run_20250421010743"
+  },
+  {
+    "timestamp": "2025-04-21T01:08:07.302982",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15472149848937988,
+    "instance_id": "run_20250421010807"
+  },
+  {
+    "timestamp": "2025-04-21T01:08:27.996358",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10088086128234863,
+    "instance_id": "run_20250421010827"
+  },
+  {
+    "timestamp": "2025-04-21T01:08:42.170678",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0869145393371582,
+    "instance_id": "run_20250421010842"
+  },
+  {
+    "timestamp": "2025-04-21T01:08:57.501728",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09399867057800293,
+    "instance_id": "run_20250421010857"
+  },
+  {
+    "timestamp": "2025-04-21T01:09:53.991211",
+    "function": "add_edge_bearings",
+    "execution_time": 0.6486642360687256,
+    "instance_id": "run_20250421010953"
+  },
+  {
+    "timestamp": "2025-04-21T01:11:00.990838",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4501955509185791,
+    "instance_id": "run_20250421011100"
+  },
+  {
+    "timestamp": "2025-04-21T01:12:06.086651",
+    "function": "add_edge_bearings",
+    "execution_time": 0.5824224948883057,
+    "instance_id": "run_20250421011205"
+  },
+  {
+    "timestamp": "2025-04-21T01:13:20.285265",
+    "function": "add_edge_bearings",
+    "execution_time": 0.6804990768432617,
+    "instance_id": "run_20250421011319"
+  },
+  {
+    "timestamp": "2025-04-21T01:14:34.884365",
+    "function": "add_edge_bearings",
+    "execution_time": 0.705772876739502,
+    "instance_id": "run_20250421011434"
+  },
+  {
+    "timestamp": "2025-04-21T01:16:09.180045",
+    "function": "add_edge_bearings",
+    "execution_time": 0.7883124351501465,
+    "instance_id": "run_20250421011608"
+  },
+  {
+    "timestamp": "2025-04-21T01:17:53.885810",
+    "function": "add_edge_bearings",
+    "execution_time": 0.8330402374267578,
+    "instance_id": "run_20250421011753"
+  },
+  {
+    "timestamp": "2025-04-21T01:19:17.528554",
+    "function": "add_edge_bearings",
+    "execution_time": 0.5203406810760498,
+    "instance_id": "run_20250421011917"
+  },
+  {
+    "timestamp": "2025-04-21T01:20:54.541923",
+    "function": "add_edge_bearings",
+    "execution_time": 0.9085757732391357,
+    "instance_id": "run_20250421012053"
+  },
+  {
+    "timestamp": "2025-04-21T01:22:36.364728",
+    "function": "add_edge_bearings",
+    "execution_time": 0.7367920875549316,
+    "instance_id": "run_20250421012235"
+  },
+  {
+    "timestamp": "2025-04-21T01:23:30.029932",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19336962699890137,
+    "instance_id": "run_20250421012329"
+  },
+  {
+    "timestamp": "2025-04-21T01:23:54.975790",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21492481231689453,
+    "instance_id": "run_20250421012354"
+  },
+  {
+    "timestamp": "2025-04-21T01:24:15.106913",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11663293838500977,
+    "instance_id": "run_20250421012414"
+  },
+  {
+    "timestamp": "2025-04-21T01:24:42.052331",
+    "function": "add_edge_bearings",
+    "execution_time": 0.22700858116149902,
+    "instance_id": "run_20250421012441"
+  },
+  {
+    "timestamp": "2025-04-21T01:25:08.249083",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20594000816345215,
+    "instance_id": "run_20250421012508"
+  },
+  {
+    "timestamp": "2025-04-21T01:25:38.075651",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0903482437133789,
+    "instance_id": "run_20250421012537"
+  },
+  {
+    "timestamp": "2025-04-21T01:26:04.975668",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08365058898925781,
+    "instance_id": "run_20250421012604"
+  },
+  {
+    "timestamp": "2025-04-21T01:26:24.960799",
+    "function": "add_edge_bearings",
+    "execution_time": 0.05523347854614258,
+    "instance_id": "run_20250421012624"
+  },
+  {
+    "timestamp": "2025-04-21T01:26:39.842120",
+    "function": "add_edge_bearings",
+    "execution_time": 0.05118227005004883,
+    "instance_id": "run_20250421012639"
+  },
+  {
+    "timestamp": "2025-04-21T01:26:56.782951",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06648540496826172,
+    "instance_id": "run_20250421012656"
+  },
+  {
+    "timestamp": "2025-04-21T01:27:45.126668",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4195253849029541,
+    "instance_id": "run_20250421012744"
+  },
+  {
+    "timestamp": "2025-04-21T01:28:45.526411",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4084630012512207,
+    "instance_id": "run_20250421012845"
+  },
+  {
+    "timestamp": "2025-04-21T01:29:41.423682",
+    "function": "add_edge_bearings",
+    "execution_time": 0.35320401191711426,
+    "instance_id": "run_20250421012941"
+  },
+  {
+    "timestamp": "2025-04-21T01:30:33.254056",
+    "function": "add_edge_bearings",
+    "execution_time": 0.39316749572753906,
+    "instance_id": "run_20250421013032"
+  },
+  {
+    "timestamp": "2025-04-21T01:31:26.894271",
+    "function": "add_edge_bearings",
+    "execution_time": 0.3015024662017822,
+    "instance_id": "run_20250421013126"
+  },
+  {
+    "timestamp": "2025-04-21T01:32:01.197156",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10179686546325684,
+    "instance_id": "run_20250421013201"
+  },
+  {
+    "timestamp": "2025-04-21T01:32:22.299510",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08791160583496094,
+    "instance_id": "run_20250421013222"
+  },
+  {
+    "timestamp": "2025-04-21T01:32:43.185194",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09132528305053711,
+    "instance_id": "run_20250421013243"
+  },
+  {
+    "timestamp": "2025-04-21T01:33:05.274802",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09843039512634277,
+    "instance_id": "run_20250421013305"
+  },
+  {
+    "timestamp": "2025-04-21T01:33:25.796105",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08474874496459961,
+    "instance_id": "run_20250421013325"
+  },
+  {
+    "timestamp": "2025-04-21T01:33:58.293002",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10115504264831543,
+    "instance_id": "run_20250421013358"
+  },
+  {
+    "timestamp": "2025-04-21T01:34:26.239269",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09259772300720215,
+    "instance_id": "run_20250421013426"
+  },
+  {
+    "timestamp": "2025-04-21T01:34:56.534036",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0871272087097168,
+    "instance_id": "run_20250421013456"
+  },
+  {
+    "timestamp": "2025-04-21T01:35:19.959414",
+    "function": "add_edge_bearings",
+    "execution_time": 0.07324981689453125,
+    "instance_id": "run_20250421013519"
+  },
+  {
+    "timestamp": "2025-04-21T01:35:46.245767",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0993657112121582,
+    "instance_id": "run_20250421013546"
+  },
+  {
+    "timestamp": "2025-04-21T01:36:37.035401",
+    "function": "add_edge_bearings",
+    "execution_time": 0.22560954093933105,
+    "instance_id": "run_20250421013636"
+  },
+  {
+    "timestamp": "2025-04-21T01:37:24.887151",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20145225524902344,
+    "instance_id": "run_20250421013724"
+  },
+  {
+    "timestamp": "2025-04-21T01:38:17.362855",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19686317443847656,
+    "instance_id": "run_20250421013817"
+  },
+  {
+    "timestamp": "2025-04-21T01:39:01.864672",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1878190040588379,
+    "instance_id": "run_20250421013901"
+  },
+  {
+    "timestamp": "2025-04-21T01:39:29.625252",
+    "function": "add_edge_bearings",
+    "execution_time": 0.07950901985168457,
+    "instance_id": "run_20250421013929"
+  },
+  {
+    "timestamp": "2025-04-21T01:40:06.435687",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15825247764587402,
+    "instance_id": "run_20250421014006"
+  },
+  {
+    "timestamp": "2025-04-21T01:40:37.834484",
+    "function": "add_edge_bearings",
+    "execution_time": 0.129990816116333,
+    "instance_id": "run_20250421014037"
+  },
+  {
+    "timestamp": "2025-04-21T01:41:13.088905",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11998915672302246,
+    "instance_id": "run_20250421014112"
+  },
+  {
+    "timestamp": "2025-04-21T01:41:44.905550",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13606977462768555,
+    "instance_id": "run_20250421014144"
+  },
+  {
+    "timestamp": "2025-04-21T01:42:21.160630",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11264491081237793,
+    "instance_id": "run_20250421014221"
+  },
+  {
+    "timestamp": "2025-04-21T01:43:46.663002",
+    "function": "add_edge_bearings",
+    "execution_time": 0.7362895011901855,
+    "instance_id": "run_20250421014345"
+  },
+  {
+    "timestamp": "2025-04-21T01:45:28.856132",
+    "function": "add_edge_bearings",
+    "execution_time": 0.6016113758087158,
+    "instance_id": "run_20250421014528"
+  },
+  {
+    "timestamp": "2025-04-21T01:47:12.440608",
+    "function": "add_edge_bearings",
+    "execution_time": 0.6859738826751709,
+    "instance_id": "run_20250421014711"
+  },
+  {
+    "timestamp": "2025-04-21T01:49:08.211847",
+    "function": "add_edge_bearings",
+    "execution_time": 0.7361788749694824,
+    "instance_id": "run_20250421014907"
+  },
+  {
+    "timestamp": "2025-04-21T01:51:01.455098",
+    "function": "add_edge_bearings",
+    "execution_time": 0.818406343460083,
+    "instance_id": "run_20250421015100"
+  },
+  {
+    "timestamp": "2025-04-21T01:51:58.580461",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11114144325256348,
+    "instance_id": "run_20250421015158"
+  },
+  {
+    "timestamp": "2025-04-21T01:52:33.977997",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14321541786193848,
+    "instance_id": "run_20250421015233"
+  },
+  {
+    "timestamp": "2025-04-21T01:52:58.904354",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0887143611907959,
+    "instance_id": "run_20250421015258"
+  },
+  {
+    "timestamp": "2025-04-21T01:53:28.691488",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12996292114257812,
+    "instance_id": "run_20250421015328"
+  },
+  {
+    "timestamp": "2025-04-21T01:53:56.943363",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13267803192138672,
+    "instance_id": "run_20250421015356"
+  },
+  {
+    "timestamp": "2025-04-21T01:54:40.905399",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1774892807006836,
+    "instance_id": "run_20250421015440"
+  },
+  {
+    "timestamp": "2025-04-21T01:55:23.281933",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17308831214904785,
+    "instance_id": "run_20250421015523"
+  },
+  {
+    "timestamp": "2025-04-21T01:56:01.643459",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17015624046325684,
+    "instance_id": "run_20250421015601"
+  },
+  {
+    "timestamp": "2025-04-21T01:56:41.807524",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12668132781982422,
+    "instance_id": "run_20250421015641"
+  },
+  {
+    "timestamp": "2025-04-21T01:57:15.894387",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1337568759918213,
+    "instance_id": "run_20250421015715"
+  },
+  {
+    "timestamp": "2025-04-21T01:57:38.696984",
+    "function": "add_edge_bearings",
+    "execution_time": 0.038153886795043945,
+    "instance_id": "run_20250421015738"
+  },
+  {
+    "timestamp": "2025-04-21T01:57:55.095536",
+    "function": "add_edge_bearings",
+    "execution_time": 0.03213953971862793,
+    "instance_id": "run_20250421015755"
+  },
+  {
+    "timestamp": "2025-04-21T01:58:06.230333",
+    "function": "add_edge_bearings",
+    "execution_time": 0.03423285484313965,
+    "instance_id": "run_20250421015806"
+  },
+  {
+    "timestamp": "2025-04-21T01:58:24.043227",
+    "function": "add_edge_bearings",
+    "execution_time": 0.036466360092163086,
+    "instance_id": "run_20250421015824"
+  },
+  {
+    "timestamp": "2025-04-21T01:58:42.221635",
+    "function": "add_edge_bearings",
+    "execution_time": 0.04129600524902344,
+    "instance_id": "run_20250421015842"
+  },
+  {
+    "timestamp": "2025-04-21T01:59:16.539493",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14767026901245117,
+    "instance_id": "run_20250421015916"
+  },
+  {
+    "timestamp": "2025-04-21T01:59:59.131015",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13398170471191406,
+    "instance_id": "run_20250421015958"
+  },
+  {
+    "timestamp": "2025-04-21T02:00:44.309380",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1678478717803955,
+    "instance_id": "run_20250421020044"
+  },
+  {
+    "timestamp": "2025-04-21T02:01:15.045652",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11490702629089355,
+    "instance_id": "run_20250421020114"
+  },
+  {
+    "timestamp": "2025-04-21T02:01:59.855820",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16288328170776367,
+    "instance_id": "run_20250421020159"
+  },
+  {
+    "timestamp": "2025-04-21T02:02:32.835624",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08829903602600098,
+    "instance_id": "run_20250421020232"
+  },
+  {
+    "timestamp": "2025-04-21T02:03:21.941004",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13619136810302734,
+    "instance_id": "run_20250421020321"
+  },
+  {
+    "timestamp": "2025-04-21T02:04:08.262925",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11881852149963379,
+    "instance_id": "run_20250421020408"
+  },
+  {
+    "timestamp": "2025-04-21T02:05:00.242722",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14392328262329102,
+    "instance_id": "run_20250421020500"
+  },
+  {
+    "timestamp": "2025-04-21T02:05:53.479943",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14471650123596191,
+    "instance_id": "run_20250421020553"
+  },
+  {
+    "timestamp": "2025-04-21T02:06:26.874435",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15554165840148926,
+    "instance_id": "run_20250421020626"
+  },
+  {
+    "timestamp": "2025-04-21T02:07:03.070108",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15429162979125977,
+    "instance_id": "run_20250421020702"
+  },
+  {
+    "timestamp": "2025-04-21T02:07:36.559294",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16684603691101074,
+    "instance_id": "run_20250421020736"
+  },
+  {
+    "timestamp": "2025-04-21T02:08:08.382479",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1396315097808838,
+    "instance_id": "run_20250421020808"
+  },
+  {
+    "timestamp": "2025-04-21T02:08:49.523425",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17210769653320312,
+    "instance_id": "run_20250421020849"
+  },
+  {
+    "timestamp": "2025-04-21T02:09:24.569072",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1728224754333496,
+    "instance_id": "run_20250421020924"
+  },
+  {
+    "timestamp": "2025-04-21T02:10:00.052909",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1756284236907959,
+    "instance_id": "run_20250421020959"
+  },
+  {
+    "timestamp": "2025-04-21T02:10:43.112104",
+    "function": "add_edge_bearings",
+    "execution_time": 0.18196916580200195,
+    "instance_id": "run_20250421021042"
+  },
+  {
+    "timestamp": "2025-04-21T02:11:10.359506",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09496068954467773,
+    "instance_id": "run_20250421021110"
+  },
+  {
+    "timestamp": "2025-04-21T02:11:37.925284",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12453365325927734,
+    "instance_id": "run_20250421021137"
+  },
+  {
+    "timestamp": "2025-04-21T02:12:16.688133",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17088532447814941,
+    "instance_id": "run_20250421021216"
+  },
+  {
+    "timestamp": "2025-04-21T02:13:07.203662",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20631885528564453,
+    "instance_id": "run_20250421021306"
+  },
+  {
+    "timestamp": "2025-04-21T02:13:59.570912",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20548057556152344,
+    "instance_id": "run_20250421021359"
+  },
+  {
+    "timestamp": "2025-04-21T02:14:32.879132",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12010908126831055,
+    "instance_id": "run_20250421021432"
+  },
+  {
+    "timestamp": "2025-04-21T02:15:13.687914",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13467741012573242,
+    "instance_id": "run_20250421021513"
+  },
+  {
+    "timestamp": "2025-04-21T02:15:52.174311",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21585869789123535,
+    "instance_id": "run_20250421021551"
+  },
+  {
+    "timestamp": "2025-04-21T02:16:44.991324",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2555544376373291,
+    "instance_id": "run_20250421021644"
+  },
+  {
+    "timestamp": "2025-04-21T02:17:37.306706",
+    "function": "add_edge_bearings",
+    "execution_time": 0.23718857765197754,
+    "instance_id": "run_20250421021737"
+  },
+  {
+    "timestamp": "2025-04-21T02:18:27.818894",
+    "function": "add_edge_bearings",
+    "execution_time": 0.22852039337158203,
+    "instance_id": "run_20250421021827"
+  },
+  {
+    "timestamp": "2025-04-21T02:19:05.966376",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17313098907470703,
+    "instance_id": "run_20250421021905"
+  },
+  {
+    "timestamp": "2025-04-21T02:19:52.289460",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11171102523803711,
+    "instance_id": "run_20250421021952"
+  },
+  {
+    "timestamp": "2025-04-21T02:20:30.192278",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11179590225219727,
+    "instance_id": "run_20250421022030"
+  },
+  {
+    "timestamp": "2025-04-21T02:21:06.878450",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0981285572052002,
+    "instance_id": "run_20250421022106"
+  },
+  {
+    "timestamp": "2025-04-21T02:21:37.638000",
+    "function": "add_edge_bearings",
+    "execution_time": 0.07267332077026367,
+    "instance_id": "run_20250421022137"
+  },
+  {
+    "timestamp": "2025-04-21T02:22:17.077192",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08458924293518066,
+    "instance_id": "run_20250421022216"
+  },
+  {
+    "timestamp": "2025-04-21T02:22:30.235384",
+    "function": "add_edge_bearings",
+    "execution_time": 0.04636955261230469,
+    "instance_id": "run_20250421022230"
+  },
+  {
+    "timestamp": "2025-04-21T02:22:51.770505",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06069374084472656,
+    "instance_id": "run_20250421022251"
+  },
+  {
+    "timestamp": "2025-04-21T02:23:03.943236",
+    "function": "add_edge_bearings",
+    "execution_time": 0.04992103576660156,
+    "instance_id": "run_20250421022303"
+  },
+  {
+    "timestamp": "2025-04-21T02:23:21.688350",
+    "function": "add_edge_bearings",
+    "execution_time": 0.03816676139831543,
+    "instance_id": "run_20250421022321"
+  },
+  {
+    "timestamp": "2025-04-21T02:23:41.432459",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06464767456054688,
+    "instance_id": "run_20250421022341"
+  },
+  {
+    "timestamp": "2025-04-21T02:24:22.315112",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2493901252746582,
+    "instance_id": "run_20250421022422"
+  },
+  {
+    "timestamp": "2025-04-21T02:25:07.594616",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16026902198791504,
+    "instance_id": "run_20250421022507"
+  },
+  {
+    "timestamp": "2025-04-21T02:25:51.579365",
+    "function": "add_edge_bearings",
+    "execution_time": 0.25069189071655273,
+    "instance_id": "run_20250421022551"
+  },
+  {
+    "timestamp": "2025-04-21T02:26:35.268144",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1597602367401123,
+    "instance_id": "run_20250421022635"
+  },
+  {
+    "timestamp": "2025-04-21T02:27:06.480360",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13962602615356445,
+    "instance_id": "run_20250421022706"
+  },
+  {
+    "timestamp": "2025-04-21T02:28:16.563548",
+    "function": "add_edge_bearings",
+    "execution_time": 0.3620002269744873,
+    "instance_id": "run_20250421022816"
+  },
+  {
+    "timestamp": "2025-04-21T02:29:48.978650",
+    "function": "add_edge_bearings",
+    "execution_time": 0.3844156265258789,
+    "instance_id": "run_20250421022948"
+  },
+  {
+    "timestamp": "2025-04-21T02:31:13.843257",
+    "function": "add_edge_bearings",
+    "execution_time": 0.34900498390197754,
+    "instance_id": "run_20250421023113"
+  },
+  {
+    "timestamp": "2025-04-21T02:32:25.522601",
+    "function": "add_edge_bearings",
+    "execution_time": 0.30927157402038574,
+    "instance_id": "run_20250421023225"
+  },
+  {
+    "timestamp": "2025-04-21T02:33:55.060754",
+    "function": "add_edge_bearings",
+    "execution_time": 0.3975844383239746,
+    "instance_id": "run_20250421023354"
+  },
+  {
+    "timestamp": "2025-04-21T02:34:43.846167",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19006037712097168,
+    "instance_id": "run_20250421023443"
+  },
+  {
+    "timestamp": "2025-04-21T02:35:17.186323",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13659286499023438,
+    "instance_id": "run_20250421023517"
+  },
+  {
+    "timestamp": "2025-04-21T02:36:06.647176",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21558189392089844,
+    "instance_id": "run_20250421023606"
+  },
+  {
+    "timestamp": "2025-04-21T02:36:52.567207",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2340376377105713,
+    "instance_id": "run_20250421023652"
+  },
+  {
+    "timestamp": "2025-04-21T02:37:43.697924",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2056899070739746,
+    "instance_id": "run_20250421023743"
+  },
+  {
+    "timestamp": "2025-04-21T02:38:17.021456",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06290149688720703,
+    "instance_id": "run_20250421023816"
+  },
+  {
+    "timestamp": "2025-04-21T02:38:43.004888",
+    "function": "add_edge_bearings",
+    "execution_time": 0.05536627769470215,
+    "instance_id": "run_20250421023842"
+  },
+  {
+    "timestamp": "2025-04-21T02:38:53.687824",
+    "function": "add_edge_bearings",
+    "execution_time": 0.030258893966674805,
+    "instance_id": "run_20250421023853"
+  },
+  {
+    "timestamp": "2025-04-21T02:39:17.424264",
+    "function": "add_edge_bearings",
+    "execution_time": 0.04616069793701172,
+    "instance_id": "run_20250421023917"
+  },
+  {
+    "timestamp": "2025-04-21T02:39:25.856031",
+    "function": "add_edge_bearings",
+    "execution_time": 0.02407670021057129,
+    "instance_id": "run_20250421023925"
+  },
+  {
+    "timestamp": "2025-04-21T02:39:57.623514",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13183927536010742,
+    "instance_id": "run_20250421023957"
+  },
+  {
+    "timestamp": "2025-04-21T02:40:34.542699",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1349349021911621,
+    "instance_id": "run_20250421024034"
+  },
+  {
+    "timestamp": "2025-04-21T02:41:08.709178",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09987568855285645,
+    "instance_id": "run_20250421024108"
+  },
+  {
+    "timestamp": "2025-04-21T02:41:50.007985",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12099504470825195,
+    "instance_id": "run_20250421024149"
+  },
+  {
+    "timestamp": "2025-04-21T02:42:26.984173",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1353144645690918,
+    "instance_id": "run_20250421024226"
+  },
+  {
+    "timestamp": "2025-04-21T02:43:01.927650",
+    "function": "add_edge_bearings",
+    "execution_time": 0.07172179222106934,
+    "instance_id": "run_20250421024301"
+  },
+  {
+    "timestamp": "2025-04-21T02:43:36.437278",
+    "function": "add_edge_bearings",
+    "execution_time": 0.07093071937561035,
+    "instance_id": "run_20250421024336"
+  },
+  {
+    "timestamp": "2025-04-21T02:44:07.152571",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06928515434265137,
+    "instance_id": "run_20250421024407"
+  },
+  {
+    "timestamp": "2025-04-21T02:44:43.183797",
+    "function": "add_edge_bearings",
+    "execution_time": 0.07916998863220215,
+    "instance_id": "run_20250421024443"
+  },
+  {
+    "timestamp": "2025-04-21T02:45:17.002211",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06424546241760254,
+    "instance_id": "run_20250421024516"
+  },
+  {
+    "timestamp": "2025-04-21T02:46:16.253505",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2637770175933838,
+    "instance_id": "run_20250421024615"
+  },
+  {
+    "timestamp": "2025-04-21T02:47:27.503330",
+    "function": "add_edge_bearings",
+    "execution_time": 0.28616762161254883,
+    "instance_id": "run_20250421024727"
+  },
+  {
+    "timestamp": "2025-04-21T02:48:29.667875",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20644283294677734,
+    "instance_id": "run_20250421024829"
+  },
+  {
+    "timestamp": "2025-04-21T02:49:38.746120",
+    "function": "add_edge_bearings",
+    "execution_time": 0.31714892387390137,
+    "instance_id": "run_20250421024938"
+  },
+  {
+    "timestamp": "2025-04-21T02:50:51.783383",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2695038318634033,
+    "instance_id": "run_20250421025051"
+  },
+  {
+    "timestamp": "2025-04-21T02:51:19.213527",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11353373527526855,
+    "instance_id": "run_20250421025119"
+  },
+  {
+    "timestamp": "2025-04-21T02:51:54.214285",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1179819107055664,
+    "instance_id": "run_20250421025154"
+  },
+  {
+    "timestamp": "2025-04-21T02:52:41.673158",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15887761116027832,
+    "instance_id": "run_20250421025241"
+  },
+  {
+    "timestamp": "2025-04-21T02:53:20.167211",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1516118049621582,
+    "instance_id": "run_20250421025320"
+  },
+  {
+    "timestamp": "2025-04-21T02:53:57.893063",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13976025581359863,
+    "instance_id": "run_20250421025357"
+  },
+  {
+    "timestamp": "2025-04-21T02:54:23.148510",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06375312805175781,
+    "instance_id": "run_20250421025423"
+  },
+  {
+    "timestamp": "2025-04-21T02:54:35.292892",
+    "function": "add_edge_bearings",
+    "execution_time": 0.05144858360290527,
+    "instance_id": "run_20250421025435"
+  },
+  {
+    "timestamp": "2025-04-21T02:54:58.024403",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06327605247497559,
+    "instance_id": "run_20250421025457"
+  },
+  {
+    "timestamp": "2025-04-21T02:55:08.404205",
+    "function": "add_edge_bearings",
+    "execution_time": 0.04083442687988281,
+    "instance_id": "run_20250421025508"
+  },
+  {
+    "timestamp": "2025-04-21T02:55:29.498427",
+    "function": "add_edge_bearings",
+    "execution_time": 0.05850100517272949,
+    "instance_id": "run_20250421025529"
+  },
+  {
+    "timestamp": "2025-04-21T02:56:20.144647",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20126676559448242,
+    "instance_id": "run_20250421025619"
+  },
+  {
+    "timestamp": "2025-04-21T02:57:20.915142",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17057132720947266,
+    "instance_id": "run_20250421025720"
+  },
+  {
+    "timestamp": "2025-04-21T02:58:24.490025",
+    "function": "add_edge_bearings",
+    "execution_time": 0.18774676322937012,
+    "instance_id": "run_20250421025824"
+  },
+  {
+    "timestamp": "2025-04-21T02:59:32.188620",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19465065002441406,
+    "instance_id": "run_20250421025931"
+  },
+  {
+    "timestamp": "2025-04-21T03:00:29.754662",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1684727668762207,
+    "instance_id": "run_20250421030029"
+  },
+  {
+    "timestamp": "2025-04-21T03:00:49.009532",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06276917457580566,
+    "instance_id": "run_20250421030048"
+  },
+  {
+    "timestamp": "2025-04-21T03:01:18.064382",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08187413215637207,
+    "instance_id": "run_20250421030117"
+  },
+  {
+    "timestamp": "2025-04-21T03:01:45.864703",
+    "function": "add_edge_bearings",
+    "execution_time": 0.07120585441589355,
+    "instance_id": "run_20250421030145"
+  },
+  {
+    "timestamp": "2025-04-21T03:02:01.440026",
+    "function": "add_edge_bearings",
+    "execution_time": 0.05880594253540039,
+    "instance_id": "run_20250421030201"
+  },
+  {
+    "timestamp": "2025-04-21T03:02:28.412585",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0756688117980957,
+    "instance_id": "run_20250421030228"
+  },
+  {
+    "timestamp": "2025-04-21T03:02:59.848236",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10110926628112793,
+    "instance_id": "run_20250421030259"
+  },
+  {
+    "timestamp": "2025-04-21T03:03:39.874392",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17042756080627441,
+    "instance_id": "run_20250421030339"
+  },
+  {
+    "timestamp": "2025-04-21T03:04:17.299189",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1082158088684082,
+    "instance_id": "run_20250421030417"
+  },
+  {
+    "timestamp": "2025-04-21T03:04:55.289988",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13231730461120605,
+    "instance_id": "run_20250421030455"
+  },
+  {
+    "timestamp": "2025-04-21T03:05:45.369432",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16919922828674316,
+    "instance_id": "run_20250421030545"
+  },
+  {
+    "timestamp": "2025-04-21T03:06:05.095979",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08224678039550781,
+    "instance_id": "run_20250421030605"
+  },
+  {
+    "timestamp": "2025-04-21T03:06:32.346293",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08261394500732422,
+    "instance_id": "run_20250421030632"
+  },
+  {
+    "timestamp": "2025-04-21T03:07:00.173283",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10413503646850586,
+    "instance_id": "run_20250421030700"
+  },
+  {
+    "timestamp": "2025-04-21T03:07:13.285678",
+    "function": "add_edge_bearings",
+    "execution_time": 0.05045461654663086,
+    "instance_id": "run_20250421030713"
+  },
+  {
+    "timestamp": "2025-04-21T03:07:36.630572",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1603553295135498,
+    "instance_id": "run_20250421030736"
+  },
+  {
+    "timestamp": "2025-04-21T03:07:51.388728",
+    "function": "add_edge_bearings",
+    "execution_time": 0.059995412826538086,
+    "instance_id": "run_20250421030751"
+  },
+  {
+    "timestamp": "2025-04-21T03:08:17.609009",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0762791633605957,
+    "instance_id": "run_20250421030817"
+  },
+  {
+    "timestamp": "2025-04-21T03:08:50.498066",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12092137336730957,
+    "instance_id": "run_20250421030850"
+  },
+  {
+    "timestamp": "2025-04-21T03:09:24.109636",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10859537124633789,
+    "instance_id": "run_20250421030924"
+  },
+  {
+    "timestamp": "2025-04-21T03:09:57.105654",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11718440055847168,
+    "instance_id": "run_20250421030956"
+  },
+  {
+    "timestamp": "2025-04-21T03:10:36.229438",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14405179023742676,
+    "instance_id": "run_20250421031036"
+  },
+  {
+    "timestamp": "2025-04-21T03:11:15.932926",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11906743049621582,
+    "instance_id": "run_20250421031115"
+  },
+  {
+    "timestamp": "2025-04-21T03:11:56.014607",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12658333778381348,
+    "instance_id": "run_20250421031155"
+  },
+  {
+    "timestamp": "2025-04-21T03:12:17.452832",
+    "function": "add_edge_bearings",
+    "execution_time": 0.07937216758728027,
+    "instance_id": "run_20250421031217"
+  },
+  {
+    "timestamp": "2025-04-21T03:12:46.878006",
+    "function": "add_edge_bearings",
+    "execution_time": 0.07718658447265625,
+    "instance_id": "run_20250421031246"
+  },
+  {
+    "timestamp": "2025-04-21T03:13:24.538047",
+    "function": "add_edge_bearings",
+    "execution_time": 0.33620786666870117,
+    "instance_id": "run_20250421031324"
+  },
+  {
+    "timestamp": "2025-04-21T03:14:17.896830",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2708897590637207,
+    "instance_id": "run_20250421031417"
+  },
+  {
+    "timestamp": "2025-04-21T03:15:03.300927",
+    "function": "add_edge_bearings",
+    "execution_time": 0.292858362197876,
+    "instance_id": "run_20250421031503"
+  },
+  {
+    "timestamp": "2025-04-21T03:15:41.004536",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21078157424926758,
+    "instance_id": "run_20250421031540"
+  },
+  {
+    "timestamp": "2025-04-21T03:16:23.821932",
+    "function": "add_edge_bearings",
+    "execution_time": 0.3321652412414551,
+    "instance_id": "run_20250421031623"
+  },
+  {
+    "timestamp": "2025-04-21T03:16:37.483944",
+    "function": "add_edge_bearings",
+    "execution_time": 0.024120807647705078,
+    "instance_id": "run_20250421031637"
+  },
+  {
+    "timestamp": "2025-04-21T03:16:40.863143",
+    "function": "add_edge_bearings",
+    "execution_time": 0.026094436645507812,
+    "instance_id": "run_20250421031640"
+  },
+  {
+    "timestamp": "2025-04-21T03:16:55.719503",
+    "function": "add_edge_bearings",
+    "execution_time": 0.024309158325195312,
+    "instance_id": "run_20250421031655"
+  },
+  {
+    "timestamp": "2025-04-21T03:16:58.969023",
+    "function": "add_edge_bearings",
+    "execution_time": 0.018239974975585938,
+    "instance_id": "run_20250421031658"
+  },
+  {
+    "timestamp": "2025-04-21T03:17:02.182624",
+    "function": "add_edge_bearings",
+    "execution_time": 0.020322799682617188,
+    "instance_id": "run_20250421031702"
+  },
+  {
+    "timestamp": "2025-04-21T03:17:17.905990",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06795024871826172,
+    "instance_id": "run_20250421031717"
+  },
+  {
+    "timestamp": "2025-04-21T03:17:48.837157",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09384512901306152,
+    "instance_id": "run_20250421031748"
+  },
+  {
+    "timestamp": "2025-04-21T03:18:21.871381",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0955960750579834,
+    "instance_id": "run_20250421031821"
+  },
+  {
+    "timestamp": "2025-04-21T03:18:54.070859",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09266376495361328,
+    "instance_id": "run_20250421031853"
+  },
+  {
+    "timestamp": "2025-04-21T03:19:25.570027",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08301997184753418,
+    "instance_id": "run_20250421031925"
+  },
+  {
+    "timestamp": "2025-04-21T03:19:38.351776",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11705327033996582,
+    "instance_id": "run_20250421031938"
+  },
+  {
+    "timestamp": "2025-04-21T03:20:03.707559",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10964775085449219,
+    "instance_id": "run_20250421032003"
+  },
+  {
+    "timestamp": "2025-04-21T03:20:17.517813",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13233447074890137,
+    "instance_id": "run_20250421032017"
+  },
+  {
+    "timestamp": "2025-04-21T03:20:41.428101",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1301264762878418,
+    "instance_id": "run_20250421032041"
+  },
+  {
+    "timestamp": "2025-04-21T03:20:53.482600",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09301471710205078,
+    "instance_id": "run_20250421032053"
+  },
+  {
+    "timestamp": "2025-04-21T03:21:38.784612",
+    "function": "add_edge_bearings",
+    "execution_time": 0.425961971282959,
+    "instance_id": "run_20250421032138"
+  },
+  {
+    "timestamp": "2025-04-21T03:22:40.763563",
+    "function": "add_edge_bearings",
+    "execution_time": 0.3660695552825928,
+    "instance_id": "run_20250421032240"
+  },
+  {
+    "timestamp": "2025-04-21T03:23:27.463474",
+    "function": "add_edge_bearings",
+    "execution_time": 0.3198111057281494,
+    "instance_id": "run_20250421032327"
+  },
+  {
+    "timestamp": "2025-04-21T03:24:09.356955",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2508106231689453,
+    "instance_id": "run_20250421032409"
+  },
+  {
+    "timestamp": "2025-04-21T03:25:11.462930",
+    "function": "add_edge_bearings",
+    "execution_time": 0.49919915199279785,
+    "instance_id": "run_20250421032510"
+  },
+  {
+    "timestamp": "2025-04-21T03:26:02.975086",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4445819854736328,
+    "instance_id": "run_20250421032602"
+  },
+  {
+    "timestamp": "2025-04-21T03:26:54.182959",
+    "function": "add_edge_bearings",
+    "execution_time": 0.49043703079223633,
+    "instance_id": "run_20250421032653"
+  },
+  {
+    "timestamp": "2025-04-21T03:28:00.676750",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4613790512084961,
+    "instance_id": "run_20250421032800"
+  },
+  {
+    "timestamp": "2025-04-21T03:28:52.100971",
+    "function": "add_edge_bearings",
+    "execution_time": 0.30292320251464844,
+    "instance_id": "run_20250421032851"
+  },
+  {
+    "timestamp": "2025-04-21T03:29:55.620272",
+    "function": "add_edge_bearings",
+    "execution_time": 0.36617541313171387,
+    "instance_id": "run_20250421032955"
+  },
+  {
+    "timestamp": "2025-04-21T03:30:35.475802",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1838700771331787,
+    "instance_id": "run_20250421033035"
+  },
+  {
+    "timestamp": "2025-04-21T03:30:57.800853",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15934991836547852,
+    "instance_id": "run_20250421033057"
+  },
+  {
+    "timestamp": "2025-04-21T03:31:23.979852",
+    "function": "add_edge_bearings",
+    "execution_time": 0.05579733848571777,
+    "instance_id": "run_20250421033123"
+  },
+  {
+    "timestamp": "2025-04-21T03:31:37.056984",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06901669502258301,
+    "instance_id": "run_20250421033136"
+  },
+  {
+    "timestamp": "2025-04-21T03:32:06.489281",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1475992202758789,
+    "instance_id": "run_20250421033206"
+  },
+  {
+    "timestamp": "2025-04-21T03:32:46.188104",
+    "function": "add_edge_bearings",
+    "execution_time": 0.252575159072876,
+    "instance_id": "run_20250421033245"
+  },
+  {
+    "timestamp": "2025-04-21T03:33:30.323242",
+    "function": "add_edge_bearings",
+    "execution_time": 0.22873497009277344,
+    "instance_id": "run_20250421033330"
+  },
+  {
+    "timestamp": "2025-04-21T03:34:03.925503",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0865330696105957,
+    "instance_id": "run_20250421033403"
+  },
+  {
+    "timestamp": "2025-04-21T03:34:23.074688",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11817431449890137,
+    "instance_id": "run_20250421033422"
+  },
+  {
+    "timestamp": "2025-04-21T03:34:50.205966",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06397247314453125,
+    "instance_id": "run_20250421033450"
+  },
+  {
+    "timestamp": "2025-04-21T03:35:47.405925",
+    "function": "add_edge_bearings",
+    "execution_time": 0.42518091201782227,
+    "instance_id": "run_20250421033546"
+  },
+  {
+    "timestamp": "2025-04-21T03:37:10.098296",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4390547275543213,
+    "instance_id": "run_20250421033709"
+  },
+  {
+    "timestamp": "2025-04-21T03:38:36.670480",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4110753536224365,
+    "instance_id": "run_20250421033836"
+  },
+  {
+    "timestamp": "2025-04-21T03:39:58.747863",
+    "function": "add_edge_bearings",
+    "execution_time": 0.3437988758087158,
+    "instance_id": "run_20250421033958"
+  },
+  {
+    "timestamp": "2025-04-21T03:41:16.143624",
+    "function": "add_edge_bearings",
+    "execution_time": 0.31966280937194824,
+    "instance_id": "run_20250421034115"
+  },
+  {
+    "timestamp": "2025-04-21T03:41:31.854517",
+    "function": "add_edge_bearings",
+    "execution_time": 0.03718256950378418,
+    "instance_id": "run_20250421034131"
+  },
+  {
+    "timestamp": "2025-04-21T03:41:37.653330",
+    "function": "add_edge_bearings",
+    "execution_time": 0.03384065628051758,
+    "instance_id": "run_20250421034137"
+  },
+  {
+    "timestamp": "2025-04-21T03:41:41.840002",
+    "function": "add_edge_bearings",
+    "execution_time": 0.023470640182495117,
+    "instance_id": "run_20250421034141"
+  },
+  {
+    "timestamp": "2025-04-21T03:41:47.095298",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0301361083984375,
+    "instance_id": "run_20250421034147"
+  },
+  {
+    "timestamp": "2025-04-21T03:42:04.899461",
+    "function": "add_edge_bearings",
+    "execution_time": 0.029015779495239258,
+    "instance_id": "run_20250421034204"
+  },
+  {
+    "timestamp": "2025-04-21T03:42:55.221046",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19468402862548828,
+    "instance_id": "run_20250421034255"
+  },
+  {
+    "timestamp": "2025-04-21T03:43:32.463179",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10738897323608398,
+    "instance_id": "run_20250421034332"
+  },
+  {
+    "timestamp": "2025-04-21T03:44:27.985441",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2133181095123291,
+    "instance_id": "run_20250421034427"
+  },
+  {
+    "timestamp": "2025-04-21T03:45:14.007190",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1524496078491211,
+    "instance_id": "run_20250421034513"
+  },
+  {
+    "timestamp": "2025-04-21T03:46:17.327517",
+    "function": "add_edge_bearings",
+    "execution_time": 0.18048429489135742,
+    "instance_id": "run_20250421034617"
+  },
+  {
+    "timestamp": "2025-04-21T03:47:15.124942",
+    "function": "add_edge_bearings",
+    "execution_time": 0.5770256519317627,
+    "instance_id": "run_20250421034714"
+  },
+  {
+    "timestamp": "2025-04-21T03:48:43.959746",
+    "function": "add_edge_bearings",
+    "execution_time": 0.8006079196929932,
+    "instance_id": "run_20250421034843"
+  },
+  {
+    "timestamp": "2025-04-21T03:50:36.805198",
+    "function": "add_edge_bearings",
+    "execution_time": 0.9481074810028076,
+    "instance_id": "run_20250421035035"
+  },
+  {
+    "timestamp": "2025-04-21T03:52:24.316415",
+    "function": "add_edge_bearings",
+    "execution_time": 0.972938060760498,
+    "instance_id": "run_20250421035223"
+  },
+  {
+    "timestamp": "2025-04-21T03:54:12.407295",
+    "function": "add_edge_bearings",
+    "execution_time": 0.8739821910858154,
+    "instance_id": "run_20250421035411"
+  },
+  {
+    "timestamp": "2025-04-21T03:55:16.873857",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17032384872436523,
+    "instance_id": "run_20250421035516"
+  },
+  {
+    "timestamp": "2025-04-21T03:55:56.013707",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14476561546325684,
+    "instance_id": "run_20250421035555"
+  },
+  {
+    "timestamp": "2025-04-21T03:56:41.721235",
+    "function": "add_edge_bearings",
+    "execution_time": 0.23221540451049805,
+    "instance_id": "run_20250421035641"
+  },
+  {
+    "timestamp": "2025-04-21T03:57:16.661192",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0892794132232666,
+    "instance_id": "run_20250421035716"
+  },
+  {
+    "timestamp": "2025-04-21T03:57:59.203872",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21822524070739746,
+    "instance_id": "run_20250421035758"
+  },
+  {
+    "timestamp": "2025-04-21T03:58:47.507953",
+    "function": "add_edge_bearings",
+    "execution_time": 0.3592088222503662,
+    "instance_id": "run_20250421035847"
+  },
+  {
+    "timestamp": "2025-04-21T03:59:35.704469",
+    "function": "add_edge_bearings",
+    "execution_time": 0.30060529708862305,
+    "instance_id": "run_20250421035935"
+  },
+  {
+    "timestamp": "2025-04-21T04:00:22.204018",
+    "function": "add_edge_bearings",
+    "execution_time": 0.33164215087890625,
+    "instance_id": "run_20250421040021"
+  },
+  {
+    "timestamp": "2025-04-21T04:00:51.809109",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2220158576965332,
+    "instance_id": "run_20250421040051"
+  },
+  {
+    "timestamp": "2025-04-21T04:01:34.515309",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2671506404876709,
+    "instance_id": "run_20250421040134"
+  },
+  {
+    "timestamp": "2025-04-21T04:02:12.888255",
+    "function": "add_edge_bearings",
+    "execution_time": 0.07147932052612305,
+    "instance_id": "run_20250421040212"
+  },
+  {
+    "timestamp": "2025-04-21T04:02:23.271749",
+    "function": "add_edge_bearings",
+    "execution_time": 0.024946212768554688,
+    "instance_id": "run_20250421040223"
+  },
+  {
+    "timestamp": "2025-04-21T04:02:50.492724",
+    "function": "add_edge_bearings",
+    "execution_time": 0.06652307510375977,
+    "instance_id": "run_20250421040250"
+  },
+  {
+    "timestamp": "2025-04-21T04:03:02.480528",
+    "function": "add_edge_bearings",
+    "execution_time": 0.04160022735595703,
+    "instance_id": "run_20250421040302"
+  },
+  {
+    "timestamp": "2025-04-21T04:03:18.755035",
+    "function": "add_edge_bearings",
+    "execution_time": 0.07547330856323242,
+    "instance_id": "run_20250421040318"
+  },
+  {
+    "timestamp": "2025-04-21T04:03:57.757576",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11882591247558594,
+    "instance_id": "run_20250421040357"
+  },
+  {
+    "timestamp": "2025-04-21T04:04:36.224426",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10030651092529297,
+    "instance_id": "run_20250421040436"
+  },
+  {
+    "timestamp": "2025-04-21T04:05:12.479451",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14696907997131348,
+    "instance_id": "run_20250421040512"
+  },
+  {
+    "timestamp": "2025-04-21T04:05:35.240565",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10114550590515137,
+    "instance_id": "run_20250421040535"
+  },
+  {
+    "timestamp": "2025-04-21T04:06:14.143080",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12131714820861816,
+    "instance_id": "run_20250421040614"
+  },
+  {
+    "timestamp": "2025-04-21T04:07:00.307995",
+    "function": "add_edge_bearings",
+    "execution_time": 0.37352991104125977,
+    "instance_id": "run_20250421040659"
+  },
+  {
+    "timestamp": "2025-04-21T04:08:01.006397",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4648430347442627,
+    "instance_id": "run_20250421040800"
+  },
+  {
+    "timestamp": "2025-04-21T04:09:22.168350",
+    "function": "add_edge_bearings",
+    "execution_time": 0.476574182510376,
+    "instance_id": "run_20250421040921"
+  },
+  {
+    "timestamp": "2025-04-21T04:10:18.132047",
+    "function": "add_edge_bearings",
+    "execution_time": 0.31038546562194824,
+    "instance_id": "run_20250421041017"
+  },
+  {
+    "timestamp": "2025-04-21T04:11:08.015738",
+    "function": "add_edge_bearings",
+    "execution_time": 0.3041982650756836,
+    "instance_id": "run_20250421041107"
+  },
+  {
+    "timestamp": "2025-04-21T04:11:53.740866",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10385823249816895,
+    "instance_id": "run_20250421041153"
+  },
+  {
+    "timestamp": "2025-04-21T04:12:34.293715",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11413693428039551,
+    "instance_id": "run_20250421041234"
+  },
+  {
+    "timestamp": "2025-04-21T04:12:55.876658",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08809995651245117,
+    "instance_id": "run_20250421041255"
+  },
+  {
+    "timestamp": "2025-04-21T04:13:34.309325",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09377193450927734,
+    "instance_id": "run_20250421041334"
+  },
+  {
+    "timestamp": "2025-04-21T04:14:14.201262",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11007404327392578,
+    "instance_id": "run_20250421041414"
+  },
+  {
+    "timestamp": "2025-04-21T04:14:41.200352",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19205737113952637,
+    "instance_id": "run_20250421041441"
+  },
+  {
+    "timestamp": "2025-04-21T04:15:25.212719",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19048237800598145,
+    "instance_id": "run_20250421041525"
+  },
+  {
+    "timestamp": "2025-04-21T04:16:07.078962",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17480778694152832,
+    "instance_id": "run_20250421041606"
+  },
+  {
+    "timestamp": "2025-04-21T04:16:51.016913",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1878504753112793,
+    "instance_id": "run_20250421041650"
+  },
+  {
+    "timestamp": "2025-04-21T04:17:36.791342",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20847105979919434,
+    "instance_id": "run_20250421041736"
+  },
+  {
+    "timestamp": "2025-04-21T04:17:50.774198",
+    "function": "add_edge_bearings",
+    "execution_time": 0.03612685203552246,
+    "instance_id": "run_20250421041750"
+  },
+  {
+    "timestamp": "2025-04-21T04:18:06.305743",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13635492324829102,
+    "instance_id": "run_20250421041806"
+  },
+  {
+    "timestamp": "2025-04-21T04:18:40.070726",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11582255363464355,
+    "instance_id": "run_20250421041839"
+  },
+  {
+    "timestamp": "2025-04-21T04:18:55.088492",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08944272994995117,
+    "instance_id": "run_20250421041854"
+  },
+  {
+    "timestamp": "2025-04-21T04:19:31.061849",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19478583335876465,
+    "instance_id": "run_20250421041930"
+  },
+  {
+    "timestamp": "2025-04-21T04:20:10.656735",
+    "function": "add_edge_bearings",
+    "execution_time": 0.24823522567749023,
+    "instance_id": "run_20250421042010"
+  },
+  {
+    "timestamp": "2025-04-21T04:20:37.008890",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2539405822753906,
+    "instance_id": "run_20250421042036"
+  },
+  {
+    "timestamp": "2025-04-21T04:21:18.108090",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2511167526245117,
+    "instance_id": "run_20250421042117"
+  },
+  {
+    "timestamp": "2025-04-21T04:21:40.189663",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1843569278717041,
+    "instance_id": "run_20250421042140"
+  },
+  {
+    "timestamp": "2025-04-21T04:22:20.290986",
+    "function": "add_edge_bearings",
+    "execution_time": 0.254596471786499,
+    "instance_id": "run_20250421042220"
+  },
+  {
+    "timestamp": "2025-04-21T04:23:08.985716",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19927239418029785,
+    "instance_id": "run_20250421042308"
+  },
+  {
+    "timestamp": "2025-04-21T04:23:54.437083",
+    "function": "add_edge_bearings",
+    "execution_time": 0.22274184226989746,
+    "instance_id": "run_20250421042354"
+  },
+  {
+    "timestamp": "2025-04-21T04:24:39.210206",
+    "function": "add_edge_bearings",
+    "execution_time": 0.22610974311828613,
+    "instance_id": "run_20250421042438"
+  },
+  {
+    "timestamp": "2025-04-21T04:25:06.579403",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17602276802062988,
+    "instance_id": "run_20250421042506"
+  },
+  {
+    "timestamp": "2025-04-21T04:25:46.862870",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15888762474060059,
+    "instance_id": "run_20250421042546"
+  },
+  {
+    "timestamp": "2025-04-21T04:26:33.290797",
+    "function": "add_edge_bearings",
+    "execution_time": 0.5191006660461426,
+    "instance_id": "run_20250421042632"
+  },
+  {
+    "timestamp": "2025-04-21T04:27:34.547298",
+    "function": "add_edge_bearings",
+    "execution_time": 0.5669503211975098,
+    "instance_id": "run_20250421042733"
+  },
+  {
+    "timestamp": "2025-04-21T04:28:31.125473",
+    "function": "add_edge_bearings",
+    "execution_time": 0.4465348720550537,
+    "instance_id": "run_20250421042830"
+  },
+  {
+    "timestamp": "2025-04-21T04:29:29.082305",
+    "function": "add_edge_bearings",
+    "execution_time": 0.5162701606750488,
+    "instance_id": "run_20250421042928"
+  },
+  {
+    "timestamp": "2025-04-21T04:30:20.539977",
+    "function": "add_edge_bearings",
+    "execution_time": 0.28344011306762695,
+    "instance_id": "run_20250421043020"
+  },
+  {
+    "timestamp": "2025-04-21T04:31:06.898698",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14650750160217285,
+    "instance_id": "run_20250421043106"
+  },
+  {
+    "timestamp": "2025-04-21T04:31:30.558477",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11665940284729004,
+    "instance_id": "run_20250421043130"
+  },
+  {
+    "timestamp": "2025-04-21T04:32:10.009236",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1199648380279541,
+    "instance_id": "run_20250421043209"
+  },
+  {
+    "timestamp": "2025-04-21T04:32:32.218902",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11540079116821289,
+    "instance_id": "run_20250421043232"
+  },
+  {
+    "timestamp": "2025-04-21T04:33:12.598318",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11754298210144043,
+    "instance_id": "run_20250421043312"
+  },
+  {
+    "timestamp": "2025-04-21T04:33:56.281401",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15184712409973145,
+    "instance_id": "run_20250421043356"
+  },
+  {
+    "timestamp": "2025-04-21T04:34:27.354896",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14817214012145996,
+    "instance_id": "run_20250421043427"
+  },
+  {
+    "timestamp": "2025-04-21T04:35:09.422772",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12230253219604492,
+    "instance_id": "run_20250421043509"
+  },
+  {
+    "timestamp": "2025-04-21T04:35:54.535612",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15738368034362793,
+    "instance_id": "run_20250421043554"
+  },
+  {
+    "timestamp": "2025-04-21T04:36:18.340902",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1121058464050293,
+    "instance_id": "run_20250421043618"
+  },
+  {
+    "timestamp": "2025-04-21T04:37:13.477350",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19121026992797852,
+    "instance_id": "run_20250421043713"
+  },
+  {
+    "timestamp": "2025-04-21T04:38:14.154471",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2001326084136963,
+    "instance_id": "run_20250421043813"
+  },
+  {
+    "timestamp": "2025-04-21T04:39:30.416663",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20810341835021973,
+    "instance_id": "run_20250421043930"
+  },
+  {
+    "timestamp": "2025-04-21T04:40:31.255863",
+    "function": "add_edge_bearings",
+    "execution_time": 0.24506664276123047,
+    "instance_id": "run_20250421044031"
+  },
+  {
+    "timestamp": "2025-04-21T04:41:34.363563",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21900010108947754,
+    "instance_id": "run_20250421044134"
+  },
+  {
+    "timestamp": "2025-04-21T04:42:09.452509",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13334441184997559,
+    "instance_id": "run_20250421044209"
+  },
+  {
+    "timestamp": "2025-04-21T04:43:00.580647",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13675880432128906,
+    "instance_id": "run_20250421044300"
+  },
+  {
+    "timestamp": "2025-04-21T04:43:49.405430",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12769770622253418,
+    "instance_id": "run_20250421044349"
+  },
+  {
+    "timestamp": "2025-04-21T04:44:35.648028",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13361024856567383,
+    "instance_id": "run_20250421044435"
+  },
+  {
+    "timestamp": "2025-04-21T04:45:24.761751",
+    "function": "add_edge_bearings",
+    "execution_time": 0.140519380569458,
+    "instance_id": "run_20250421044524"
+  },
+  {
+    "timestamp": "2025-04-21T04:45:54.327115",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16009926795959473,
+    "instance_id": "run_20250421044554"
+  },
+  {
+    "timestamp": "2025-04-21T04:46:41.740958",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1168680191040039,
+    "instance_id": "run_20250421044641"
+  },
+  {
+    "timestamp": "2025-04-21T04:47:27.404617",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16905713081359863,
+    "instance_id": "run_20250421044727"
+  },
+  {
+    "timestamp": "2025-04-21T04:47:55.421174",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13763928413391113,
+    "instance_id": "run_20250421044755"
+  },
+  {
+    "timestamp": "2025-04-21T04:48:42.835376",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17004752159118652,
+    "instance_id": "run_20250421044842"
+  },
+  {
+    "timestamp": "2025-04-21T04:49:01.600151",
+    "function": "add_edge_bearings",
+    "execution_time": 0.07757258415222168,
+    "instance_id": "run_20250421044901"
+  },
+  {
+    "timestamp": "2025-04-21T04:49:35.569323",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08059167861938477,
+    "instance_id": "run_20250421044935"
+  },
+  {
+    "timestamp": "2025-04-21T04:49:54.433681",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10199809074401855,
+    "instance_id": "run_20250421044954"
+  },
+  {
+    "timestamp": "2025-04-21T04:50:29.174736",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1009519100189209,
+    "instance_id": "run_20250421045029"
+  },
+  {
+    "timestamp": "2025-04-21T04:50:50.228852",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09758806228637695,
+    "instance_id": "run_20250421045050"
+  },
+  {
+    "timestamp": "2025-04-21T04:51:10.653046",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12755417823791504,
+    "instance_id": "run_20250421045110"
+  },
+  {
+    "timestamp": "2025-04-21T04:51:52.443557",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1632375717163086,
+    "instance_id": "run_20250421045152"
+  },
+  {
+    "timestamp": "2025-04-21T04:52:41.028349",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19427847862243652,
+    "instance_id": "run_20250421045240"
+  },
+  {
+    "timestamp": "2025-04-21T04:53:10.533810",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17212343215942383,
+    "instance_id": "run_20250421045310"
+  },
+  {
+    "timestamp": "2025-04-21T04:53:58.121361",
+    "function": "add_edge_bearings",
+    "execution_time": 0.18074798583984375,
+    "instance_id": "run_20250421045357"
+  },
+  {
+    "timestamp": "2025-04-21T04:54:51.377315",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19578838348388672,
+    "instance_id": "run_20250421045451"
+  },
+  {
+    "timestamp": "2025-04-21T04:55:50.017732",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19501018524169922,
+    "instance_id": "run_20250421045549"
+  },
+  {
+    "timestamp": "2025-04-21T04:56:43.366115",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20526862144470215,
+    "instance_id": "run_20250421045643"
+  },
+  {
+    "timestamp": "2025-04-21T04:57:35.301175",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19313287734985352,
+    "instance_id": "run_20250421045735"
+  },
+  {
+    "timestamp": "2025-04-21T04:58:14.295937",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1762392520904541,
+    "instance_id": "run_20250421045814"
+  },
+  {
+    "timestamp": "2025-04-21T04:58:57.367689",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11892890930175781,
+    "instance_id": "run_20250421045857"
+  },
+  {
+    "timestamp": "2025-04-21T04:59:18.017089",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1388838291168213,
+    "instance_id": "run_20250421045917"
+  },
+  {
+    "timestamp": "2025-04-21T05:00:00.196882",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16764545440673828,
+    "instance_id": "run_20250421050000"
+  },
+  {
+    "timestamp": "2025-04-21T05:00:23.076620",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1284182071685791,
+    "instance_id": "run_20250421050022"
+  },
+  {
+    "timestamp": "2025-04-21T05:01:08.785561",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19143104553222656,
+    "instance_id": "run_20250421050108"
+  },
+  {
+    "timestamp": "2025-04-21T05:01:24.966210",
+    "function": "add_edge_bearings",
+    "execution_time": 0.03913545608520508,
+    "instance_id": "run_20250421050124"
+  },
+  {
+    "timestamp": "2025-04-21T05:01:53.102750",
+    "function": "add_edge_bearings",
+    "execution_time": 0.04551982879638672,
+    "instance_id": "run_20250421050153"
+  },
+  {
+    "timestamp": "2025-04-21T05:02:03.672411",
+    "function": "add_edge_bearings",
+    "execution_time": 0.04805469512939453,
+    "instance_id": "run_20250421050203"
+  },
+  {
+    "timestamp": "2025-04-21T05:02:12.028286",
+    "function": "add_edge_bearings",
+    "execution_time": 0.03563809394836426,
+    "instance_id": "run_20250421050211"
+  },
+  {
+    "timestamp": "2025-04-21T05:02:19.947788",
+    "function": "add_edge_bearings",
+    "execution_time": 0.029105186462402344,
+    "instance_id": "run_20250421050219"
+  },
+  {
+    "timestamp": "2025-04-21T05:03:00.142643",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21304607391357422,
+    "instance_id": "run_20250421050259"
+  },
+  {
+    "timestamp": "2025-04-21T05:03:28.171258",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2038860321044922,
+    "instance_id": "run_20250421050327"
+  },
+  {
+    "timestamp": "2025-04-21T05:04:12.957355",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19439196586608887,
+    "instance_id": "run_20250421050412"
+  },
+  {
+    "timestamp": "2025-04-21T05:04:57.638272",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20349931716918945,
+    "instance_id": "run_20250421050457"
+  },
+  {
+    "timestamp": "2025-04-21T05:05:28.587318",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21651697158813477,
+    "instance_id": "run_20250421050528"
+  },
+  {
+    "timestamp": "2025-04-21T05:06:14.539628",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20034241676330566,
+    "instance_id": "run_20250421050614"
+  },
+  {
+    "timestamp": "2025-04-21T05:06:32.237254",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09834527969360352,
+    "instance_id": "run_20250421050632"
+  },
+  {
+    "timestamp": "2025-04-21T05:07:11.117883",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20000457763671875,
+    "instance_id": "run_20250421050710"
+  },
+  {
+    "timestamp": "2025-04-21T05:07:33.041371",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16216802597045898,
+    "instance_id": "run_20250421050732"
+  },
+  {
+    "timestamp": "2025-04-21T05:08:14.345831",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19175004959106445,
+    "instance_id": "run_20250421050814"
+  },
+  {
+    "timestamp": "2025-04-21T05:08:43.405819",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1742260456085205,
+    "instance_id": "run_20250421050843"
+  },
+  {
+    "timestamp": "2025-04-21T05:09:39.113229",
+    "function": "add_edge_bearings",
+    "execution_time": 0.18841099739074707,
+    "instance_id": "run_20250421050938"
+  },
+  {
+    "timestamp": "2025-04-21T05:10:32.404266",
+    "function": "add_edge_bearings",
+    "execution_time": 0.18633246421813965,
+    "instance_id": "run_20250421051032"
+  },
+  {
+    "timestamp": "2025-04-21T05:11:26.098665",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21707844734191895,
+    "instance_id": "run_20250421051125"
+  },
+  {
+    "timestamp": "2025-04-21T05:11:59.790564",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17567157745361328,
+    "instance_id": "run_20250421051159"
+  },
+  {
+    "timestamp": "2025-04-21T05:12:58.266315",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19202375411987305,
+    "instance_id": "run_20250421051258"
+  },
+  {
+    "timestamp": "2025-04-21T05:13:59.734179",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21250462532043457,
+    "instance_id": "run_20250421051359"
+  },
+  {
+    "timestamp": "2025-04-21T05:14:58.410698",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19656586647033691,
+    "instance_id": "run_20250421051458"
+  },
+  {
+    "timestamp": "2025-04-21T05:15:29.243022",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12906765937805176,
+    "instance_id": "run_20250421051529"
+  },
+  {
+    "timestamp": "2025-04-21T05:16:22.038564",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1818239688873291,
+    "instance_id": "run_20250421051621"
+  },
+  {
+    "timestamp": "2025-04-21T05:17:09.837282",
+    "function": "add_edge_bearings",
+    "execution_time": 0.190626859664917,
+    "instance_id": "run_20250421051709"
+  },
+  {
+    "timestamp": "2025-04-21T05:17:38.981873",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1961061954498291,
+    "instance_id": "run_20250421051738"
+  },
+  {
+    "timestamp": "2025-04-21T05:18:26.084455",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19239139556884766,
+    "instance_id": "run_20250421051825"
+  },
+  {
+    "timestamp": "2025-04-21T05:19:18.133240",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2310032844543457,
+    "instance_id": "run_20250421051917"
+  },
+  {
+    "timestamp": "2025-04-21T05:19:46.723782",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16518211364746094,
+    "instance_id": "run_20250421051946"
+  },
+  {
+    "timestamp": "2025-04-21T05:20:39.960861",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1655712127685547,
+    "instance_id": "run_20250421052039"
+  },
+  {
+    "timestamp": "2025-04-21T05:21:31.163215",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1939699649810791,
+    "instance_id": "run_20250421052130"
+  },
+  {
+    "timestamp": "2025-04-21T05:22:04.571093",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16437578201293945,
+    "instance_id": "run_20250421052204"
+  },
+  {
+    "timestamp": "2025-04-21T05:22:55.350275",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16525483131408691,
+    "instance_id": "run_20250421052255"
+  },
+  {
+    "timestamp": "2025-04-21T05:23:47.071536",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16660261154174805,
+    "instance_id": "run_20250421052346"
+  },
+  {
+    "timestamp": "2025-04-21T05:24:20.076490",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10574817657470703,
+    "instance_id": "run_20250421052419"
+  },
+  {
+    "timestamp": "2025-04-21T05:25:10.097586",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11925649642944336,
+    "instance_id": "run_20250421052509"
+  },
+  {
+    "timestamp": "2025-04-21T05:26:05.016424",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1745166778564453,
+    "instance_id": "run_20250421052604"
+  },
+  {
+    "timestamp": "2025-04-21T05:26:33.464403",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10350632667541504,
+    "instance_id": "run_20250421052633"
+  },
+  {
+    "timestamp": "2025-04-21T05:27:26.547458",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10744333267211914,
+    "instance_id": "run_20250421052726"
+  },
+  {
+    "timestamp": "2025-04-21T05:27:40.060074",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10226726531982422,
+    "instance_id": "run_20250421052739"
+  },
+  {
+    "timestamp": "2025-04-21T05:27:49.477275",
+    "function": "add_edge_bearings",
+    "execution_time": 0.05129504203796387,
+    "instance_id": "run_20250421052749"
+  },
+  {
+    "timestamp": "2025-04-21T05:28:22.963279",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1608583927154541,
+    "instance_id": "run_20250421052822"
+  },
+  {
+    "timestamp": "2025-04-21T05:28:40.881649",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15692663192749023,
+    "instance_id": "run_20250421052840"
+  },
+  {
+    "timestamp": "2025-04-21T05:29:19.036661",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17830252647399902,
+    "instance_id": "run_20250421052918"
+  },
+  {
+    "timestamp": "2025-04-21T05:29:41.238949",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10375618934631348,
+    "instance_id": "run_20250421052941"
+  },
+  {
+    "timestamp": "2025-04-21T05:29:59.360552",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09604430198669434,
+    "instance_id": "run_20250421052959"
+  },
+  {
+    "timestamp": "2025-04-21T05:30:39.167623",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13162016868591309,
+    "instance_id": "run_20250421053039"
+  },
+  {
+    "timestamp": "2025-04-21T05:31:00.409119",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1286306381225586,
+    "instance_id": "run_20250421053100"
+  },
+  {
+    "timestamp": "2025-04-21T05:31:37.482280",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08858633041381836,
+    "instance_id": "run_20250421053137"
+  },
+  {
+    "timestamp": "2025-04-21T05:32:03.541226",
+    "function": "add_edge_bearings",
+    "execution_time": 0.18143486976623535,
+    "instance_id": "run_20250421053203"
+  },
+  {
+    "timestamp": "2025-04-21T05:32:53.151840",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2163243293762207,
+    "instance_id": "run_20250421053252"
+  },
+  {
+    "timestamp": "2025-04-21T05:33:27.891380",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2177572250366211,
+    "instance_id": "run_20250421053327"
+  },
+  {
+    "timestamp": "2025-04-21T05:34:20.842656",
+    "function": "add_edge_bearings",
+    "execution_time": 0.2044355869293213,
+    "instance_id": "run_20250421053420"
+  },
+  {
+    "timestamp": "2025-04-21T05:35:12.591166",
+    "function": "add_edge_bearings",
+    "execution_time": 0.25057029724121094,
+    "instance_id": "run_20250421053512"
+  },
+  {
+    "timestamp": "2025-04-21T05:35:47.457680",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1421833038330078,
+    "instance_id": "run_20250421053547"
+  },
+  {
+    "timestamp": "2025-04-21T05:36:37.412154",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15125727653503418,
+    "instance_id": "run_20250421053637"
+  },
+  {
+    "timestamp": "2025-04-21T05:37:23.905656",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13331317901611328,
+    "instance_id": "run_20250421053723"
+  },
+  {
+    "timestamp": "2025-04-21T05:37:55.171534",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15965628623962402,
+    "instance_id": "run_20250421053755"
+  },
+  {
+    "timestamp": "2025-04-21T05:38:44.021421",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14435052871704102,
+    "instance_id": "run_20250421053843"
+  },
+  {
+    "timestamp": "2025-04-21T05:39:13.069241",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16572356224060059,
+    "instance_id": "run_20250421053912"
+  },
+  {
+    "timestamp": "2025-04-21T05:40:03.525434",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1662285327911377,
+    "instance_id": "run_20250421054003"
+  },
+  {
+    "timestamp": "2025-04-21T05:40:30.151599",
+    "function": "add_edge_bearings",
+    "execution_time": 0.150770902633667,
+    "instance_id": "run_20250421054030"
+  },
+  {
+    "timestamp": "2025-04-21T05:41:17.819131",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12163257598876953,
+    "instance_id": "run_20250421054117"
+  },
+  {
+    "timestamp": "2025-04-21T05:42:02.960492",
+    "function": "add_edge_bearings",
+    "execution_time": 0.18260669708251953,
+    "instance_id": "run_20250421054202"
+  },
+  {
+    "timestamp": "2025-04-21T05:42:31.962703",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14220452308654785,
+    "instance_id": "run_20250421054231"
+  },
+  {
+    "timestamp": "2025-04-21T05:43:29.710081",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19064879417419434,
+    "instance_id": "run_20250421054329"
+  },
+  {
+    "timestamp": "2025-04-21T05:44:26.082852",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21430540084838867,
+    "instance_id": "run_20250421054425"
+  },
+  {
+    "timestamp": "2025-04-21T05:45:08.244144",
+    "function": "add_edge_bearings",
+    "execution_time": 0.21136999130249023,
+    "instance_id": "run_20250421054508"
+  },
+  {
+    "timestamp": "2025-04-21T05:46:07.818376",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16409707069396973,
+    "instance_id": "run_20250421054607"
+  },
+  {
+    "timestamp": "2025-04-21T05:46:50.946110",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09843850135803223,
+    "instance_id": "run_20250421054650"
+  },
+  {
+    "timestamp": "2025-04-21T05:47:12.001184",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08922815322875977,
+    "instance_id": "run_20250421054711"
+  },
+  {
+    "timestamp": "2025-04-21T05:47:56.705110",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11680817604064941,
+    "instance_id": "run_20250421054756"
+  },
+  {
+    "timestamp": "2025-04-21T05:48:20.420011",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10640501976013184,
+    "instance_id": "run_20250421054820"
+  },
+  {
+    "timestamp": "2025-04-21T05:48:41.722098",
+    "function": "add_edge_bearings",
+    "execution_time": 0.08542943000793457,
+    "instance_id": "run_20250421054841"
+  },
+  {
+    "timestamp": "2025-04-21T05:49:28.655561",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11916685104370117,
+    "instance_id": "run_20250421054928"
+  },
+  {
+    "timestamp": "2025-04-21T05:50:21.375987",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20830512046813965,
+    "instance_id": "run_20250421055021"
+  },
+  {
+    "timestamp": "2025-04-21T05:50:52.645415",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1512131690979004,
+    "instance_id": "run_20250421055052"
+  },
+  {
+    "timestamp": "2025-04-21T05:51:50.469605",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1811234951019287,
+    "instance_id": "run_20250421055150"
+  },
+  {
+    "timestamp": "2025-04-21T05:52:46.648114",
+    "function": "add_edge_bearings",
+    "execution_time": 0.19754433631896973,
+    "instance_id": "run_20250421055246"
+  },
+  {
+    "timestamp": "2025-04-21T05:53:13.206174",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1579592227935791,
+    "instance_id": "run_20250421055313"
+  },
+  {
+    "timestamp": "2025-04-21T05:53:59.067619",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16312146186828613,
+    "instance_id": "run_20250421055358"
+  },
+  {
+    "timestamp": "2025-04-21T05:54:23.317250",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14132118225097656,
+    "instance_id": "run_20250421055423"
+  },
+  {
+    "timestamp": "2025-04-21T05:55:10.430138",
+    "function": "add_edge_bearings",
+    "execution_time": 0.16254615783691406,
+    "instance_id": "run_20250421055510"
+  },
+  {
+    "timestamp": "2025-04-21T05:55:27.897747",
+    "function": "add_edge_bearings",
+    "execution_time": 0.12979578971862793,
+    "instance_id": "run_20250421055527"
+  },
+  {
+    "timestamp": "2025-04-21T05:55:52.692548",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11356091499328613,
+    "instance_id": "run_20250421055552"
+  },
+  {
+    "timestamp": "2025-04-21T05:56:39.781207",
+    "function": "add_edge_bearings",
+    "execution_time": 0.11561346054077148,
+    "instance_id": "run_20250421055639"
+  },
+  {
+    "timestamp": "2025-04-21T05:57:03.188650",
+    "function": "add_edge_bearings",
+    "execution_time": 0.10002303123474121,
+    "instance_id": "run_20250421055703"
+  },
+  {
+    "timestamp": "2025-04-21T05:57:54.997219",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14777350425720215,
+    "instance_id": "run_20250421055754"
+  },
+  {
+    "timestamp": "2025-04-21T05:58:23.761915",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1244354248046875,
+    "instance_id": "run_20250421055823"
+  },
+  {
+    "timestamp": "2025-04-21T05:59:11.816573",
+    "function": "add_edge_bearings",
+    "execution_time": 0.13180923461914062,
+    "instance_id": "run_20250421055911"
+  },
+  {
+    "timestamp": "2025-04-21T05:59:34.324489",
+    "function": "add_edge_bearings",
+    "execution_time": 0.09482526779174805,
+    "instance_id": "run_20250421055934"
+  },
+  {
+    "timestamp": "2025-04-21T06:00:11.188649",
+    "function": "add_edge_bearings",
+    "execution_time": 0.0673835277557373,
+    "instance_id": "run_20250421060011"
+  },
+  {
+    "timestamp": "2025-04-21T06:00:34.659529",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14070701599121094,
+    "instance_id": "run_20250421060034"
+  },
+  {
+    "timestamp": "2025-04-21T06:01:22.524131",
+    "function": "add_edge_bearings",
+    "execution_time": 0.1374683380126953,
+    "instance_id": "run_20250421060122"
+  },
+  {
+    "timestamp": "2025-04-21T06:02:01.571432",
+    "function": "add_edge_bearings",
+    "execution_time": 0.20546770095825195,
+    "instance_id": "run_20250421060201"
+  },
+  {
+    "timestamp": "2025-04-21T06:02:56.933717",
+    "function": "add_edge_bearings",
+    "execution_time": 0.14022541046142578,
+    "instance_id": "run_20250421060256"
+  },
+  {
+    "timestamp": "2025-04-21T06:03:52.657983",
+    "function": "add_edge_bearings",
+    "execution_time": 0.17706084251403809,
+    "instance_id": "run_20250421060352"
+  },
+  {
+    "timestamp": "2025-04-21T06:04:30.721843",
+    "function": "add_edge_bearings",
+    "execution_time": 0.15810370445251465,
+    "instance_id": "run_20250421060430"
+  },
+  {
+    "timestamp": "2025-04-21T06:05:32.961050",
+    "function": "add_edge_bearings",
+    "execution_time": 0.18844103813171387,
+    "instance_id": "run_20250421060532"
   }
 ]

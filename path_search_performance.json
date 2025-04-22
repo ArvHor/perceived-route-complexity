@@ -1,0 +1,50 @@
+[
+  {
+    "timestamp": "2025-04-21T07:05:11.636776",
+    "function": "simplest_path_from_source_heapq",
+    "execution_time": 3536.016000032425,
+    "instance_id": "run_20250421060615"
+  },
+  {
+    "timestamp": "2025-04-21T10:58:45.907618",
+    "function": "simplest_path_from_source_heapq",
+    "execution_time": 248.6138677597046,
+    "instance_id": "run_20250421105437"
+  },
+  {
+    "timestamp": "2025-04-21T23:12:15.099139",
+    "function": "simplest_path_from_source_heapq",
+    "execution_time": 55.2580292224884,
+    "instance_id": "run_20250421231119"
+  },
+  {
+    "timestamp": "2025-04-21T23:51:08.658601",
+    "function": "simplest_path_from_source_heapq",
+    "execution_time": 44.14804267883301,
+    "instance_id": "run_20250421235024"
+  },
+  {
+    "timestamp": "2025-04-22T00:02:06.960209",
+    "function": "simplest_path_from_source_heapq",
+    "execution_time": 88.09886860847473,
+    "instance_id": "run_20250422000038"
+  },
+  {
+    "timestamp": "2025-04-22T00:51:19.713666",
+    "function": "simplest_path_from_source_heapq",
+    "execution_time": 31.96814775466919,
+    "instance_id": "run_20250422005047"
+  },
+  {
+    "timestamp": "2025-04-22T01:06:30.138173",
+    "function": "simplest_path_from_source_heapq",
+    "execution_time": 56.50085496902466,
+    "instance_id": "run_20250422010533"
+  },
+  {
+    "timestamp": "2025-04-22T01:52:18.688012",
+    "function": "simplest_path_from_source_heapq",
+    "execution_time": 52.26883912086487,
+    "instance_id": "run_20250422015126"
+  }
+]
