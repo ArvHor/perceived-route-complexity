@@ -69,6 +69,20 @@ class od_pair:
         self.shortest_diff = self.shortest_path.length - self.od_distance
 
 
+        self.stats_edge_count = self.subgraph_stats['m']
+        self.stats_node_count = self.subgraph_stats['n']
+        self.stats_street_segment_count = self.subgraph_stats['street_segment_count']
+        self.stats_streets_per_node_avg = self.subgraph_stats['streets_per_node_avg']
+        self.stats_streets_per_node_counts = self.subgraph_stats['streets_per_node_counts']
+        self.stats_intersection_density_km = self.subgraph_stats['intersection_density_km']
+        self.stats_intersection_count = self.subgraph_stats['intersection_count']
+        self.stats_k_avg = self.subgraph_stats['k_avg']
+        self.stats_street_length_total = self.subgraph_stats['street_length_total']
+        self.stats_street_length_avg = self.subgraph_stats['street_length_avg']
+        self.stats_circuity_avg = self.subgraph_stats['circuity_avg']
+        self.stats_node_density_km = self.subgraph_stats['node_density_km']
+
+
     @classmethod
     def from_route(cls, G, route_nodes,weightstring):
         # Create instance without calling __init__
@@ -78,8 +92,8 @@ class od_pair:
 
         # Set the basic attributes
         instance.graph = G
-        instance.origin_node = instance.path.origin_node
-        instance.destination_node = instance.path.destination_node
+        instance.origin_node = route_nodes[0]
+        instance.destination_node = route_nodes[-1]
         instance.origin_point = (instance.graph.nodes[instance.origin_node]['y'], instance.graph.nodes[instance.origin_node]['x'])
         instance.destination_point = (instance.graph.nodes[instance.destination_node]['y'], instance.graph.nodes[instance.destination_node]['x'])
         
@@ -87,21 +101,19 @@ class od_pair:
         instance.od_distance = float(ox.distance.great_circle(lat1=instance.origin_point[0], lon1=instance.origin_point[1], 
                                                             lat2=instance.destination_point[0], lon2=instance.destination_point[1]))
 
-        instance.graph = route_analysis.get_origin_destination_betweenness_centrality(instance.graph, origin=instance.origin_node,
-                                                                                        destination=instance.destination_node,
-                                                                                        weightstring="length")
 
         # Generate geometry
         instance.shape_dict = geo_util.get_od_pair_polygon(instance.origin_point, instance.destination_point)
         instance.polygon = instance.shape_dict["polygon"]
         instance.bbox = instance.shape_dict["wsen_bbox"]
         instance.bbox_polygon = instance.shape_dict["bbox_polygon"]
+        
         instance.map_bbox = instance.path.map_bbox
 
         instance.cardinal_direction = od_pair_analysis.get_od_cardinal_direction(G=instance.graph,origin=instance.origin_node,destination=instance.destination_node)
 
 
-        instance.subgraph = od_pair_analysis.get_od_pair_subgraph(bbox=instance.bbox)
+        instance.subgraph = od_pair_analysis.get_od_pair_subgraph(G=instance.graph,bbox=instance.bbox)
         instance.undirected_subgraph = ox.convert.to_undirected(instance.subgraph)
         instance.area = geo_util.calculate_area_with_utm(instance.polygon)
         instance.subgraph_stats = ox.stats.basic_stats(instance.subgraph, area=instance.area)
@@ -116,6 +128,19 @@ class od_pair:
 
         instance.order_weighted = street_network_analysis.get_orientation_order(instance.environment_orientation_entropy_weighted)
         instance.order = street_network_analysis.get_orientation_order(instance.environment_orientation_entropy)
+
+        instance.stats_edge_count = instance.subgraph_stats['m']
+        instance.stats_node_count = instance.subgraph_stats['n']
+        instance.stats_street_segment_count = instance.subgraph_stats['street_segment_count']
+        instance.stats_streets_per_node_avg = instance.subgraph_stats['streets_per_node_avg']
+        instance.stats_streets_per_node_counts = instance.subgraph_stats['streets_per_node_counts']
+        instance.stats_intersection_density_km = instance.subgraph_stats['intersection_density_km']
+        instance.stats_intersection_count = instance.subgraph_stats['intersection_count']
+        instance.stats_k_avg = instance.subgraph_stats['k_avg']
+        instance.stats_street_length_total = instance.subgraph_stats['street_length_total']
+        instance.stats_street_length_avg = instance.subgraph_stats['street_length_avg']
+        instance.stats_circuity_avg = instance.subgraph_stats['circuity_avg']
+        instance.stats_node_density_km = instance.subgraph_stats['node_density_km']
 
 
         return instance

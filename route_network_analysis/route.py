@@ -90,6 +90,7 @@ class route:
         graph = graph
         instance.nodes = nodes
         weightstring = weightstring
+        instance.path_search_weight = weightstring
         origin_node = nodes[0]
         destination_node = nodes[-1]
 
@@ -104,9 +105,9 @@ class route:
         else:
             # Handle any other unexpected geometry types
             raise ValueError(f"Expected LineString or MultiLineString, got {geometry.geom_type}")
-
-        instance.length = route_analysis.get_edges_sum(G=graph,route_edges=instance.edges,weightstring='length')
         instance.edges = list(nx.utils.pairwise(instance.nodes))
+        instance.length = route_analysis.get_edges_sum(G=graph,route_edges=instance.edges,weightstring='length')
+
 
         # Get the attributes derived from Duckham and Kulik's simplest path search algorithm
         complexity_dict = route_analysis.get_route_complexity(graph, instance.edges)
@@ -120,11 +121,11 @@ class route:
         instance.n_nodes = len(instance.nodes)
 
         # Get the number of segments and total turn degree
-        instance.n_segments,instance.n_segments_before,instance.route_linestring = route_analysis.get_n_route_segments(graph, instance.route_linestring)
+        instance.n_segments,instance.n_segments_before,instance.route_linestring = route_analysis.get_n_route_segments(instance.route_linestring)
         instance.total_turn_degree = route_analysis.get_route_bearing_sum(graph, instance.route_linestring)
         instance.avg_turn_degree = instance.total_turn_degree / instance.n_segments
 
-        # Get attributes of the nodes in the route
+        # Get attributes of the instance.nodes in the route
         instance.sum_deviation_from_prototypical = route_analysis.get_edges_sum(G=graph,route_edges=instance.edges,weightstring='deviation_from_prototypical')
         instance.sum_node_degree = route_analysis.get_edges_sum(G=graph,route_edges=instance.edges,weightstring='node_degree')
         instance.sum_instruction_equivalent = route_analysis.get_edges_sum(G=graph,route_edges=instance.edges,weightstring='instruction_equivalent')
@@ -135,10 +136,8 @@ class route:
         instance.sum_od_betweenness = route_analysis.get_origin_destination_betweenness_centrality(graph, instance.nodes, origin_node, destination_node)
         instance.avg_od_betweenness = instance.sum_od_betweenness / instance.n_nodes
 
-
-
         # Get the bbox containing the route and get cartographic clutter metrics
-        instance.map_bbox = map_analysis.get_routegdf_bbox()
+        instance.map_bbox = map_analysis.get_routegdf_bbox(graph,instance.nodes)
         instance.map_road_length, instance.map_intersection_count, instance.map_street_count = map_analysis.get_map_clutter(G=graph,map_bbox=instance.map_bbox)
 
         # Generate a unique identifier for the route

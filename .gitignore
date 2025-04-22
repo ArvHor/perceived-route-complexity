@@ -23,3 +23,18 @@ ohno.py
 chromedriver
 experiment_routes/
 bug_testing/
+
+# performance data
+street_network_performance.json
+route_analysis_performance.json
+alignment_performance.json
+path_search_performance.json
+2025-04-small/
+2025-04-small_B/
+2025-03-small/
+
+.profile_view.py
+.idea/
+.vscode/
+*.prof
+
