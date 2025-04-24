@@ -80,6 +80,7 @@ class od_pair:
 
         # Set the basic attributes
         instance.graph = G
+        instance.city_name = G.graph["city_name"]
         instance.origin_node = route_nodes[0]
         instance.destination_node = route_nodes[-1]
         instance.origin_point = (instance.graph.nodes[instance.origin_node]['y'], instance.graph.nodes[instance.origin_node]['x'])
@@ -201,7 +202,7 @@ class od_pair:
             "orientation_entropy": self.environment_orientation_entropy,
             "orientation_entropy_weighted": self.environment_orientation_entropy_weighted,
             "environment_orientation_order": self.order_weighted,
-            "route_bearings_distribution": route_dist.tolist(),
+            "route_bearings_distribution": route_dist.tolist(), # remove this
             "route_bearings": [str(self.shape_dict["fwd_bearing"]), str(self.shape_dict["bwd_bearing"])],
             "environment_bearings_distribution": env_dist.tolist(),
             "environment_bearings_distribution_weighted": env_dist_weighted.tolist(),
@@ -265,7 +266,7 @@ class od_pair:
         comparison_dict = {
             # od pair values
             'id': f"{self.origin_node}-{self.destination_node}",
-            "city_name": graph.graph['city_name'],
+            "city_name": self.city_name,
             'origin_node': self.origin_node,
             "origin_point": self.origin_point,
             'destination_node': self.destination_node,
@@ -313,8 +314,8 @@ class od_pair:
             "circuity_avg": self.subgraph_stats['circuity_avg'],
             "node_density_km": self.subgraph_stats['node_density_km'],
         }
+        path_dict = {f"route_{key}": value for key, value in vars(self.path).items()}
 
-        path_dict = vars(self.path)
 
         comparison_dict.update(path_dict)
         return comparison_dict

@@ -39,7 +39,7 @@ def compare_routes(graph_files, row):
     new_route_dict['complexity_difference'] = old_complexity - new_route_od_pair_data.path.complexity
     new_route_dict['route_exp_condition'] = row['condition']
     
-
+    print("finished with route id", row['id'])
     return new_route_dict
 
 
@@ -48,12 +48,16 @@ if __name__ == "__main__":
     graph_files = pd.read_csv(os.path.join("experiment_routes", "graph_city_dicts.csv"))
     graph_files['graph_file'] = graph_files['graph_file'].str.replace('\\', '/')
 
-    comparison_dicts = Parallel(n_jobs=4,backend="loky")(
+    comparison_dicts = Parallel(n_jobs=6,backend="loky")(
         delayed(compare_routes)(graph_files, row) for _, row in route_data.iterrows()
     )
-
+    print("Finished processing all routes")
+    # Save the comparison data to a CSV file
     df = pd.DataFrame(comparison_dicts)
 
+    max_complexity = df['route_complexity'].max()
+    print(f"max complexity: {df['route_complexity'].max()} sum of columns: {df['route_complexity'].sum()}, mean: {df['route_complexity'].mean()}, median: {df['route_complexity'].median()}")
+    df['route_complexity'] = df['route_complexity'] / max_complexity
 
     df.to_json(os.path.join("experiment_routes/experiment_route_data.json"), orient="records",
                default_handler=str, indent=2)

@@ -96,7 +96,7 @@ def plot_route_gdf(
     full_path = os.path.abspath(file_path)
     imgpath = full_path.replace(".html", ".png")
 
-    screenshot_map(full_path, imgpath)
+    #screenshot_map(full_path, imgpath)
     if return_bbox:
         return bbox
 
@@ -108,7 +108,7 @@ def screenshot_map(full_path, imgpath):
     opts.add_argument("--headless")
     opts.add_argument("--window-size=1600,1286")
 
-    opts.binary_location = "/usr/local/bin/geckodriver"
+    opts.binary_location = "/bin/firefox"
 
     driver = Firefox(options=opts)
     driver.set_page_load_timeout(60)
