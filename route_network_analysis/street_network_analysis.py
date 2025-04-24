@@ -7,6 +7,7 @@ import osmnx as ox
 from osmnx import projection
 from warnings import warn
 import scipy
+
 # Local modules
 from . import geo_util
 from .performance_tracker import PerformanceTracker, track_performance
@@ -15,8 +16,10 @@ from .performance_tracker import PerformanceTracker, track_performance
 def get_node_count(graph):
     return len(graph.nodes)
 
+
 def get_edge_count(graph):
     return len(graph.edges)
+
 
 def get_avg_degree(graph):
     degrees = []
@@ -24,59 +27,68 @@ def get_avg_degree(graph):
         degrees.append(graph.out_degree(node))
     return sum(degrees) / len(degrees) if degrees else 0
 
+
 def get_density(graph):
     return nx.density(graph)
 
+
 def get_city_name(graph):
-    return graph.graph['city_name']
+    return graph.graph["city_name"]
+
 
 def get_start_node(graph):
-    return graph.graph['start_node']
+    return graph.graph["start_node"]
+
 
 def get_len(array_type):
     return len(array_type)
 
+
 street_network_metrics = {
-    'city_name': get_city_name,
-    'start_node': get_start_node,
-    'nodes': get_node_count,
-    'edges': get_edge_count,
-    'avg_degree': get_avg_degree,
-    'density': get_density
+    "city_name": get_city_name,
+    "start_node": get_start_node,
+    "nodes": get_node_count,
+    "edges": get_edge_count,
+    "density": get_density,
 }
 
-street_network_tracker = PerformanceTracker(output_file='street_network_performance.json')
+street_network_tracker = PerformanceTracker(
+    output_file="street_network_performance.json"
+)
+
 
 def add_deviation_from_prototypical_weights(G):
     max_weight = 0
     for u in G.nodes():
         if G.out_degree(u) >= 2:
-            successor_bearings = get_bearings_to_successors(G,u)
+            successor_bearings = get_bearings_to_successors(G, u)
             deviation_weight = calculate_deviation_from_prototypical(successor_bearings)
             if deviation_weight > max_weight:
                 max_weight = deviation_weight
-            for u,v,k in G.out_edges(u,keys=True):
-                G.edges[u,v,k]["deviation_from_prototypical"] = deviation_weight
+            for u, v, k in G.out_edges(u, keys=True):
+                G.edges[u, v, k]["deviation_from_prototypical"] = deviation_weight
         else:
-            for u,v,k in G.out_edges(u,keys=True):
-                G.edges[u,v,k]["deviation_from_prototypical"] = 0
+            for u, v, k in G.out_edges(u, keys=True):
+                G.edges[u, v, k]["deviation_from_prototypical"] = 0
 
     return G, max_weight
+
 
 def add_instruction_equivalent_weights(G):
     max_weight = 0
     for u in G.nodes():
         if G.out_degree(u) >= 2:
-            successor_bearings = get_bearings_to_successors(G,u)
+            successor_bearings = get_bearings_to_successors(G, u)
             instruction_weight = calculate_instruction_equivalent(successor_bearings)
             if instruction_weight > max_weight:
                 max_weight = instruction_weight
-            for u,v,k in G.out_edges(u,keys=True):
-                G.edges[u,v,k]["instruction_equivalent"] = instruction_weight
+            for u, v, k in G.out_edges(u, keys=True):
+                G.edges[u, v, k]["instruction_equivalent"] = instruction_weight
         else:
-            for u,v,k in G.out_edges(u,keys=True):
-                G.edges[u,v,k]["instruction_equivalent"] = 0
-    return G,max_weight
+            for u, v, k in G.out_edges(u, keys=True):
+                G.edges[u, v, k]["instruction_equivalent"] = 0
+    return G, max_weight
+
 
 def add_node_degree_weights(G):
     max_degree = 0
@@ -117,13 +129,25 @@ def calculate_instruction_equivalent(bearing_list):
             bearing_difference_list.append(bearing_difference)
 
         if bearing_difference_list:
-            zero_to_ninety = len([bearing for bearing in bearing_difference_list if 0 < bearing < 90])
-            ninety_to_oneeighty = len([bearing for bearing in bearing_difference_list if 90 < bearing < 180])
-            minus_ninety_to_zero = len([bearing for bearing in bearing_difference_list if -90 < bearing < 0])
+            zero_to_ninety = len(
+                [bearing for bearing in bearing_difference_list if 0 < bearing < 90]
+            )
+            ninety_to_oneeighty = len(
+                [bearing for bearing in bearing_difference_list if 90 < bearing < 180]
+            )
+            minus_ninety_to_zero = len(
+                [bearing for bearing in bearing_difference_list if -90 < bearing < 0]
+            )
             minus_oneeighty_to_minus_ninety = len(
-                [bearing for bearing in bearing_difference_list if -180 < bearing < -90])
-            max_count = max(zero_to_ninety, ninety_to_oneeighty, minus_ninety_to_zero, minus_oneeighty_to_minus_ninety,
-                            1)
+                [bearing for bearing in bearing_difference_list if -180 < bearing < -90]
+            )
+            max_count = max(
+                zero_to_ninety,
+                ninety_to_oneeighty,
+                minus_ninety_to_zero,
+                minus_oneeighty_to_minus_ninety,
+                1,
+            )
             return max_count
         else:
             return 1
@@ -174,7 +198,6 @@ def calculate_deviation(bearing):
     return 0
 
 
-
 """
 
 
@@ -182,7 +205,9 @@ The functions below are derived from OMSNX osmnx.bearing._bearing_distribution.
 https://osmnx.readthedocs.io/en/latest/user-reference.html#osmnx.bearing.orientation_entropy
 Used under the MIT license.
 """
-def get_orientation_order(entropy,num_bins=36):
+
+
+def get_orientation_order(entropy, num_bins=36):
     max_nats = math.log(num_bins)
     min_nats = math.log(4)
     orientation_order = 1 - ((entropy - min_nats) / (max_nats - min_nats)) ** 2
@@ -238,7 +263,6 @@ def orientation_entropy(
     bin_counts, _ = bearings_distribution(G, num_bins, min_length, weight)
     entropy: float = scipy.stats.entropy(bin_counts)
     return entropy
-
 
 
 def extract_edge_bearings(
@@ -304,6 +328,7 @@ def extract_edge_bearings(
     weights_array = np.concatenate([weights_array, weights_array])
     return bearings_array, weights_array
 
+
 @track_performance(street_network_tracker, metrics_funcs=street_network_metrics)
 def bearings_distribution(
     G: nx.MultiGraph | nx.MultiDiGraph,
@@ -363,6 +388,7 @@ def bearings_distribution(
     bin_centers = split_bin_edges[range(0, num_split_bins - 1, 2)]
     return bin_counts, bin_centers
 
+
 @track_performance(street_network_tracker, metrics_funcs=street_network_metrics)
 def add_edge_bearings(G: nx.MultiDiGraph) -> nx.MultiDiGraph:
     """
@@ -396,8 +422,11 @@ def add_edge_bearings(G: nx.MultiDiGraph) -> nx.MultiDiGraph:
     coords = np.array([(y[u], x[u], y[v], x[v]) for u, v, k in uvk])
 
     # calculate bearings then set as edge attributes
-    bearings = ox.bearing.calculate_bearing(coords[:, 0], coords[:, 1], coords[:, 2], coords[:, 3])
+    bearings = ox.bearing.calculate_bearing(
+        coords[:, 0], coords[:, 1], coords[:, 2], coords[:, 3]
+    )
     values = zip(uvk, bearings)
     nx.set_edge_attributes(G, dict(values), name="bearing")
 
     return G
+

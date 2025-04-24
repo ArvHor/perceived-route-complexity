@@ -16,88 +16,114 @@ import folium
 from . import geo_util
 from . import map_analysis
 
-def plot_route_gdf(G, route_gdf,start_node,end_node,info_text="null",imgpath="route_on_map.png",file_path="route_on_map.html",map_tiles="CartoDB.VoyagerNoLabels",return_bbox=False, flip=False):
-    #print(map_tiles)
-    #apikey = '54NexSXPLjyL0FsLdsoy'
-    geom = route_gdf['geometry'].unary_union
-    route_gdf['geometry'] = geo_util.merge_and_simplify_geometry(geom, 0.0001)
-    start_location = (G.nodes[start_node]['y'], G.nodes[start_node]['x'])
-    end_location = (G.nodes[end_node]['y'], G.nodes[end_node]['x'])
 
-    midpoint = ((start_location[0] + end_location[0]) / 2, (start_location[1] + end_location[1]) / 2)
+def plot_route_gdf(
+    G,
+    route_gdf,
+    start_node,
+    end_node,
+    info_text="null",
+    imgpath="route_on_map.png",
+    file_path="route_on_map.html",
+    map_tiles="CartoDB.VoyagerNoLabels",
+    return_bbox=False,
+    flip=False,
+):
+    # print(map_tiles)
+    # apikey = '54NexSXPLjyL0FsLdsoy'
+    geom = route_gdf["geometry"].unary_union
+    route_gdf["geometry"] = geo_util.merge_and_simplify_geometry(geom, 0.0001)
+    start_location = (G.nodes[start_node]["y"], G.nodes[start_node]["x"])
+    end_location = (G.nodes[end_node]["y"], G.nodes[end_node]["x"])
 
-    #m = route_gdf.explore(tiles="CartoDB.VoyagerNoLabels",color='blue', control_scale=False,location=midpoint, style_kwds={"weight": 5,"opacity":1},width="2100px",height='1400px',zoom_snap=0.25,zoom_start=16,set_zoom=16,legend=False,zoom_control=False)
+    midpoint = (
+        (start_location[0] + end_location[0]) / 2,
+        (start_location[1] + end_location[1]) / 2,
+    )
 
-    m = route_gdf.explore(tiles=map_tiles,color='blue',
-                        control_scale=False,
-                        zoom_control=False,
-                        location=midpoint,style_kwds={
-                            "weight": 7,"opacity":0.7,
-                            'dashArray':'1,20'},
-                        height="100%",
-                        zoom_start=14,
-                        min_zoom=14,
-                        max_zoom=14,
-                        legend=False,
-                        attr=None)
+    # m = route_gdf.explore(tiles="CartoDB.VoyagerNoLabels",color='blue', control_scale=False,location=midpoint, style_kwds={"weight": 5,"opacity":1},width="2100px",height='1400px',zoom_snap=0.25,zoom_start=16,set_zoom=16,legend=False,zoom_control=False)
 
+    m = route_gdf.explore(
+        tiles=map_tiles,
+        color="blue",
+        control_scale=False,
+        zoom_control=False,
+        location=midpoint,
+        style_kwds={"weight": 7, "opacity": 0.7, "dashArray": "1,20"},
+        height="100%",
+        zoom_start=16,
+        min_zoom=16,
+        max_zoom=16,
+        legend=False,
+        attr=None,
+    )
 
-
-    midpoint = ((start_location[0] + end_location[0]) / 2, (start_location[1] + end_location[1]) / 2)
-    bbox = map_analysis.calculate_bounding_box(midpoint[0], midpoint[1], width_pixels=1600, height_pixels=1200, zoom=16)
+    midpoint = (
+        (start_location[0] + end_location[0]) / 2,
+        (start_location[1] + end_location[1]) / 2,
+    )
+    bbox = map_analysis.calculate_bounding_box(
+        midpoint[0], midpoint[1], width_pixels=1600, height_pixels=1200, zoom=16
+    )
     if info_text != "null":
-            folium.map.Marker(
+        folium.map.Marker(
             [midpoint[0], midpoint[1]],
             icon=DivIcon(
-                icon_size=(250,36),
-                icon_anchor=(0,0),
+                icon_size=(250, 36),
+                icon_anchor=(0, 0),
                 html=f'<div style="font-size: 10pt">{info_text}</div>',
-                )
-            ).add_to(m)
+            ),
+        ).add_to(m)
 
-    if flip==True:
-        m = flip_map(m,end_location,start_location)
+    if flip == True:
+        m = flip_map(m, end_location, start_location)
     else:
         folium.Marker(
             location=start_location,
-            icon=folium.Icon(color='green', icon='fa-map-marker', prefix='fa-solid'),  # green map pin icon without dot
+            icon=folium.Icon(
+                color="green", icon="fa-map-marker", prefix="fa-solid"
+            ),  # green map pin icon without dot
         ).add_to(m)
 
         # Add destination marker (end location)
         folium.Marker(
             location=end_location,
-            icon=folium.Icon(color='black', icon='fa-flag-checkered', prefix='fa'),  # red map pin icon with dot
+            icon=folium.Icon(
+                color="black", icon="fa-flag-checkered", prefix="fa"
+            ),  # red map pin icon with dot
         ).add_to(m)
     m.save(file_path)
     full_path = os.path.abspath(file_path)
-    imgpath = full_path.replace('.html', '.png')
+    imgpath = full_path.replace(".html", ".png")
 
     screenshot_map(full_path, imgpath)
     if return_bbox:
         return bbox
 
-def screenshot_map(full_path,imgpath):
+
+def screenshot_map(full_path, imgpath):
     opts = webdriver.FirefoxOptions()
     opts.add_argument("--width=1600")
     opts.add_argument("--height=1286")
     opts.add_argument("--headless")
     opts.add_argument("--window-size=1600,1286")
 
-    opts.binary_location = "/snap/bin/geckodriver"
+    opts.binary_location = "/usr/local/bin/geckodriver"
 
     driver = Firefox(options=opts)
     driver.set_page_load_timeout(60)
 
-    #driver.set_window_size(1600, 1200)
-    print(f'full path: {full_path}')
-    driver.get(f'file://{full_path}')
+    # driver.set_window_size(1600, 1200)
+    print(f"full path: {full_path}")
+    driver.get(f"file://{full_path}")
     driver.set_window_size(1600, 1286)
     time.sleep(2)
     driver.save_screenshot(imgpath)
 
     driver.quit()
-def flip_map(m,end_location,start_location):
 
+
+def flip_map(m, end_location, start_location):
     css = None
     end_icon_html = """
     <div class="awesome-marker-icon-black awesome-marker leaflet-zoom-animated leaflet-interactive" tabindex="0" role="button"
@@ -111,8 +137,8 @@ def flip_map(m,end_location,start_location):
         icon=DivIcon(
             icon_size=(60, 60),
             icon_anchor=(-15, -40),  # Center of the icon
-            html=end_icon_html
-        )
+            html=end_icon_html,
+        ),
     ).add_to(m)
     start_icon_html = """
     <div class="awesome-marker-icon-green awesome-marker leaflet-zoom-animated leaflet-interactive" tabindex="0" role="button"
@@ -126,8 +152,8 @@ def flip_map(m,end_location,start_location):
         icon=DivIcon(
             icon_size=(60, 60),
             icon_anchor=(-15, -40),  # Center of the icon
-            html=start_icon_html
-        )
+            html=start_icon_html,
+        ),
     ).add_to(m)
     css = """
             <style>
@@ -143,6 +169,7 @@ def flip_map(m,end_location,start_location):
             """
     m.get_root().header.add_child(folium.Element(css))
     return m
+
 
 def add_rotation_to_map(m, rotation_angle):
     # Add extra padding to hide white background during rotation
@@ -167,7 +194,8 @@ def add_rotation_to_map(m, rotation_angle):
     m.get_root().header.add_child(folium.Element(css))
 
     # Add JavaScript to adjust the map container size to prevent cutoff
-    js = """
+    js = (
+        """
             <script>
             document.addEventListener('DOMContentLoaded', function() {
                 var map = document.querySelector('.folium-map');
@@ -204,69 +232,72 @@ def add_rotation_to_map(m, rotation_angle):
                 document.body.style.overflow = 'hidden';
             });
             </script>
-            """ % rotation_angle
+            """
+        % rotation_angle
+    )
 
     m.get_root().html.add_child(folium.Element(js))
     return m
 
 
-def plot_all_routes_complexity(G, routes, map_path,startnode):
+def plot_all_routes_complexity(G, routes, map_path, startnode):
     """Plot all routes in a single map"""
     startnode = G.nodes[startnode]
     route_gdfs = []
-    origin = (startnode['y'], startnode['x'])
+    origin = (startnode["y"], startnode["x"])
 
     routes_df = pd.DataFrame(routes)
-    #routes['nodes'] = routes['nodes'].apply(ast.literal_eval)
-    route_nodes = routes['nodes']
+    # routes['nodes'] = routes['nodes'].apply(ast.literal_eval)
+    route_nodes = routes["nodes"]
 
     m = folium.Map(location=origin, zoom_start=14.4, tiles="CartoDB.VoyagerNoLabels")
 
-
-    complexity_values = routes['sum_decision_complexity'].values
+    complexity_values = routes["sum_decision_complexity"].values
     norm = Normalize(vmin=min(complexity_values), vmax=max(complexity_values))
-    cmap = plt.cm.get_cmap('plasma')
-    #print(f'routes: {routes_df}')
-
+    cmap = plt.cm.get_cmap("plasma")
+    # print(f'routes: {routes_df}')
 
     for index, route in routes_df.iterrows():
-        route_nodes = route['nodes']
+        route_nodes = route["nodes"]
 
-        #print(f'route nodes: {route_nodes}')
-        complexity_weightsum = float(route['sum_decision_complexity'])
-        route_gdf = ox.routing.route_to_gdf(G, route_nodes, weight='length')
-        geom = route_gdf['geometry'].unary_union
-        #route_gdf['geometry'] = merge_and_simplify_geometry(geom, 0.0001)
-        route_gdf['sum_decision_complexity'] = complexity_weightsum
+        # print(f'route nodes: {route_nodes}')
+        complexity_weightsum = float(route["sum_decision_complexity"])
+        route_gdf = ox.routing.route_to_gdf(G, route_nodes, weight="length")
+        geom = route_gdf["geometry"].unary_union
+        # route_gdf['geometry'] = merge_and_simplify_geometry(geom, 0.0001)
+        route_gdf["sum_decision_complexity"] = complexity_weightsum
         route_gdfs.append(route_gdf)
 
     for route_gdf in route_gdfs:
-
-        color = cmap(norm(route_gdf['sum_decision_complexity'].values[0]))
+        color = cmap(norm(route_gdf["sum_decision_complexity"].values[0]))
 
         color = plt.colors.to_hex(color)
 
-        route_linestring = route_gdf['geometry'].unary_union
+        route_linestring = route_gdf["geometry"].unary_union
 
-        if route_linestring.geom_type == 'LineString':
-            route_linestring = merge_and_simplify_geometry(route_linestring,0.000001)
-            route_linestring = [[coord[1], coord[0]] for coord in list(route_linestring.coords)]
-        elif route_linestring.geom_type == 'MultiLineString':
-            route_linestring = merge_and_simplify_geometry(route_gdf.geometry.explode().unary_union,0.000001)
-            if route_linestring.geom_type == 'LineString':
-                route_linestring = [[coord[1], coord[0]] for coord in list(route_linestring.coords)]
+        if route_linestring.geom_type == "LineString":
+            route_linestring = merge_and_simplify_geometry(route_linestring, 0.000001)
+            route_linestring = [
+                [coord[1], coord[0]] for coord in list(route_linestring.coords)
+            ]
+        elif route_linestring.geom_type == "MultiLineString":
+            route_linestring = merge_and_simplify_geometry(
+                route_gdf.geometry.explode().unary_union, 0.000001
+            )
+            if route_linestring.geom_type == "LineString":
+                route_linestring = [
+                    [coord[1], coord[0]] for coord in list(route_linestring.coords)
+                ]
             else:
                 continue
-
-
 
         folium.PolyLine(route_linestring, color=color, weight=4, opacity=0.3).add_to(m)
 
     m.save(map_path)
     map_path = os.path.abspath(map_path)
-    imgpath = map_path.replace('.html','.png')
+    imgpath = map_path.replace(".html", ".png")
     screenshot_map(map_path, imgpath)
-    #m.save(f'maps/interactive maps/{name}.html')
+    # m.save(f'maps/interactive maps/{name}.html')
 
 
 def plot_all_routes_complexity(routes, map_path):
@@ -277,72 +308,79 @@ def plot_all_routes_complexity(routes, map_path):
 
     m = folium.Map(tiles="OpenStreetMap.Mapnik")
 
-
-    complexity_values = routes['sum_decision_complexity'].values
+    complexity_values = routes["sum_decision_complexity"].values
     norm = Normalize(vmin=min(complexity_values), vmax=max(complexity_values))
-    cmap = plt.cm.get_cmap('plasma')
-    #print(f'routes: {routes_df}')
-
+    cmap = plt.cm.get_cmap("plasma")
+    # print(f'routes: {routes_df}')
 
     for index, route in routes_df.iterrows():
-        route_nodes = route['nodes']
+        route_nodes = route["nodes"]
 
-        #print(f'route nodes: {route_nodes}')
-        complexity_weightsum = float(route['sum_decision_complexity'])
-        route_gdf = ox.routing.route_to_gdf(G, route_nodes, weight='length')
-        geom = route_gdf['geometry'].unary_union
-        #route_gdf['geometry'] = merge_and_simplify_geometry(geom, 0.0001)
-        route_gdf['sum_decision_complexity'] = complexity_weightsum
+        # print(f'route nodes: {route_nodes}')
+        complexity_weightsum = float(route["sum_decision_complexity"])
+        route_gdf = ox.routing.route_to_gdf(G, route_nodes, weight="length")
+        geom = route_gdf["geometry"].unary_union
+        # route_gdf['geometry'] = merge_and_simplify_geometry(geom, 0.0001)
+        route_gdf["sum_decision_complexity"] = complexity_weightsum
         route_gdfs.append(route_gdf)
 
     for route_gdf in route_gdfs:
-
-        color = cmap(norm(route_gdf['sum_decision_complexity'].values[0]))
+        color = cmap(norm(route_gdf["sum_decision_complexity"].values[0]))
 
         color = plt.colors.to_hex(color)
 
-        route_linestring = route_gdf['geometry'].unary_union
+        route_linestring = route_gdf["geometry"].unary_union
 
-        if route_linestring.geom_type == 'LineString':
-            route_linestring = merge_and_simplify_geometry(route_linestring,0.000001)
-            route_linestring = [[coord[1], coord[0]] for coord in list(route_linestring.coords)]
-        elif route_linestring.geom_type == 'MultiLineString':
-            route_linestring = merge_and_simplify_geometry(route_gdf.geometry.explode().unary_union,0.000001)
-            if route_linestring.geom_type == 'LineString':
-                route_linestring = [[coord[1], coord[0]] for coord in list(route_linestring.coords)]
+        if route_linestring.geom_type == "LineString":
+            route_linestring = merge_and_simplify_geometry(route_linestring, 0.000001)
+            route_linestring = [
+                [coord[1], coord[0]] for coord in list(route_linestring.coords)
+            ]
+        elif route_linestring.geom_type == "MultiLineString":
+            route_linestring = merge_and_simplify_geometry(
+                route_gdf.geometry.explode().unary_union, 0.000001
+            )
+            if route_linestring.geom_type == "LineString":
+                route_linestring = [
+                    [coord[1], coord[0]] for coord in list(route_linestring.coords)
+                ]
             else:
                 continue
-
-
 
         folium.PolyLine(route_linestring, color=color, weight=4, opacity=0.3).add_to(m)
     m.fit_bounds()
     m.save(map_path)
     map_path = os.path.abspath(map_path)
-    imgpath = map_path.replace('.html','.png')
+    imgpath = map_path.replace(".html", ".png")
     screenshot_map(map_path, imgpath)
-    #m.save(f'maps/interactive maps/{name}.html')
+    # m.save(f'maps/interactive maps/{name}.html')
 
-def plot_all_routes(route_gdfs, map_path,point_list):
+
+def plot_all_routes(route_gdfs, map_path, point_list):
     """Plot all routes in a single map"""
 
     m = folium.Map(tiles="OpenStreetMap.Mapnik")
 
     all_bounds = []
     for route_gdf in route_gdfs:
-
         color = "blue"
         color = plt.colors.to_hex(color)
 
-        route_linestring = route_gdf['geometry'].unary_union
+        route_linestring = route_gdf["geometry"].unary_union
 
-        if route_linestring.geom_type == 'LineString':
-            route_linestring = merge_and_simplify_geometry(route_linestring,0.000001)
-            route_linestring = [[coord[1], coord[0]] for coord in list(route_linestring.coords)]
-        elif route_linestring.geom_type == 'MultiLineString':
-            route_linestring = merge_and_simplify_geometry(route_gdf.geometry.explode().unary_union,0.000001)
-            if route_linestring.geom_type == 'LineString':
-                route_linestring = [[coord[1], coord[0]] for coord in list(route_linestring.coords)]
+        if route_linestring.geom_type == "LineString":
+            route_linestring = merge_and_simplify_geometry(route_linestring, 0.000001)
+            route_linestring = [
+                [coord[1], coord[0]] for coord in list(route_linestring.coords)
+            ]
+        elif route_linestring.geom_type == "MultiLineString":
+            route_linestring = merge_and_simplify_geometry(
+                route_gdf.geometry.explode().unary_union, 0.000001
+            )
+            if route_linestring.geom_type == "LineString":
+                route_linestring = [
+                    [coord[1], coord[0]] for coord in list(route_linestring.coords)
+                ]
             else:
                 continue
         # Calculate bounds for the current route and add them to the list
@@ -353,11 +391,12 @@ def plot_all_routes(route_gdfs, map_path,point_list):
 
         folium.PolyLine(route_linestring, color=color, weight=4, opacity=0.3).add_to(m)
     for point in point_list:
-
-            folium.Marker(
-                location=point,
-                icon=folium.Icon(color='green', icon='fa-map-marker', prefix='fa-solid'),  # green map pin icon without dot
-            ).add_to(m)
+        folium.Marker(
+            location=point,
+            icon=folium.Icon(
+                color="green", icon="fa-map-marker", prefix="fa-solid"
+            ),  # green map pin icon without dot
+        ).add_to(m)
     # Calculate the overall bounds to fit all routes
     if all_bounds:
         # Find the minimum and maximum coordinates for latitude and longitude
@@ -373,12 +412,11 @@ def plot_all_routes(route_gdfs, map_path,point_list):
         print("Warning: No valid bounds found to fit the map.")
         # Optionally, set a default view or leave the map as is
 
-
         folium.PolyLine(route_linestring, color=color, weight=4, opacity=0.3).add_to(m)
 
     m.save(map_path)
     map_path = os.path.abspath(map_path)
-    imgpath = map_path.replace('.html','.png')
+    imgpath = map_path.replace(".html", ".png")
     screenshot_map(map_path, imgpath)
 
 
@@ -398,27 +436,25 @@ def add_padding_to_bbox(bbox, padding_meters):
 
     utm_crs = CRS.from_epsg(utm_crs_list[0].code)
 
-    transformer = pyproj.Transformer.from_crs(crs_from="EPSG:4326", crs_to=utm_crs, always_xy=True)
+    transformer = pyproj.Transformer.from_crs(
+        crs_from="EPSG:4326", crs_to=utm_crs, always_xy=True
+    )
 
     # Convert to Web Mercator
     min_x, min_y = transformer.transform(min_x, min_y)
     max_x, max_y = transformer.transform(max_x, max_y)
     print(f"min_x: {min_x}")
     # Add padding
-    min_x += padding_meters+200
+    min_x += padding_meters + 200
     min_y += padding_meters
-    max_x -= padding_meters+200
+    max_x -= padding_meters + 200
     max_y -= padding_meters
 
     # Convert back to WGS84
-    inverse_transformer = pyproj.Transformer.from_crs(crs_from=utm_crs, crs_to="EPSG:4326", always_xy=True)
+    inverse_transformer = pyproj.Transformer.from_crs(
+        crs_from=utm_crs, crs_to="EPSG:4326", always_xy=True
+    )
     min_lon, min_lat = inverse_transformer.transform(min_x, min_y)
     max_lon, max_lat = inverse_transformer.transform(max_x, max_y)
     print(f"Padding added to bbox")
     return max_lat, min_lat, max_lon, min_lon
-
-
-
-
-
-
