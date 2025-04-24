@@ -70,7 +70,7 @@ def get_edges_sum(G,route_edges,weightstring):
         edges_sum += G.edges[edge[0],edge[1],0][weightstring]
     return edges_sum
 
-@track_performance(route_tracker, metrics_funcs=route_metrics)
+#@track_performance(route_tracker, metrics_funcs=route_metrics)
 def get_route_complexity(G,route_edges):
     turn_types = []
     total_complexity = 0

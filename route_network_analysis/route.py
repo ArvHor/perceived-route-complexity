@@ -72,11 +72,11 @@ class route:
         self.avg_od_betweenness = self.sum_od_betweenness / self.n_nodes
 
         # Get the bbox containing the route and get cartographic clutter metrics
-        self.map_bbox = map_analysis.get_routegdf_bbox(graph,self.nodes,buffer_percentage=0.1)
-        self.map_road_length, self.map_intersection_count, self.map_street_count = map_analysis.get_map_clutter(G=graph,map_bbox=self.map_bbox)
+        # self.map_bbox = map_analysis.get_routegdf_bbox(graph,self.nodes,buffer_percentage=0.1)
+        # self.map_road_length, self.map_intersection_count, self.map_street_count = map_analysis.get_map_clutter(G=graph,map_bbox=self.map_bbox)
 
         # Generate a unique identifier
-        self.identifier = self.generate_identifier()
+        #self.identifier = self.generate_identifier()
 
 
 

@@ -37,7 +37,7 @@ def get_EMD_alignment(route_dist, env_dist):
     EMD_alignment = wasserstein_distance(env_dist, route_dist)
     return EMD_alignment
 
-@track_performance(alignment_tracker, metrics_funcs=alignment_metrics)
+#@track_performance(alignment_tracker, metrics_funcs=alignment_metrics)
 def circular_cross_correlation(route,env):
     """Calculates the circular cross-correlation using FFT."""
     route = np.asarray(route)
@@ -60,7 +60,7 @@ def circular_cross_correlation(route,env):
 
     return result
 
-@track_performance(alignment_tracker, metrics_funcs=alignment_metrics)
+#@track_performance(alignment_tracker, metrics_funcs=alignment_metrics)
 def find_optimal_correlation(route_dist,env_dist,proximity_weight=1):
     """Calculate optimal correlation and distances between distributions.
     
