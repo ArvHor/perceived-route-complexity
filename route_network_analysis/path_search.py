@@ -49,7 +49,7 @@ graph_metrics = {
 path_search_tracker = PerformanceTracker(output_file='path_search_performance.json')
 
 
-@track_performance(path_search_tracker, metrics_funcs=graph_metrics)
+#@track_performance(path_search_tracker, metrics_funcs=graph_metrics)
 def simplest_path_from_source_heapq(G, start_node):
     logging.info(f"Finding simplest paths in {G.graph['city_name']}")
     # Define the empty set of processed edges S

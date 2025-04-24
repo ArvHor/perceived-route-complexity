@@ -41,7 +41,6 @@ street_network_metrics = {
     'start_node': get_start_node,
     'nodes': get_node_count,
     'edges': get_edge_count,
-    'avg_degree': get_avg_degree,
     'density': get_density
 }
 
