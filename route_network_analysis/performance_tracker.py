@@ -116,10 +116,10 @@ def track_performance(tracker, metrics_funcs=None):
                         metric_value = len(array_type_arg)
                         computed_metrics[metric_name] = metric_value
                         #print(f"Computed metric: {metric_name} = {metric_value}")
-                    else:
+                    #else:
                         # Call the metric function with the graph
-                        metric_value = metric_func(graph_arg)
-                        computed_metrics[metric_name] = metric_value
+                    #    metric_value = metric_func(graph_arg)
+                    #    computed_metrics[metric_name] = metric_value
                         #print(f"Computed metric: {metric_name} = {metric_value}")
             else:
                 reasons = []

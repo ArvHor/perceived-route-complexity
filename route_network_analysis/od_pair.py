@@ -20,18 +20,19 @@ logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %
 class od_pair:
     def __init__(self,G, origin, destination):
         # Set the basic attributes
-        self.graph = G
+        graph = G
+        self.city_name = graph.graph["city_name"]
         self.origin_node = origin
         self.destination_node = destination
-        self.origin_point = (self.graph.nodes[self.origin_node]['y'], self.graph.nodes[self.origin_node]['x'])
-        self.destination_point = (self.graph.nodes[self.destination_node]['y'], self.graph.nodes[self.destination_node]['x'])
+        self.origin_point = (graph.nodes[self.origin_node]['y'], graph.nodes[self.origin_node]['x'])
+        self.destination_point = (graph.nodes[self.destination_node]['y'], graph.nodes[self.destination_node]['x'])
 
         # Calculate the great circle distance between the origin and destination
         self.od_distance = float(ox.distance.great_circle(lat1=self.origin_point[0], lon1=self.origin_point[1], lat2=self.destination_point[0], lon2=self.destination_point[1]))
 
         # Find the simplest and shortest route from the origin to the destination
-        self.shortest_path = route(self.graph,origin=self.origin_node,destination=self.destination_node,weightstring='length')
-        self.simplest_path = route(self.graph,origin=self.origin_node,destination=self.destination_node,weightstring='decision_complexity')
+        self.shortest_path = route(graph,origin=self.origin_node,destination=self.destination_node,weightstring='length')
+        self.simplest_path = route(graph,origin=self.origin_node,destination=self.destination_node,weightstring='decision_complexity')
 
         # Get geometric properties of the origin and destination
         self.shape_dict = geo_util.get_od_pair_polygon(self.origin_point, self.destination_point)
@@ -39,25 +40,25 @@ class od_pair:
         self.bbox = self.shape_dict["wsen_bbox"] # Bounding box as `(left, bottom, right, top)`.
         self.bbox_polygon = self.shape_dict["bbox_polygon"]
 
-        self.cardinal_direction = od_pair_analysis.get_od_cardinal_direction(G=self.graph,origin=self.origin_node,destination=self.destination_node)
+        self.cardinal_direction = od_pair_analysis.get_od_cardinal_direction(G=graph,origin=self.origin_node,destination=self.destination_node)
 
-        self.map_bbox = self.shortest_path.map_bbox
+        #self.map_bbox = self.shortest_path.map_bbox
 
-        self.subgraph = od_pair_analysis.get_od_pair_subgraph(G=self.graph,bbox=self.bbox)
-        self.undirected_subgraph = ox.convert.to_undirected(self.subgraph)
+        subgraph = od_pair_analysis.get_od_pair_subgraph(G=graph,bbox=self.bbox)
+        undirected_subgraph = ox.convert.to_undirected(subgraph)
         self.area = geo_util.calculate_area_with_utm(self.polygon)
-        self.subgraph_stats = ox.stats.basic_stats(self.subgraph, area=self.area)
+        subgraph_stats = ox.stats.basic_stats(subgraph, area=self.area)
 
 
-        logging.info(f"Creating od_pair for graph {self.graph.graph['city_name']} with n subgraph edges: {len(self.subgraph.edges)}, {len(self.undirected_subgraph.edges)}")
+        logging.info(f"Creating od_pair for graph {graph.graph['city_name']} with n subgraph edges: {len(subgraph.edges)}, {len(undirected_subgraph.edges)}")
 
-        self.env_bearing_dist_weighted, _ = street_network_analysis.bearings_distribution(G=self.undirected_subgraph , num_bins=36,min_length=10, weight="length")
-        self.env_bearing_dist, _ = street_network_analysis.bearings_distribution(G=self.undirected_subgraph , num_bins=36, min_length=10,weight=None)
+        self.env_bearing_dist_weighted, _ = street_network_analysis.bearings_distribution(G=undirected_subgraph , num_bins=36,min_length=10, weight="length")
+        self.env_bearing_dist, _ = street_network_analysis.bearings_distribution(G=undirected_subgraph , num_bins=36, min_length=10,weight=None)
 
         self.route_direction_bearing_dist = od_pair_analysis.get_od_pair_bearing_dist(self.shape_dict['fwd_bearing'], self.shape_dict['bwd_bearing'])
 
-        self.environment_orientation_entropy_weighted = street_network_analysis.orientation_entropy(self.undirected_subgraph , num_bins=36, weight="length")
-        self.environment_orientation_entropy = street_network_analysis.orientation_entropy(self.undirected_subgraph , num_bins=36)
+        self.environment_orientation_entropy_weighted = street_network_analysis.orientation_entropy(undirected_subgraph , num_bins=36, weight="length")
+        self.environment_orientation_entropy = street_network_analysis.orientation_entropy(undirected_subgraph , num_bins=36)
 
 
         self.order_weighted = street_network_analysis.get_orientation_order(self.environment_orientation_entropy_weighted)
@@ -69,18 +70,18 @@ class od_pair:
         self.shortest_diff = self.shortest_path.length - self.od_distance
 
 
-        self.stats_edge_count = self.subgraph_stats['m']
-        self.stats_node_count = self.subgraph_stats['n']
-        self.stats_street_segment_count = self.subgraph_stats['street_segment_count']
-        self.stats_streets_per_node_avg = self.subgraph_stats['streets_per_node_avg']
-        self.stats_streets_per_node_counts = self.subgraph_stats['streets_per_node_counts']
-        self.stats_intersection_density_km = self.subgraph_stats['intersection_density_km']
-        self.stats_intersection_count = self.subgraph_stats['intersection_count']
-        self.stats_k_avg = self.subgraph_stats['k_avg']
-        self.stats_street_length_total = self.subgraph_stats['street_length_total']
-        self.stats_street_length_avg = self.subgraph_stats['street_length_avg']
-        self.stats_circuity_avg = self.subgraph_stats['circuity_avg']
-        self.stats_node_density_km = self.subgraph_stats['node_density_km']
+        self.stats_edge_count = subgraph_stats['m']
+        self.stats_node_count = subgraph_stats['n']
+        self.stats_street_segment_count = subgraph_stats['street_segment_count']
+        self.stats_streets_per_node_avg = subgraph_stats['streets_per_node_avg']
+        self.stats_streets_per_node_counts = subgraph_stats['streets_per_node_counts']
+        self.stats_intersection_density_km = subgraph_stats['intersection_density_km']
+        self.stats_intersection_count = subgraph_stats['intersection_count']
+        self.stats_k_avg = subgraph_stats['k_avg']
+        self.stats_street_length_total = subgraph_stats['street_length_total']
+        self.stats_street_length_avg = subgraph_stats['street_length_avg']
+        self.stats_circuity_avg = subgraph_stats['circuity_avg']
+        self.stats_node_density_km = subgraph_stats['node_density_km']
 
 
     @classmethod
@@ -108,7 +109,7 @@ class od_pair:
         instance.bbox = instance.shape_dict["wsen_bbox"]
         instance.bbox_polygon = instance.shape_dict["bbox_polygon"]
         
-        instance.map_bbox = instance.path.map_bbox
+        #instance.map_bbox = instance.path.map_bbox
 
         instance.cardinal_direction = od_pair_analysis.get_od_cardinal_direction(G=instance.graph,origin=instance.origin_node,destination=instance.destination_node)
 
@@ -186,7 +187,7 @@ class od_pair:
         comparison_dict = {
             # od pair values
             'id': f"{self.origin_node}-{self.destination_node}",  
-            "city_name": self.graph.graph['city_name'],
+            "city_name": self.city_name,
             'origin_node': self.origin_node,
             "origin_point": self.origin_point,
             'destination_node': self.destination_node,
@@ -237,7 +238,7 @@ class od_pair:
             "circuity_avg": self.subgraph_stats['circuity_avg'],
             "node_density_km": self.subgraph_stats['node_density_km'],
         }
-        print("now adding the route dicts")
+        #print("now adding the route dicts")
         shortest_path_dict = {f"shortest_{key}": value for key, value in vars(self.shortest_path).items()}
         simplest_path_dict = {f"simplest_{key}": value for key, value in vars(self.simplest_path).items()}
 
@@ -277,7 +278,7 @@ class od_pair:
         comparison_dict = {
             # od pair values
             'id': f"{self.origin_node}-{self.destination_node}",
-            "city_name": self.graph.graph['city_name'],
+            "city_name": graph.graph['city_name'],
             'origin_node': self.origin_node,
             "origin_point": self.origin_point,
             'destination_node': self.destination_node,
