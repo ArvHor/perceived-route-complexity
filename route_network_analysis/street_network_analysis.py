@@ -18,12 +18,6 @@ def get_node_count(graph):
 def get_edge_count(graph):
     return len(graph.edges)
 
-def get_avg_degree(graph):
-    degrees = []
-    for node in graph.nodes():
-        degrees.append(graph.out_degree(node))
-    return sum(degrees) / len(degrees) if degrees else 0
-
 def get_density(graph):
     return nx.density(graph)
 
@@ -41,7 +35,6 @@ street_network_metrics = {
     'start_node': get_start_node,
     'nodes': get_node_count,
     'edges': get_edge_count,
-    'avg_degree': get_avg_degree,
     'density': get_density
 }
 

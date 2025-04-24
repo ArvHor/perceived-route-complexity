@@ -82,22 +82,22 @@ def find_optimal_correlation(route_dist,env_dist,proximity_weight=1):
 
     #logging.error(f"Circular cross-correlation: {circ_cross_corr}")
 
-    n_circ_cross_corr = np.abs(circ_cross_corr) / np.max(np.abs(circ_cross_corr))
-    weighted_n_circ_cross_corr = n_circ_cross_corr
+    
+    weighted_circ_cross_corr = np.zeros(max_len)
     max_abs_lag = max_len // 2
 
     for i in range(max_abs_lag):
         lag = i if i < max_abs_lag else i - max_len
-        strength = n_circ_cross_corr[i]
+        strength = circ_cross_corr[i]
         penalty = proximity_weight * (abs(lag) / max_abs_lag)
         weighted_correlation = strength - penalty
-        weighted_n_circ_cross_corr[i] = weighted_correlation
+        weighted_circ_cross_corr[i] = weighted_correlation
 
     cos_dist = cosine(route_dist, env_dist)
     euc_dist = euclidean(route_dist, env_dist)
 
     # Shift env_dist by the optimal lag
-    shifted_env_dist = np.roll(env_dist, int(np.argmax(weighted_n_circ_cross_corr)))
+    shifted_env_dist = np.roll(env_dist, int(np.argmax(weighted_circ_cross_corr)))
     shifted_cos_dist = cosine(route_dist, shifted_env_dist)
     shifted_euc_dist = euclidean(route_dist, shifted_env_dist)
 
@@ -107,8 +107,8 @@ def find_optimal_correlation(route_dist,env_dist,proximity_weight=1):
     }
 
     closest_strongest_correlation = {
-        "lag": np.argmax(weighted_n_circ_cross_corr),
-        "strength": weighted_n_circ_cross_corr[np.argmax(weighted_n_circ_cross_corr)],
+        "lag": np.argmax(weighted_circ_cross_corr),
+        "strength": weighted_circ_cross_corr[np.argmax(weighted_circ_cross_corr)],
         "cosine_distance": cos_dist,
         "euclidean_distance": euc_dist,
         "shifted_cosine_distance": shifted_cos_dist,
