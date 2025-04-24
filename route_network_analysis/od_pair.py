@@ -47,7 +47,7 @@ class od_pair:
         subgraph = od_pair_analysis.get_od_pair_subgraph(G=graph,bbox=self.bbox)
         undirected_subgraph = ox.convert.to_undirected(subgraph)
         self.area = geo_util.calculate_area_with_utm(self.polygon)
-        subgraph_stats = ox.stats.basic_stats(subgraph, area=self.area)
+        self.subgraph_stats = ox.stats.basic_stats(subgraph, area=self.area)
 
 
         logging.info(f"Creating od_pair for graph {graph.graph['city_name']} with n subgraph edges: {len(subgraph.edges)}, {len(undirected_subgraph.edges)}")
@@ -69,19 +69,6 @@ class od_pair:
         self.complexity_diff = int(self.simplest_path.complexity) - int(self.shortest_path.complexity)
         self.shortest_diff = self.shortest_path.length - self.od_distance
 
-
-        self.stats_edge_count = subgraph_stats['m']
-        self.stats_node_count = subgraph_stats['n']
-        self.stats_street_segment_count = subgraph_stats['street_segment_count']
-        self.stats_streets_per_node_avg = subgraph_stats['streets_per_node_avg']
-        self.stats_streets_per_node_counts = subgraph_stats['streets_per_node_counts']
-        self.stats_intersection_density_km = subgraph_stats['intersection_density_km']
-        self.stats_intersection_count = subgraph_stats['intersection_count']
-        self.stats_k_avg = subgraph_stats['k_avg']
-        self.stats_street_length_total = subgraph_stats['street_length_total']
-        self.stats_street_length_avg = subgraph_stats['street_length_avg']
-        self.stats_circuity_avg = subgraph_stats['circuity_avg']
-        self.stats_node_density_km = subgraph_stats['node_density_km']
 
 
     @classmethod
