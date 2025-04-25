@@ -10,7 +10,8 @@ from . import map_plotting as mp
 from . import route_analysis
 from . import path_search
 from . import map_analysis
-from . import map_plotting
+from . import geo_util
+
 
 class route:
     def __init__(self, graph, origin, destination, weightstring):
@@ -54,7 +55,7 @@ class route:
         self.n_nodes = len(self.nodes)
 
         # Get the number of segments and total turn degree
-        self.n_segments,self.n_segments_before,self.route_linestring = route_analysis.get_n_route_segments(self.route_linestring,thold=50)
+        self.n_segments = len(self.route_linestring.coords)-1
         self.total_turn_degree = route_analysis.get_route_bearing_sum(graph, self.route_linestring)
         self.avg_turn_degree = self.total_turn_degree / self.n_segments
 
@@ -123,7 +124,9 @@ class route:
         instance.n_nodes = len(instance.nodes)
 
         # Get the number of segments and total turn degree
-        instance.n_segments,instance.n_segments_before,instance.route_linestring = route_analysis.get_n_route_segments(instance.route_linestring)
+        instance.n_segments_before = len(instance.route_linestring.coords)-1
+        instance.route_linestring = geo_util.merge_and_simplify_geometry(instance.route_linestring, 0.0001)
+        instance.n_segments = len(instance.route_linestring.coords)-1
         instance.total_turn_degree = route_analysis.get_route_bearing_sum(graph, instance.route_linestring)
         instance.avg_turn_degree = instance.total_turn_degree / instance.n_segments
 

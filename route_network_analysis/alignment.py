@@ -83,7 +83,7 @@ def find_optimal_correlation(route_dist,env_dist,proximity_weight=1):
     #logging.error(f"Circular cross-correlation: {circ_cross_corr}")
 
     
-    weighted_circ_cross_corr = np.zeros(max_len)
+    weighted_circ_cross_corr = circ_cross_corr.copy()
     max_abs_lag = max_len // 2
 
     for i in range(max_abs_lag):
