@@ -85,7 +85,7 @@ def find_optimal_correlation(route_dist,env_dist,proximity_weight=1):
     lag_range = np.arange(len(circ_cross_corr))
     weighted_circ_cross_corr = circ_cross_corr.copy()
     max_abs_lag = max_len // 2
-
+    logging.info(f"Max absolute lag: {max_abs_lag}, min lag in circ_cross_corr: {min(lag_range)}, max lag in circ_cross_corr: {max(lag_range)}")
     for i in lag_range:
         lag = i if i < max_abs_lag else i - max_len
         strength = circ_cross_corr[i]
@@ -93,21 +93,37 @@ def find_optimal_correlation(route_dist,env_dist,proximity_weight=1):
         weighted_correlation = strength - penalty
         weighted_circ_cross_corr[i] = weighted_correlation
 
+
+    # Calculate the circular lag of the strongest correlation
+    strongest_lag = np.argmax(circ_cross_corr)
+    strongest_correlation = circ_cross_corr[strongest_lag]
+    # Adjust the lag to be within the range of -max_abs_lag to max_abs_lag
+    if strongest_lag >= max_abs_lag:
+        strongest_lag -= len(circ_cross_corr)
+
+    # Calculate the circular lag of the closest strongest correlation
+    closest_strongest_lag = np.argmax(weighted_circ_cross_corr)
+    closest_strongest_correlation = weighted_circ_cross_corr[closest_strongest_lag]
+    # Adjust the lag to be within the range of -max_abs_lag to max_abs_lag
+    if closest_strongest_lag >= max_abs_lag:
+        closest_strongest_lag -= len(weighted_circ_cross_corr)
+
+
     cos_dist = cosine(route_dist, env_dist)
     euc_dist = euclidean(route_dist, env_dist)
 
     # Shift env_dist by the optimal lag
-    shifted_env_dist = np.roll(env_dist, int(np.argmax(weighted_circ_cross_corr)))
+    shifted_env_dist = np.roll(env_dist, closest_strongest_lag)
     shifted_cos_dist = cosine(route_dist, shifted_env_dist)
     shifted_euc_dist = euclidean(route_dist, shifted_env_dist)
 
     strongest_correlation = {
-        "lag": np.argmax(circ_cross_corr),
+        "lag": strongest_lag,
         "strength": circ_cross_corr[np.argmax(circ_cross_corr)],
     }
 
     closest_strongest_correlation = {
-        "lag": np.argmax(weighted_circ_cross_corr),
+        "lag": closest_strongest_lag,
         "strength": weighted_circ_cross_corr[np.argmax(weighted_circ_cross_corr)],
         "cosine_distance": cos_dist,
         "euclidean_distance": euc_dist,
