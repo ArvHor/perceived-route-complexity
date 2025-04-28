@@ -48,7 +48,7 @@ if __name__ == "__main__":
     graph_files = pd.read_csv(os.path.join("experiment_routes", "graph_city_dicts.csv"))
     graph_files['graph_file'] = graph_files['graph_file'].str.replace('\\', '/')
 
-    comparison_dicts = Parallel(n_jobs=6,backend="loky")(
+    comparison_dicts = Parallel(n_jobs=4,backend="loky")(
         delayed(compare_routes)(graph_files, row) for _, row in route_data.iterrows()
     )
     print("Finished processing all routes")
