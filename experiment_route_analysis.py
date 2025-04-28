@@ -59,6 +59,25 @@ if __name__ == "__main__":
     print(f"max complexity: {df['route_complexity'].max()} sum of columns: {df['route_complexity'].sum()}, mean: {df['route_complexity'].mean()}, median: {df['route_complexity'].median()}")
     df['route_complexity'] = df['route_complexity'] / max_complexity
 
+
+    separate_cols = ['origin_point','destination_point','environment_bearings_distribution_weighted',
+                 'environment_bearings_distribution','route_bearings_distribution','route_bearings',
+                 'bbox','diamond','route_route_linestring','route_nodes','route_edges',
+                 'route_complexity_list']
+
+    local_odpair_folder = "experiment_routes"
+
+    od_pair_data_geom = df[separate_cols]
+    od_pair_data_base = df.drop(columns=separate_cols)
+
+    od_pair_data_geom_path_json = os.path.join(local_odpair_folder, 'origin_od_pair_geom.json')
+    od_pair_data_base_path_csv = os.path.join(local_odpair_folder, 'origin_od_pair_base.csv')
+
+    od_pair_data_base.to_csv(od_pair_data_base_path_csv)
+    od_pair_data_geom.to_json(od_pair_data_geom_path_json,orient="records", default_handler=str, indent=2)
+
+    print("done")
+
     df.to_json(os.path.join("experiment_routes/experiment_route_data.json"), orient="records",
                default_handler=str, indent=2)
     df.to_csv(os.path.join("experiment_routes/experiment_route_data.csv"))

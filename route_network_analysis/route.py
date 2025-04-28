@@ -124,8 +124,8 @@ class route:
         instance.n_nodes = len(instance.nodes)
 
         # Get the number of segments and total turn degree
-        instance.n_segments_before = len(instance.route_linestring.coords)-1
-        instance.route_linestring = geo_util.merge_and_simplify_geometry(instance.route_linestring, 0.0001)
+        #instance.n_segments_before = len(instance.route_linestring.coords)-1
+        #instance.route_linestring = geo_util.merge_and_simplify_geometry(instance.route_linestring, 0.0001)
         instance.n_segments = len(instance.route_linestring.coords)-1
         instance.total_turn_degree = route_analysis.get_route_bearing_sum(graph, instance.route_linestring)
         instance.avg_turn_degree = instance.total_turn_degree / instance.n_segments
