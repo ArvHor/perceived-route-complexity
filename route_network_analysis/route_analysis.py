@@ -143,14 +143,19 @@ def get_n_route_segments(route_linestring,thold=50):
     return n_after,n_before,route_linestring
 
 
-def get_route_bearing_sum(G, route_linestring):
+def get_route_bearing_sum(G, route_linestring,absolute=False):
     sum_difference = 0
     for i in range(0,len(route_linestring.coords)-2):
         origin = route_linestring.coords[i]
         intermediate = route_linestring.coords[i+1]
         destination = route_linestring.coords[i+2]
         bearing_difference = geo_util.get_bearing_difference(G,origin,destination,intermediate)
-        sum_difference += bearing_difference
-
+        #print("bearing difference",bearing_difference)
+        if absolute:
+             sum_difference += abs(bearing_difference)
+        else: 
+            sum_difference += bearing_difference
+        print(f"bearing difference {bearing_difference} sum difference {sum_difference}")
+    print("total bearing difference",sum_difference)
     return sum_difference
 

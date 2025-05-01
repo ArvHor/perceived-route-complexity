@@ -3,7 +3,7 @@ import networkx as nx
 import hashlib
 import osmnx as ox
 from shapely.geometry import LineString
-import shapely.ops
+from shapely.ops import linemerge
 
 # Local modules
 from . import map_plotting as mp
@@ -31,15 +31,9 @@ class route:
         # Get the edges, geometry and length of the route
         self.edges = list(nx.utils.pairwise(self.nodes))
 
-        geometry= ox.routing.route_to_gdf(graph, self.nodes, weight=weightstring)["geometry"].unary_union
-        if geometry.geom_type == 'LineString':
-            self.route_linestring = geometry
-        elif geometry.geom_type == 'MultiLineString':
-            # Convert to LineString (since you know len == 1)
-            self.route_linestring = LineString(list(geometry.geoms[0].coords))
-        else:
-            # Handle any other unexpected geometry types
-            raise ValueError(f"Expected LineString or MultiLineString, got {geometry.geom_type}")
+        route_geometry= ox.routing.route_to_gdf(graph, self.nodes, weight=weightstring)["geometry"].unary_union
+        self.route_linestring = linemerge(route_geometry)
+        
 
         self.length = route_analysis.get_edges_sum(G=graph,route_edges=self.edges,weightstring='length')
 
@@ -57,7 +51,8 @@ class route:
         # Get the number of segments and total turn degree
         self.n_segments = len(self.route_linestring.coords)-1
         self.total_turn_degree = route_analysis.get_route_bearing_sum(graph, self.route_linestring)
-        self.avg_turn_degree = self.total_turn_degree / self.n_segments
+        self.total_turn_degree_abs = route_analysis.get_route_bearing_sum(graph, self.route_linestring, absolute=True)
+        self.avg_turn_degree = self.total_turn_degree_abs / self.n_segments
 
         # Get attributes of the nodes in the route
         self.sum_deviation_from_prototypical = route_analysis.get_edges_sum(G=graph,route_edges=self.edges,weightstring='deviation_from_prototypical')
@@ -98,16 +93,11 @@ class route:
 
         instance.identifier = instance.generate_identifier()
         # Get the edges, geometry and length of the route
-        geometry = ox.routing.route_to_gdf(graph, instance.nodes, weight=weightstring)["geometry"].unary_union
+        route_gdf = ox.routing.route_to_gdf(graph, instance.nodes, weight=weightstring)
+        route_geometry = route_gdf["geometry"].unary_union
+        instance.route_linestring = geo_util.merge_and_simplify_geometry(route_geometry, 0.0001)
 
-        if geometry.geom_type == 'LineString':
-            instance.route_linestring = geometry
-        elif geometry.geom_type == 'MultiLineString':
-            # Convert to LineString (since you know len == 1)
-            instance.route_linestring = LineString(list(geometry.geoms[0].coords))
-        else:
-            # Handle any other unexpected geometry types
-            raise ValueError(f"Expected LineString or MultiLineString, got {geometry.geom_type}")
+
         instance.edges = list(nx.utils.pairwise(instance.nodes))
         instance.length = route_analysis.get_edges_sum(G=graph,route_edges=instance.edges,weightstring='length')
 
@@ -128,7 +118,9 @@ class route:
         #instance.route_linestring = geo_util.merge_and_simplify_geometry(instance.route_linestring, 0.0001)
         instance.n_segments = len(instance.route_linestring.coords)-1
         instance.total_turn_degree = route_analysis.get_route_bearing_sum(graph, instance.route_linestring)
-        instance.avg_turn_degree = instance.total_turn_degree / instance.n_segments
+        instance.total_turn_degree_abs = route_analysis.get_route_bearing_sum(graph, instance.route_linestring, absolute=True)
+
+        instance.avg_turn_degree = instance.total_turn_degree_abs / instance.n_segments
 
         # Get attributes of the instance.nodes in the route
         instance.sum_deviation_from_prototypical = route_analysis.get_edges_sum(G=graph,route_edges=instance.edges,weightstring='deviation_from_prototypical')
@@ -143,7 +135,7 @@ class route:
 
         # Get the bbox containing the route and get cartographic clutter metrics
         # For the experiment: 
-        route_gdf = ox.routing.route_to_gdf(graph, instance.nodes, weight=weightstring)
+        #route_gdf = ox.routing.route_to_gdf(graph, instance.nodes, weight=weightstring)
         cwd = os.getcwd()
         city_name = graph.graph["city_name"]
         filepath = os.path.join(cwd, f"{city_name}_route_map.html")

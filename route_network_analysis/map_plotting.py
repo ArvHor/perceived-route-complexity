@@ -92,7 +92,7 @@ def plot_route_gdf(
                 color="black", icon="fa-flag-checkered", prefix="fa"
             ),  # red map pin icon with dot
         ).add_to(m)
-    m.save(file_path)
+    #m.save(file_path)
     full_path = os.path.abspath(file_path)
     imgpath = full_path.replace(".html", ".png")
 
