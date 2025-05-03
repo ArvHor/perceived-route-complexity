@@ -12,6 +12,7 @@ from . import street_network_analysis
 from . import geo_util
 from . import route_analysis
 from . import od_pair_analysis
+from . import map_plotting
 from .route import route
 
 
@@ -77,6 +78,7 @@ class od_pair:
         instance = cls.__new__(cls)
 
         instance.path = route.from_nodes(G,route_nodes,weightstring=weightstring)
+        instance.path_map_bbox = instance.path.map_bbox
 
         # Set the basic attributes
         instance.graph = G
@@ -102,9 +104,9 @@ class od_pair:
         instance.cardinal_direction = od_pair_analysis.get_od_cardinal_direction(G=instance.graph,origin=instance.origin_node,destination=instance.destination_node)
 
 
-        instance.subgraph = od_pair_analysis.get_od_pair_subgraph(G=instance.graph,bbox=instance.bbox)
+        instance.subgraph = od_pair_analysis.get_od_pair_subgraph(G=instance.graph,bbox=instance.path_map_bbox)
         instance.undirected_subgraph = ox.convert.to_undirected(instance.subgraph)
-        instance.area = geo_util.calculate_area_with_utm(instance.polygon)
+        instance.area = geo_util.calculate_bbox_area_with_utm(instance.path_map_bbox)
         instance.subgraph_stats = ox.stats.basic_stats(instance.subgraph, area=instance.area)
 
         instance.env_bearing_dist_weighted, _ = street_network_analysis.bearings_distribution(G=instance.undirected_subgraph, num_bins=36,min_length=10, weight="length")
@@ -141,8 +143,7 @@ class od_pair:
         hex_dig = hash_object.hexdigest()
         identifier = hex_dig
         return identifier 
-
-
+    
     def get_comparison_dict(self):
         env_dist = self.env_bearing_dist
         route_dist = self.route_direction_bearing_dist

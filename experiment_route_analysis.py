@@ -1,5 +1,6 @@
 import os
 import ast
+import sys
 import pandas as pd
 import osmnx as ox
 import networkx as nx
@@ -8,7 +9,7 @@ from joblib import Parallel, delayed
 
 import route_network_analysis as rna
 
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+#sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def compare_routes(graph_files, row):
@@ -16,9 +17,9 @@ def compare_routes(graph_files, row):
     json_path = os.path.join(
         "experiment_routes", "json_routes", row["city_name"] + str(row["id"]) + ".json"
     )
-    if os.path.exists(json_path):
-        print("json file already exists, skipping")
-        return
+    #if os.path.exists(json_path):
+    #    print("json file already exists, skipping")
+    #    return
     filepath = graph_files.loc[graph_files["city_name"] == row["city_name"]][
         "graph_file"
     ].values[0]
@@ -54,19 +55,25 @@ def compare_routes(graph_files, row):
     new_route_dict["route_exp_condition"] = row["condition"]
 
     with open(json_path, "w") as json_file:
-        json.dump(json_path, json_file, indent=4)
+        json.dump(new_route_dict, json_file, indent=4, default=str)
     print("finished with route id", row["id"])
     return new_route_dict
 
 
 if __name__ == "__main__":
+    print("Current working directory:", os.getcwd())
     route_data = pd.read_csv(os.path.join("experiment_routes", "route_data.csv"))
     graph_files = pd.read_csv(os.path.join("experiment_routes", "graph_city_dicts.csv"))
     graph_files["graph_file"] = graph_files["graph_file"].str.replace("\\", "/")
 
-    comparison_dicts = Parallel(n_jobs=4, backend="loky")(
-        delayed(compare_routes)(graph_files, row) for _, row in route_data.iterrows()
-    )
+    #comparison_dicts = Parallel(n_jobs=4, backend="loky")(
+    #    delayed(compare_routes)(graph_files, row) for _, row in route_data.iterrows()
+    #)
+    comparison_dicts = []
+    for _, row in route_data.iterrows():
+
+        comparison_dict = compare_routes(graph_files, row)
+        comparison_dicts.append(comparison_dict)
     print("Finished processing all routes")
     # Save the comparison data to a CSV file
     df = pd.DataFrame(comparison_dicts)

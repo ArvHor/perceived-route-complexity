@@ -1,3 +1,4 @@
+import math
 import shapely
 import logging
 import networkx as nx
@@ -143,19 +144,22 @@ def get_n_route_segments(route_linestring,thold=50):
     return n_after,n_before,route_linestring
 
 
-def get_route_bearing_sum(G, route_linestring,absolute=False):
+def get_route_bearing_sum(G, route_nodes, absolute=False):
     sum_difference = 0
-    for i in range(0,len(route_linestring.coords)-2):
-        origin = route_linestring.coords[i]
-        intermediate = route_linestring.coords[i+1]
-        destination = route_linestring.coords[i+2]
-        bearing_difference = geo_util.get_bearing_difference(G,origin,destination,intermediate)
-        #print("bearing difference",bearing_difference)
+    for i in range(0, len(route_nodes) - 2):
+        origin = route_nodes[i]
+        intermediate = route_nodes[i + 1]
+        destination = route_nodes[i + 2]
+        
+        bearing_difference = geo_util.get_bearing_difference(G,origin, intermediate, destination)
+        if math.isnan(bearing_difference):
+            raise ValueError("Bearing difference is NaN. Check the coordinates or the graph.")
         if absolute:
-             sum_difference += abs(bearing_difference)
-        else: 
+            sum_difference += abs(bearing_difference)
+        else:
             sum_difference += bearing_difference
-        print(f"bearing difference {bearing_difference} sum difference {sum_difference}")
-    print("total bearing difference",sum_difference)
+            print(f"bearing difference {bearing_difference} sum difference {sum_difference}")
+    
+    print("total bearing difference", sum_difference)
     return sum_difference
 

@@ -136,6 +136,42 @@ def calculate_area_with_utm(polygon):
     return projected_polygon.area
 
 
+def calculate_bbox_area_with_utm(bbox):
+    """Calculates the area of a bounding box using the appropriate UTM projection.
+
+    Args:
+        bbox: A tuple (west_lng, south_lat, east_lng, north_lat) defining the bounding box.
+
+    Returns:
+        The area of the bounding box in square meters.
+    """
+    # Create a polygon from the bounding box coordinates
+    west_lng, south_lat, east_lng, north_lat = bbox
+    polygon = Polygon([(west_lng, south_lat), (west_lng, north_lat),
+                       (east_lng, north_lat), (east_lng, south_lat)])
+
+    # Calculate the centroid of the polygon
+    centroid = polygon.centroid
+
+    # Determine the UTM zone based on the centroid's longitude
+    utm_zone = int((centroid.x + 180) / 6) + 1
+
+    # Define the source (geographic) and target (projected) coordinate systems
+    geographic_crs = pyproj.CRS("EPSG:4326")  # WGS 84
+    projected_crs = pyproj.CRS(f"EPSG:326{utm_zone}")  # UTM Zone N (North)
+    if centroid.y < 0:
+        projected_crs = pyproj.CRS(f"EPSG:327{utm_zone}")  # UTM Zone S (South)
+
+    # Create a transformer to convert between the coordinate systems
+    project = pyproj.Transformer.from_crs(geographic_crs, projected_crs, always_xy=True).transform
+
+    # Project the polygon to the UTM coordinate system
+    projected_polygon = transform(project, polygon)
+
+    # Calculate the area of the projected polygon in square meters
+    return projected_polygon.area
+
+
 def get_azimuth(G, point_a, point_b, return_all=False):
     """Calculate the azimuth and distance between two points.
 
@@ -181,6 +217,7 @@ def get_azimuth(G, point_a, point_b, return_all=False):
         if return_all:
             return fwd_azimuth, back_azimuth, distance
         else:
+            print("fwd azimuth", fwd_azimuth)
             return fwd_azimuth
 
 
@@ -229,7 +266,6 @@ def douglas_peucker(route_linestring_coords, thold):
     return results
 
 def get_bearing_difference(G, origin, intermediate, destination):
-
     if isinstance(origin, int) or isinstance(origin,np.int64):
         origin = (G.nodes[origin]['x'], G.nodes[origin]['y'])
 
@@ -238,10 +274,13 @@ def get_bearing_difference(G, origin, intermediate, destination):
 
     if isinstance(destination, int) or isinstance(destination,np.int64):
         destination = (G.nodes[destination]['x'], G.nodes[destination]['y'])
-
+    print("origin",origin)
+    print("intermediate",intermediate)
+    print("destination",destination)
     bearing_origin_to_intermediate = get_azimuth(G, origin, intermediate)
     bearing_intermediate_to_destination = get_azimuth(G, intermediate, destination)
-
+    print("bearing origin to intermediate",bearing_origin_to_intermediate)
+    print("bearing intermediate to destination",bearing_intermediate_to_destination)
     bearing_difference = (bearing_intermediate_to_destination - bearing_origin_to_intermediate)
 
     bearing_difference = bearing_difference % 360
