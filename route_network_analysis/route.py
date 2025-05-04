@@ -2,8 +2,9 @@ import os
 import networkx as nx
 import hashlib
 import osmnx as ox
-from shapely.geometry import LineString
+from shapely.geometry import LineString, MultiLineString
 from shapely.ops import linemerge
+from geopandas import GeoSeries
 
 # Local modules
 from . import map_plotting as mp
@@ -30,10 +31,18 @@ class route:
 
         # Get the edges, geometry and length of the route
         self.edges = list(nx.utils.pairwise(self.nodes))
-
-        route_geometry= ox.routing.route_to_gdf(graph, self.nodes, weight=weightstring)["geometry"].unary_union
-        self.route_linestring = linemerge(route_geometry)
         
+        route_geometry= ox.routing.route_to_gdf(graph, self.nodes, weight=weightstring)["geometry"].unary_union
+        merged_geometry_series = GeoSeries([route_geometry]).line_merge()
+
+        merged_geometry = merged_geometry_series.iloc[0]
+        
+        if merged_geometry.geom_type == 'LineString':
+            self.route_linestring = merged_geometry
+        elif merged_geometry.geom_type == 'MultiLineString':
+            self.route_linestring = LineString(list(merged_geometry.geoms[0].coords))
+        else:
+            raise ValueError(f"Expected LineString or MultiLineString, got {merged_geometry.geom_type}")
 
         self.length = route_analysis.get_edges_sum(G=graph,route_edges=self.edges,weightstring='length')
 
@@ -50,8 +59,8 @@ class route:
 
         # Get the number of segments and total turn degree
         self.n_segments = len(self.route_linestring.coords)-1
-        self.total_turn_degree = route_analysis.get_route_bearing_sum(graph, self.route_linestring)
-        self.total_turn_degree_abs = route_analysis.get_route_bearing_sum(graph, self.route_linestring, absolute=True)
+        self.total_turn_degree = route_analysis.get_route_bearing_sum(graph, self.nodes)
+        self.total_turn_degree_abs = route_analysis.get_route_bearing_sum(graph, self.nodes, absolute=True)
         self.avg_turn_degree = self.total_turn_degree_abs / self.n_segments
 
         # Get attributes of the nodes in the route

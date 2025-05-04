@@ -53,7 +53,7 @@ def get_od_pair_polygon(origin_point, destination_point,padding=0.25):
     _, _, extended_distance = geod.inv(ext_lon1, ext_lat1, ext_lon2, ext_lat2)
 
     intermediate_points = geod.npts(lon1, lat1, lon2, lat2, 1)
-    #print(intermediate_points[0])
+
     mid_lon, mid_lat = intermediate_points[0]
     perp_fwd = fwd_azimuth + 90
     perp_bwd = fwd_azimuth - 90
@@ -62,9 +62,7 @@ def get_od_pair_polygon(origin_point, destination_point,padding=0.25):
     perp_lon2, perp_lat2, _ = geod.fwd(mid_lon, mid_lat, perp_bwd, perp_distance)
     perp_point1 = (perp_lon1, perp_lat1)
     perp_point2 = (perp_lon2, perp_lat2)
-    
-    #print(perp_point1)
-    #print(perp_point2)
+
     polygon = Polygon([ext_point1, perp_point1, ext_point2, perp_point2])
     polygon = orient(polygon)
     bbox = polygon.bounds
@@ -217,7 +215,6 @@ def get_azimuth(G, point_a, point_b, return_all=False):
         if return_all:
             return fwd_azimuth, back_azimuth, distance
         else:
-            print("fwd azimuth", fwd_azimuth)
             return fwd_azimuth
 
 
@@ -274,13 +271,8 @@ def get_bearing_difference(G, origin, intermediate, destination):
 
     if isinstance(destination, int) or isinstance(destination,np.int64):
         destination = (G.nodes[destination]['x'], G.nodes[destination]['y'])
-    print("origin",origin)
-    print("intermediate",intermediate)
-    print("destination",destination)
     bearing_origin_to_intermediate = get_azimuth(G, origin, intermediate)
     bearing_intermediate_to_destination = get_azimuth(G, intermediate, destination)
-    print("bearing origin to intermediate",bearing_origin_to_intermediate)
-    print("bearing intermediate to destination",bearing_intermediate_to_destination)
     bearing_difference = (bearing_intermediate_to_destination - bearing_origin_to_intermediate)
 
     bearing_difference = bearing_difference % 360

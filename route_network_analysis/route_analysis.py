@@ -158,8 +158,6 @@ def get_route_bearing_sum(G, route_nodes, absolute=False):
             sum_difference += abs(bearing_difference)
         else:
             sum_difference += bearing_difference
-            print(f"bearing difference {bearing_difference} sum difference {sum_difference}")
-    
-    print("total bearing difference", sum_difference)
+           
     return sum_difference
 
