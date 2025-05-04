@@ -21,8 +21,8 @@ def normalize_complexity(df):
     print(f"max complexity: {df['shortest_complexity'].max()} sum of columns: {df['shortest_complexity'].sum()}, mean: {df['shortest_complexity'].mean()}, median: {df['shortest_complexity'].median()}")
     # now for the shortest path
     print(f"max complexity: {df['simplest_complexity'].max()} sum of columns: {df['simplest_complexity'].sum()}, mean: {df['simplest_complexity'].mean()}, median: {df['simplest_complexity'].median()}")
-    df['simplest_complexity'] = df['simplest_complexity'] / max_complexity
-    df['shortest_complexity'] = df['shortest_complexity'] / max_complexity
+    df['simplest_complexity_norm'] = df['simplest_complexity'] / max_complexity
+    df['shortest_complexity_norm'] = df['shortest_complexity'] / max_complexity
     print(f"max complexity: {df['shortest_complexity'].max()} sum of columns: {df['shortest_complexity'].sum()}, mean: {df['shortest_complexity'].mean()}, median: {df['shortest_complexity'].median()}")
     # now for the shortest path
     print(f"max complexity: {df['simplest_complexity'].max()} sum of columns: {df['simplest_complexity'].sum()}, mean: {df['simplest_complexity'].mean()}, median: {df['simplest_complexity'].median()}")
