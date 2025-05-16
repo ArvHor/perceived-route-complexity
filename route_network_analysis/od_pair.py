@@ -4,7 +4,8 @@ import networkx as nx
 import osmnx as ox
 import logging
 import hashlib
-
+from matplotlib.projections.polar import PolarAxes
+import matplotlib.pyplot as plt
 
 # Local modules 
 from . import alignment
@@ -45,21 +46,21 @@ class od_pair:
 
         #self.map_bbox = self.shortest_path.map_bbox
 
-        subgraph = od_pair_analysis.get_od_pair_subgraph(G=graph,bbox=self.bbox)
-        undirected_subgraph = ox.convert.to_undirected(subgraph)
+        self.subgraph = od_pair_analysis.get_od_pair_subgraph(G=graph,bbox=self.bbox)
+        self.undirected_subgraph = ox.convert.to_undirected(self.subgraph)
         self.area = geo_util.calculate_area_with_utm(self.polygon)
-        self.subgraph_stats = ox.stats.basic_stats(subgraph, area=self.area)
+        self.subgraph_stats = ox.stats.basic_stats(self.subgraph, area=self.area)
 
 
-        logging.info(f"Creating od_pair for graph {graph.graph['city_name']} with n subgraph edges: {len(subgraph.edges)}, {len(undirected_subgraph.edges)}")
+        logging.info(f"Creating od_pair for graph {graph.graph['city_name']} with n self.subgraph edges: {len(self.subgraph.edges)}, {len(self.undirected_subgraph.edges)}")
 
-        self.env_bearing_dist_weighted, _ = street_network_analysis.bearings_distribution(G=undirected_subgraph , num_bins=36,min_length=10, weight="length")
-        self.env_bearing_dist, _ = street_network_analysis.bearings_distribution(G=undirected_subgraph , num_bins=36, min_length=10,weight=None)
+        self.env_bearing_dist_weighted, _ = street_network_analysis.bearings_distribution(G=self.undirected_subgraph , num_bins=36,min_length=10, weight="length")
+        self.env_bearing_dist, _ = street_network_analysis.bearings_distribution(G=self.undirected_subgraph , num_bins=36, min_length=10,weight=None)
 
         self.route_direction_bearing_dist = od_pair_analysis.get_od_pair_bearing_dist(self.shape_dict['fwd_bearing'], self.shape_dict['bwd_bearing'])
 
-        self.environment_orientation_entropy_weighted = street_network_analysis.orientation_entropy(undirected_subgraph , num_bins=36, weight="length")
-        self.environment_orientation_entropy = street_network_analysis.orientation_entropy(undirected_subgraph , num_bins=36)
+        self.environment_orientation_entropy_weighted = street_network_analysis.orientation_entropy(self.undirected_subgraph , num_bins=36, weight="length")
+        self.environment_orientation_entropy = street_network_analysis.orientation_entropy(self.undirected_subgraph , num_bins=36)
 
 
         self.order_weighted = street_network_analysis.get_orientation_order(self.environment_orientation_entropy_weighted)
@@ -133,7 +134,6 @@ class od_pair:
         instance.stats_circuity_avg = instance.subgraph_stats['circuity_avg']
         instance.stats_node_density_km = instance.subgraph_stats['node_density_km']
 
-
         return instance
 
     def generate_identifier(self):
@@ -142,8 +142,54 @@ class od_pair:
         hash_object = hashlib.sha256(identifier.encode())
         hex_dig = hash_object.hexdigest()
         identifier = hex_dig
-        return identifier 
+        return identifier
+     
+    def create_orientation_plot(self, filepath,folded=False):
+        fig, ax = ox.plot_orientation(self.undirected_subgraph, weight="length", min_length=10)
+        r_dist = self.route_direction_bearing_dist
+        if folded == True:
+            r_dist = alignment.fold_dist(r_dist)
+            self._plot_overlaid_distribution(ax, r_dist, num_bins=36)
+        else:
+            self._plot_overlaid_distribution(ax, r_dist, num_bins=36)
+        fig.savefig(filepath)
     
+
+    def _plot_overlaid_distribution(self,
+                                    ax: plt.PolarAxes,
+                                    new_distribution: np.ndarray,
+                                    num_bins: int,
+                                    ) -> None:
+        bin_centers = 360 / num_bins * np.arange(num_bins)
+        positions = np.radians(bin_centers)
+        width = 2 * np.pi / num_bins
+
+        # Normalize the new distribution to calculate height/area
+        new_bin_frequency = new_distribution / new_distribution.sum()
+
+        new_radius = new_bin_frequency
+
+        # Plot the histogram
+        ax.bar(
+            positions,
+            height=new_radius,
+            width=width,
+            align="center",
+            bottom=0,
+            zorder=3,  # Ensure red bars are on top
+            color="red",
+            edgecolor="k",
+            linewidth=0.5,
+            alpha=0.5,
+        )
+
+        # Set the radial limits to 50%
+        ax.set_ylim(0, 0.7)
+
+        # Set radial ticks to indicate each 10%, but only label the 50% tick
+        ax.set_yticks([i * 0.1 for i in range(6)])
+        ax.set_yticklabels([''] * 5 + ['50%'])  # Only label the 50% tick
+
     def get_comparison_dict(self):
         env_dist = self.env_bearing_dist
         route_dist = self.route_direction_bearing_dist
@@ -182,6 +228,7 @@ class od_pair:
             'destination_node': self.destination_node,
             "destination_point": self.destination_point,
             'od_distance': self.od_distance,
+            "od_cardinal_direction": self.cardinal_direction,
 
             # Difference values
             "shortest_simplest_hausdorff_distance": self.shortest_path.route_linestring.hausdorff_distance(self.simplest_path.route_linestring),
@@ -189,8 +236,10 @@ class od_pair:
             # Alignment values
             "closest_strongest_lag": closest_strongest_correlation["lag"],
             "closest_strongest_correlation": closest_strongest_correlation["strength"],
+            "closest_strongest_crosscorr": closest_strongest_correlation["cross_correlation"],
             "strongest_correlation_lag": strongest_correlation["lag"],
             "strongest_correlation": strongest_correlation["strength"],
+            "strongest_crosscorr": strongest_correlation["cross_correlation"],
             "cosine_distance": closest_strongest_correlation["cosine_distance"],
             "euclidean_distance": closest_strongest_correlation["euclidean_distance"],
             "shifted_cosine_distance": closest_strongest_correlation["shifted_cosine_distance"],
@@ -273,6 +322,7 @@ class od_pair:
             'destination_node': self.destination_node,
             "destination_point": self.destination_point,
             'od_distance': self.od_distance,
+            "od_cardinal_direction": self.cardinal_direction,
 
             # Alignment values
             "closest_strongest_lag": closest_strongest_correlation["lag"],

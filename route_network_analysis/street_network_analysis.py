@@ -43,7 +43,7 @@ def get_start_node(graph):
 def get_len(array_type):
     return len(array_type)
 
-
+# asdasd
 street_network_metrics = {
     "city_name": get_city_name,
     "start_node": get_start_node,

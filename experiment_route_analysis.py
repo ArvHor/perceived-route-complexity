@@ -69,11 +69,9 @@ if __name__ == "__main__":
     #comparison_dicts = Parallel(n_jobs=4, backend="loky")(
     #    delayed(compare_routes)(graph_files, row) for _, row in route_data.iterrows()
     #)
-    comparison_dicts = []
-    for _, row in route_data.iterrows():
-
-        comparison_dict = compare_routes(graph_files, row)
-        comparison_dicts.append(comparison_dict)
+    comparison_dicts = Parallel(n_jobs=4, backend="loky")(
+        delayed(compare_routes)(graph_files, row) for _, row in route_data.iterrows()
+    )
     print("Finished processing all routes")
     # Save the comparison data to a CSV file
     df = pd.DataFrame(comparison_dicts)
