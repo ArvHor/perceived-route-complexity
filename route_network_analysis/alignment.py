@@ -1,22 +1,7 @@
-import logging
-from scipy.stats import wasserstein_distance
-from scipy.spatial.distance import cosine, euclidean
-from scipy.signal import correlate, correlation_lags
 import numpy as np
-
-# Local modules
-from .performance_tracker import PerformanceTracker, track_performance
-
-
-def get_len(array_type):
-    return len(array_type)
-
-
-alignment_metrics = {
-    "n_count": get_len,
-}
-
-alignment_tracker = PerformanceTracker(output_file="alignment_performance.json")
+from scipy.signal import correlate
+from scipy.spatial.distance import cosine, euclidean
+from scipy.stats import wasserstein_distance
 
 
 def get_crosscorrelation_alignment(route_dist, env_dist):
@@ -46,7 +31,6 @@ def get_EMD_alignment(route_dist, env_dist):
     return EMD_alignment
 
 
-# @track_performance(alignment_tracker, metrics_funcs=alignment_metrics)
 def circular_cross_correlation(route, env):
     """Calculates the circular cross-correlation using FFT."""
     route = np.asarray(route)
@@ -70,7 +54,7 @@ def circular_cross_correlation(route, env):
     return result
 
 
-def fold_dist(dist: np.array):
+def fold_dist(dist):
     half = len(dist) // 2
     a = dist[half:]
     b = dist[:half]
@@ -82,33 +66,22 @@ def fold_dist(dist: np.array):
     return folded
 
 
-# @track_performance(alignment_tracker, metrics_funcs=alignment_metrics)
 def find_optimal_correlation(route_dist, env_dist, proximity_weight=1):
-    """Calculate optimal correlation and distances between distributions.
-
-    Returns:
-        tuple: (strongest_correlation, closest_strongest_correlation, cosine_distance, euclidean_distance)
-    """
+    """ """
     route_dist = fold_dist(route_dist)
     env_dist = fold_dist(env_dist)
     route_dist = route_dist / np.sum(route_dist)
     env_dist = env_dist / np.sum(env_dist)
     route_dist_len = len(route_dist)
-    env_dist_len = len(env_dist)
-    corr = correlate(route_dist, env_dist, mode="full", method="direct")
+    corr = correlate(route_dist, env_dist, mode="same", method="direct")
     corr_lags = np.arange(0, route_dist_len)
+
     max_lag = len(corr_lags)
     weighted_corr = corr.copy()
-    logging.info(
-        f"Max absolute lag: {max_lag}, min lag in corr: {min(corr_lags)}, max lag in corr: {max(corr_lags)}"
-    )
-    logging.info(f"{corr}")
 
     # Apply the proximity penalty to the circular cross-correlation
 
     max_correlation = np.max(corr)
-
-    logging.info(f"Max: {corr}")
 
     for i in corr_lags:
         strength = corr[i]
@@ -119,13 +92,22 @@ def find_optimal_correlation(route_dist, env_dist, proximity_weight=1):
     # Calculate the circular lag of the strongest correlation
     strongest_lag = np.argmax(corr)
     strongest_correlation = corr[strongest_lag]
+    """
+    print("len of corr", len(corr))
+    print("len of weighted corr", len(weighted_corr))
+    print("strongest_lag", strongest_lag)
+    print("strongest_correlation", strongest_correlation)
+    """
     # Adjust the lag to be within the range of -max_lag to max_lag
     if strongest_lag >= max_lag:
         strongest_lag -= len(corr)
 
     # Calculate the circular lag of the closest strongest correlation
-    closest_strongest_lag = corr_lags[np.argmax(weighted_corr)]
+    closest_strongest_lag = np.argmax(weighted_corr)
     closest_strongest_correlation = weighted_corr[closest_strongest_lag]
+    # print("weighted correlation:", weighted_corr)
+    #   print("lag of closest strongest corr:", closest_strongest_lag)
+    #   print("closest strongest correlation:", closest_strongest_correlation)
 
     cos_dist = cosine(route_dist, env_dist)
     euc_dist = euclidean(route_dist, env_dist)

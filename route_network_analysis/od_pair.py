@@ -154,7 +154,6 @@ class od_pair:
             self._plot_overlaid_distribution(ax, r_dist, num_bins=36)
         fig.savefig(filepath)
     
-
     def _plot_overlaid_distribution(self,
                                     ax: plt.PolarAxes,
                                     new_distribution: np.ndarray,
