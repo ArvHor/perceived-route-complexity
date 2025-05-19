@@ -29,15 +29,33 @@ def normalize_complexity(df):
     return df
 
 def label_length_outliers(df):
-    Q1 = df[['simplest_length', 'shortest_length']].quantile(0.25)
-    Q3 = df[['simplest_length', 'shortest_length']].quantile(0.75)
-    IQR = Q3 - Q1
-    def is_outlier(row):
+    # Calculate Q1 and Q3 for each column separately
+    Q1_shortest = df['shortest_length'].quantile(0.25)
+    Q3_shortest = df['shortest_length'].quantile(0.75)
+    IQR_shortest = Q3_shortest - Q1_shortest
+
+    Q1_simplest = df['simplest_length'].quantile(0.25)
+    Q3_simplest = df['simplest_length'].quantile(0.75)
+    IQR_simplest = Q3_simplest - Q1_simplest
+
+    # Define outlier detection for shortest_length
+    def is_shortest_outlier(row):
         return (
-            (row['shortest_length'] < (Q1['shortest_length'] - 1.5 * IQR['shortest_length'])) or
-            (row['shortest_length'] > (Q3['shortest_length'] + 1.5 * IQR['shortest_length']))
+            (row['shortest_length'] < (Q1_shortest - 1.5 * IQR_shortest)) or
+            (row['shortest_length'] > (Q3_shortest + 1.5 * IQR_shortest))
         )
-    df['length_outliers'] = df.apply(is_outlier, axis=1)
+
+    # Define outlier detection for simplest_length
+    def is_simplest_outlier(row):
+        return (
+            (row['simplest_length'] < (Q1_simplest - 1.5 * IQR_simplest)) or
+            (row['simplest_length'] > (Q3_simplest + 1.5 * IQR_simplest))
+        )
+
+    # Apply the outlier detection to each row and create new columns
+    df['shortest_length_outlier'] = df.apply(is_shortest_outlier, axis=1)
+    df['simplest_length_outlier'] = df.apply(is_simplest_outlier, axis=1)
+
     return df
 
 def label_gridlike_groups(df):

@@ -15,7 +15,7 @@ from . import route_analysis
 from . import od_pair_analysis
 from . import map_plotting
 from .route import route
-
+from . import orientation_plotting
 
 logging.basicConfig(
     level=logging.ERROR,
@@ -83,13 +83,13 @@ class od_pair:
 
         # self.map_bbox = self.shortest_path.map_bbox
 
-        subgraph = od_pair_analysis.get_od_pair_subgraph(G=graph, bbox=self.polygon)
+        subgraph = od_pair_analysis.get_od_pair_subgraph(G=graph, polygon=self.polygon)
         undirected_subgraph = ox.convert.to_undirected(subgraph)
         self.area = geo_util.calculate_area_with_utm(self.polygon)
         self.subgraph_stats = ox.stats.basic_stats(subgraph, area=self.area)
 
         logging.info(
-            f"Creating od_pair for graph {graph.graph['city_name']} with n self.subgraph edges: {len(subgraph.edges)}, {len(self.undirected_subgraph.edges)}"
+            f"Creating od_pair for graph {graph.graph['city_name']} with n self.subgraph edges: {len(subgraph.edges)}, {len(undirected_subgraph.edges)}"
         )
 
         self.env_bearing_dist_weighted, _ = (
@@ -138,17 +138,17 @@ class od_pair:
         instance.path_map_bbox = instance.path.map_bbox
 
         # Set the basic attributes
-        instance.graph = G
+        graph = G
         instance.city_name = G.graph["city_name"]
         instance.origin_node = route_nodes[0]
         instance.destination_node = route_nodes[-1]
         instance.origin_point = (
-            instance.graph.nodes[instance.origin_node]["y"],
-            instance.graph.nodes[instance.origin_node]["x"],
+            graph.nodes[instance.origin_node]["y"],
+            graph.nodes[instance.origin_node]["x"],
         )
         instance.destination_point = (
-            instance.graph.nodes[instance.destination_node]["y"],
-            instance.graph.nodes[instance.destination_node]["x"],
+            graph.nodes[instance.destination_node]["y"],
+            graph.nodes[instance.destination_node]["x"],
         )
 
         # Calculate OD distance
@@ -172,30 +172,30 @@ class od_pair:
         # instance.map_bbox = instance.path.map_bbox
 
         instance.cardinal_direction = od_pair_analysis.get_od_cardinal_direction(
-            G=instance.graph,
+            G=graph,
             origin=instance.origin_node,
             destination=instance.destination_node,
         )
 
-        instance.subgraph = od_pair_analysis.get_od_pair_subgraph(
-            G=instance.graph, bbox=instance.path_map_bbox
+        subgraph = od_pair_analysis.get_od_pair_subgraph(
+            G=graph, bbox=instance.path_map_bbox
         )
-        instance.undirected_subgraph = ox.convert.to_undirected(instance.subgraph)
+        undirected_subgraph = ox.convert.to_undirected(subgraph)
         instance.area = geo_util.calculate_bbox_area_with_utm(instance.path_map_bbox)
-        instance.subgraph_stats = ox.stats.basic_stats(
-            instance.subgraph, area=instance.area
+        subgraph_stats = ox.stats.basic_stats(
+            subgraph, area=instance.area
         )
 
         instance.env_bearing_dist_weighted, _ = (
             street_network_analysis.bearings_distribution(
-                G=instance.undirected_subgraph,
+                G=undirected_subgraph,
                 num_bins=36,
                 min_length=10,
                 weight="length",
             )
         )
         instance.env_bearing_dist, _ = street_network_analysis.bearings_distribution(
-            G=instance.undirected_subgraph, num_bins=36, min_length=10, weight=None
+            G=undirected_subgraph, num_bins=36, min_length=10, weight=None
         )
 
         instance.route_direction_bearing_dist = (
@@ -206,12 +206,12 @@ class od_pair:
 
         instance.environment_orientation_entropy_weighted = (
             street_network_analysis.orientation_entropy(
-                instance.undirected_subgraph, num_bins=36, weight="length"
+                undirected_subgraph, num_bins=36, weight="length"
             )
         )
         instance.environment_orientation_entropy = (
             street_network_analysis.orientation_entropy(
-                instance.undirected_subgraph, num_bins=36
+                undirected_subgraph, num_bins=36
             )
         )
 
@@ -222,30 +222,30 @@ class od_pair:
             instance.environment_orientation_entropy
         )
 
-        instance.stats_edge_count = instance.subgraph_stats["m"]
-        instance.stats_node_count = instance.subgraph_stats["n"]
-        instance.stats_street_segment_count = instance.subgraph_stats[
+        instance.stats_edge_count = subgraph_stats["m"]
+        instance.stats_node_count = subgraph_stats["n"]
+        instance.stats_street_segment_count = subgraph_stats[
             "street_segment_count"
         ]
-        instance.stats_streets_per_node_avg = instance.subgraph_stats[
+        instance.stats_streets_per_node_avg = subgraph_stats[
             "streets_per_node_avg"
         ]
-        instance.stats_streets_per_node_counts = instance.subgraph_stats[
+        instance.stats_streets_per_node_counts = subgraph_stats[
             "streets_per_node_counts"
         ]
-        instance.stats_intersection_density_km = instance.subgraph_stats[
+        instance.stats_intersection_density_km = subgraph_stats[
             "intersection_density_km"
         ]
-        instance.stats_intersection_count = instance.subgraph_stats[
+        instance.stats_intersection_count = subgraph_stats[
             "intersection_count"
         ]
-        instance.stats_k_avg = instance.subgraph_stats["k_avg"]
-        instance.stats_street_length_total = instance.subgraph_stats[
+        instance.stats_k_avg = subgraph_stats["k_avg"]
+        instance.stats_street_length_total = subgraph_stats[
             "street_length_total"
         ]
-        instance.stats_street_length_avg = instance.subgraph_stats["street_length_avg"]
-        instance.stats_circuity_avg = instance.subgraph_stats["circuity_avg"]
-        instance.stats_node_density_km = instance.subgraph_stats["node_density_km"]
+        instance.stats_street_length_avg = subgraph_stats["street_length_avg"]
+        instance.stats_circuity_avg = subgraph_stats["circuity_avg"]
+        instance.stats_node_density_km = subgraph_stats["node_density_km"]
 
         return instance
 
@@ -257,53 +257,63 @@ class od_pair:
         identifier = hex_dig
         return identifier
 
-    def create_orientation_plot(self, filepath, folded=False):
-        fig, ax = ox.plot_orientation(
-            self.undirected_subgraph, weight="length", min_length=10
+    def get_subgraph(self,graph):
+        subgraph = od_pair_analysis.get_od_pair_subgraph(G=graph, polygon=self.polygon)
+        return subgraph
+
+    def create_orientation_plot(self, filepath, graph):
+        subgraph = self.get_subgraph(graph)
+        undirected_subgraph = ox.convert.to_undirected(subgraph)
+        fig, ax = orientation_plotting.plot_orientation(
+            self.
         )
         r_dist = self.route_direction_bearing_dist
-        if folded == True:
-            r_dist = alignment.fold_dist(r_dist)
-            self._plot_overlaid_distribution(ax, r_dist, num_bins=36)
-        else:
-            self._plot_overlaid_distribution(ax, r_dist, num_bins=36)
+        r_dist = alignment.fold_dist(r_dist)
+        self._plot_overlaid_distribution(ax, r_dist, num_bins=18)
         fig.savefig(filepath)
 
     def _plot_overlaid_distribution(
-        self,
-        ax: plt.PolarAxes,
-        new_distribution: np.ndarray,
-        num_bins: int,
-    ) -> None:
-        bin_centers = 360 / num_bins * np.arange(num_bins)
-        positions = np.radians(bin_centers)
-        width = 2 * np.pi / num_bins
+            self,
+            ax: plt.PolarAxes,
+            new_distribution: np.ndarray,
+            num_bins: int,
+        ) -> None:
+            # Calculate bin centers from 355 degrees to 175 degrees
+            bin_centers = np.linspace(355, 175, num_bins)
+            positions = np.radians(bin_centers)
+            width = 2 * np.pi / num_bins
 
-        # Normalize the new distribution to calculate height/area
-        new_bin_frequency = new_distribution / new_distribution.sum()
+            # Normalize the new distribution to calculate height/area
+            new_bin_frequency = new_distribution / new_distribution.sum()
 
-        new_radius = new_bin_frequency
+            new_radius = new_bin_frequency
 
-        # Plot the histogram
-        ax.bar(
-            positions,
-            height=new_radius,
-            width=width,
-            align="center",
-            bottom=0,
-            zorder=3,  # Ensure red bars are on top
-            color="red",
-            edgecolor="k",
-            linewidth=0.5,
-            alpha=0.5,
-        )
+            # Plot the histogram
+            ax.bar(
+                positions,
+                height=new_radius,
+                width=width,
+                align="center",
+                bottom=0,
+                zorder=3,  # Ensure red bars are on top
+                color="red",
+                edgecolor="k",
+                linewidth=0.5,
+                alpha=0.5,
+            )
 
-        # Set the radial limits to 50%
-        ax.set_ylim(0, 0.7)
+            # Set the radial limits to 50%
+            ax.set_ylim(0, 0.7)
 
-        # Set radial ticks to indicate each 10%, but only label the 50% tick
-        ax.set_yticks([i * 0.1 for i in range(6)])
-        ax.set_yticklabels([""] * 5 + ["50%"])  # Only label the 50% tick
+            # Set radial ticks to indicate each 10%, but only label the 50% tick
+            ax.set_yticks([i * 0.1 for i in range(6)])
+            ax.set_yticklabels([""] * 5 + ["50%"])  # Only label the 50% tick
+
+            # Set the theta limits to display only from 355 degrees to 175 degrees
+            ax.set_theta_offset(np.pi / 2)  # Offset to align 0 degrees to the right
+            ax.set_theta_direction(1)  # Set the direction to clockwise
+            ax.set_thetamin(355)
+            ax.set_thetamax(175)
 
     def get_comparison_dict(self):
         env_dist = self.env_bearing_dist
@@ -513,4 +523,3 @@ class od_pair:
 
         comparison_dict.update(path_dict)
         return comparison_dict
-
