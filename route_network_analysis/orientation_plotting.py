@@ -12,11 +12,14 @@ from matplotlib.axes._axes import Axes  # noqa: TC002
 from matplotlib.figure import Figure  # noqa: TC002
 from matplotlib.projections.polar import PolarAxes  # noqa: TC002
 
+from collections.abc import Iterable
+from collections.abc import Sequence
+from pathlib import Path
+from typing import TYPE_CHECKING
+from typing import Any
+from typing import Literal
+from typing import overload
 
-
-
-
-mpl_available = True
 def plot_all_city_routes_html(od_pair_data,city_name):
     
     od_pair_data = od_pair_data[od_pair_data['city_name'] == city_name]
@@ -34,8 +37,8 @@ def plot_all_city_routes_html(od_pair_data,city_name):
 
 
 
-def plot_orientation(  # noqa: PLR0913
-    G: nx.MultiGraph | nx.MultiDiGraph,
+def plot_orientation(
+    bin_counts,
     *,
     num_bins: int = 36,
     min_length: float = 0,
@@ -49,8 +52,8 @@ def plot_orientation(  # noqa: PLR0913
     alpha: float = 0.7,
     title: str | None = None,
     title_y: float = 1.05,
-    title_font: dict[str, Any] | None = None,
-    xtick_font: dict[str, Any] | None = None,
+    title_font: dict[str] | None = None,
+    xtick_font: dict[str] | None = None,
 ) -> tuple[Figure, PolarAxes]:
     """
     Plot a polar histogram of a spatial network's edge bearings.
@@ -106,7 +109,6 @@ def plot_orientation(  # noqa: PLR0913
     -------
     fig, ax
     """
-    _verify_mpl()
 
     if title_font is None:
         title_font = {"family": "DejaVu Sans", "size": 24, "weight": "bold"}
@@ -118,23 +120,9 @@ def plot_orientation(  # noqa: PLR0913
             "alpha": 1.0,
             "zorder": 3,
         }
-
-    # get the bearing distribution's bin counts and center values in degrees
-    bin_counts, bin_centers = bearing._bearings_distribution(
-        G,
-        num_bins,
-        min_length=min_length,
-        weight=weight,
-    )
-
-    # Filter bin centers and counts to only include the right half of the plot
-    right_half_indices = (bin_centers >= 355) | (bin_centers <= 175)
-    bin_centers = bin_centers[right_half_indices]
-    bin_counts = bin_counts[right_half_indices]
-
-    # positions: where to center each bar
+    num_bins = len(bin_counts)
+    bin_centers = range(0,170,10)
     positions = np.radians(bin_centers)
-
     # width: make bars fill the circumference without gaps or overlaps
     width = 2 * np.pi / num_bins
 
@@ -180,6 +168,44 @@ def plot_orientation(  # noqa: PLR0913
     if title:
         ax.set_title(title, y=title_y, fontdict=title_font)
     fig.tight_layout()
+    return fig, ax
+
+
+def _get_fig_ax(
+    ax: Axes | None,
+    figsize: tuple[float, float],
+    bgcolor: str | None,
+    polar: bool,  # noqa: FBT001
+) -> tuple[Figure, Axes | PolarAxes]:
+    """
+    Generate a matplotlib Figure and (Polar)Axes or return existing ones.
+
+    Parameters
+    ----------
+    ax
+        If not None, plot on this pre-existing axes instance.
+    figsize
+        If `ax` is None, create new figure with size `(width, height)`.
+    bgcolor
+        Background color of figure.
+    polar
+        If True, generate a `PolarAxes` instead of an `Axes` instance.
+
+    Returns
+    -------
+    fig, ax
+    """
+    if ax is None:
+        if polar:
+            # make PolarAxes
+            fig, ax = plt.subplots(figsize=figsize, subplot_kw={"projection": "polar"})
+        else:
+            # make regular Axes
+            fig, ax = plt.subplots(figsize=figsize, facecolor=bgcolor, frameon=False)
+            ax.set_facecolor(bgcolor)
+    else:
+        fig = ax.figure  # type: ignore[assignment]
+
     return fig, ax
 
 
@@ -239,16 +265,3 @@ def _get_fig_ax(
         fig = ax.figure  # type: ignore[assignment]
 
     return fig, ax
-
-
-def _verify_mpl() -> None:
-    """
-    Verify that matplotlib is installed and imported.
-
-    Returns
-    -------
-    None
-    """
-    if not mpl_available:  # pragma: no cover
-        msg = "matplotlib must be installed as an optional dependency for visualization."
-        raise ImportError(msg)

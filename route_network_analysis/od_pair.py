@@ -18,7 +18,7 @@ from .route import route
 from . import orientation_plotting
 
 logging.basicConfig(
-    level=logging.ERROR,
+    level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     filename="app.log",
     filemode="w",
@@ -265,7 +265,7 @@ class od_pair:
         subgraph = self.get_subgraph(graph)
         undirected_subgraph = ox.convert.to_undirected(subgraph)
         fig, ax = orientation_plotting.plot_orientation(
-            self.
+            self.env_bearing_dist_weighted
         )
         r_dist = self.route_direction_bearing_dist
         r_dist = alignment.fold_dist(r_dist)
