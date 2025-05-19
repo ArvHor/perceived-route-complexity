@@ -62,7 +62,7 @@ def fold_dist(dist):
 
     for i in range(0, half):
         folded[i] = a[i] + b[i]
-    print(f"len of folded {len(folded)}")
+
     return folded
 
 
