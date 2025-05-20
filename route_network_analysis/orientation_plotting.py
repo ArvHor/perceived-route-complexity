@@ -40,9 +40,6 @@ def plot_all_city_routes_html(od_pair_data,city_name):
 def plot_orientation(
     bin_counts,
     *,
-    num_bins: int = 36,
-    min_length: float = 0,
-    weight: str | None = None,
     ax: PolarAxes | None = None,
     figsize: tuple[float, float] = (5, 5),
     area: bool = True,
@@ -121,33 +118,35 @@ def plot_orientation(
             "zorder": 3,
         }
     num_bins = len(bin_counts)
-    bin_centers = range(0,170,10)
+    bin_centers = np.arange(0, 180, 180 / num_bins)  # Ensure this matches the number of labels
+    print(f"e_dist:{num_bins}, bin centers: {bin_centers}")
+
     positions = np.radians(bin_centers)
+
     # width: make bars fill the circumference without gaps or overlaps
-    width = 2 * np.pi / num_bins
+    width = 2 * np.pi / 36  # Each bin is 10 degrees wide
 
     # radius: how long to make each bar. set bar length so either the bar area
     # (ie, via sqrt) or the bar height is proportional to the bin's frequency
     bin_frequency = bin_counts / bin_counts.sum()
     radius = np.sqrt(bin_frequency) if area else bin_frequency
 
-    # create PolarAxes (if not passed-in) then set N at top and go clockwise
     fig, ax = _get_fig_ax(ax=ax, figsize=figsize, bgcolor=None, polar=True)
-    ax.set_theta_zero_location("E")  # Set 0 degrees to the right (east)
-    ax.set_theta_direction("clockwise")
+    ax.set_theta_zero_location("W")
+    ax.set_theta_direction(-1)  # Set the direction to counter-clockwise
     ax.set_ylim(top=radius.max())
 
-    # Set the theta limits to display only from 355 degrees to 175 degrees
-    ax.set_thetamin(355)
-    ax.set_thetamax(175)
+    # Set the theta limits to display only the upper half of the plot
+    ax.set_thetamin(0)
+    ax.set_thetamax(180)
 
     # configure the y-ticks and remove their labels
     ax.set_yticks(np.linspace(0, radius.max(), 5))
     ax.set_yticklabels(labels="")
 
     # configure the x-ticks and their labels
-    xticklabels = ["N", "", "E", "", "S", "", "W", ""]
-    ax.set_xticks(ax.get_xticks())
+    xticklabels = ["0", "30", "60", "90", "120", "150", "180"]
+    ax.set_xticks(np.radians(np.arange(0, 181, 30)))  # Set ticks to match labels
     ax.set_xticklabels(labels=xticklabels, fontdict=xtick_font)
     ax.tick_params(axis="x", which="major", pad=-2)
 
@@ -162,7 +161,7 @@ def plot_orientation(
         color=color,
         edgecolor=edgecolor,
         linewidth=linewidth,
-        alpha=alpha,
+        alpha=1.0,  # Ensure this is not transparent
     )
 
     if title:

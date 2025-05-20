@@ -182,9 +182,7 @@ class od_pair:
         )
         undirected_subgraph = ox.convert.to_undirected(subgraph)
         instance.area = geo_util.calculate_bbox_area_with_utm(instance.path_map_bbox)
-        subgraph_stats = ox.stats.basic_stats(
-            subgraph, area=instance.area
-        )
+        subgraph_stats = ox.stats.basic_stats(subgraph, area=instance.area)
 
         instance.env_bearing_dist_weighted, _ = (
             street_network_analysis.bearings_distribution(
@@ -224,25 +222,17 @@ class od_pair:
 
         instance.stats_edge_count = subgraph_stats["m"]
         instance.stats_node_count = subgraph_stats["n"]
-        instance.stats_street_segment_count = subgraph_stats[
-            "street_segment_count"
-        ]
-        instance.stats_streets_per_node_avg = subgraph_stats[
-            "streets_per_node_avg"
-        ]
+        instance.stats_street_segment_count = subgraph_stats["street_segment_count"]
+        instance.stats_streets_per_node_avg = subgraph_stats["streets_per_node_avg"]
         instance.stats_streets_per_node_counts = subgraph_stats[
             "streets_per_node_counts"
         ]
         instance.stats_intersection_density_km = subgraph_stats[
             "intersection_density_km"
         ]
-        instance.stats_intersection_count = subgraph_stats[
-            "intersection_count"
-        ]
+        instance.stats_intersection_count = subgraph_stats["intersection_count"]
         instance.stats_k_avg = subgraph_stats["k_avg"]
-        instance.stats_street_length_total = subgraph_stats[
-            "street_length_total"
-        ]
+        instance.stats_street_length_total = subgraph_stats["street_length_total"]
         instance.stats_street_length_avg = subgraph_stats["street_length_avg"]
         instance.stats_circuity_avg = subgraph_stats["circuity_avg"]
         instance.stats_node_density_km = subgraph_stats["node_density_km"]
@@ -257,82 +247,67 @@ class od_pair:
         identifier = hex_dig
         return identifier
 
-    def get_subgraph(self,graph):
+    def get_subgraph(self, graph):
         subgraph = od_pair_analysis.get_od_pair_subgraph(G=graph, polygon=self.polygon)
         return subgraph
 
     def create_orientation_plot(self, filepath, graph):
         subgraph = self.get_subgraph(graph)
         undirected_subgraph = ox.convert.to_undirected(subgraph)
-        fig, ax = orientation_plotting.plot_orientation(
-            self.env_bearing_dist_weighted
-        )
+        e_dist = alignment.fold_dist(self.env_bearing_dist_weighted)
+        fig, ax = orientation_plotting.plot_orientation(e_dist)
         r_dist = self.route_direction_bearing_dist
         r_dist = alignment.fold_dist(r_dist)
         self._plot_overlaid_distribution(ax, r_dist, num_bins=18)
         fig.savefig(filepath)
 
     def _plot_overlaid_distribution(
-            self,
-            ax: plt.PolarAxes,
-            new_distribution: np.ndarray,
-            num_bins: int,
-        ) -> None:
-            # Calculate bin centers from 355 degrees to 175 degrees
-            bin_centers = np.linspace(355, 175, num_bins)
-            positions = np.radians(bin_centers)
-            width = 2 * np.pi / num_bins
+        self,
+        ax: plt.PolarAxes,
+        new_distribution: np.ndarray,
+        num_bins: int,
+    ) -> None:
+        # Calculate bin centers from 0 to 180 degrees
+        bin_centers = np.linspace(0, 170, num_bins, endpoint=False)
+        positions = np.radians(bin_centers)
+        width = 2 * np.pi / 36  # Each bin is 10 degrees wide
 
-            # Normalize the new distribution to calculate height/area
-            new_bin_frequency = new_distribution / new_distribution.sum()
+        # Normalize the new distribution to calculate height/area
+        new_bin_frequency = new_distribution / new_distribution.sum()
 
-            new_radius = new_bin_frequency
+        new_radius = new_bin_frequency
 
-            # Plot the histogram
-            ax.bar(
-                positions,
-                height=new_radius,
-                width=width,
-                align="center",
-                bottom=0,
-                zorder=3,  # Ensure red bars are on top
-                color="red",
-                edgecolor="k",
-                linewidth=0.5,
-                alpha=0.5,
-            )
+        # Plot the histogram
+        ax.bar(
+            positions,
+            height=new_radius,
+            width=width,
+            align="center",
+            bottom=0,
+            zorder=3,  # Ensure red bars are on top
+            color="red",
+            edgecolor="k",
+            linewidth=0.5,
+            alpha=0.5,  # 50% transparency
+        )
 
-            # Set the radial limits to 50%
-            ax.set_ylim(0, 0.7)
+        # Set the radial limits to 50%
+        ax.set_ylim(0, 0.2)
 
-            # Set radial ticks to indicate each 10%, but only label the 50% tick
-            ax.set_yticks([i * 0.1 for i in range(6)])
-            ax.set_yticklabels([""] * 5 + ["50%"])  # Only label the 50% tick
+        # Set radial ticks to indicate each 10%, but only label the 50% tick
+        ax.set_yticks([i * 0.1 for i in range(6)])
+        ax.set_yticklabels([""] * 5 + ["50%"])  # Only label the 50% tick
 
-            # Set the theta limits to display only from 355 degrees to 175 degrees
-            ax.set_theta_offset(np.pi / 2)  # Offset to align 0 degrees to the right
-            ax.set_theta_direction(1)  # Set the direction to clockwise
-            ax.set_thetamin(355)
-            ax.set_thetamax(175)
+        # Set the theta limits to display only from 0 to 180 degrees
+        ax.set_theta_zero_location("W")
+        ax.set_theta_direction(-1)  # Set the direction to counter-clockwise
+        ax.set_thetamin(0)
+        ax.set_thetamax(170)
 
     def get_comparison_dict(self):
         env_dist = self.env_bearing_dist
         route_dist = self.route_direction_bearing_dist
         env_dist_weighted = self.env_bearing_dist_weighted
-
-        # Check for None distributions and print their contents if any
-        if self.env_bearing_dist is None:
-            logging.error(
-                f"env_bearing_dist is None. Number of edges in subgraph: {len(self.subgraph.edges)}"
-            )
-        if self.route_direction_bearing_dist is None:
-            logging.error(
-                f"route_direction_bearing_dist is None. Distribution: {self.route_direction_bearing_dist}, Number of edges in subgraph: {len(self.subgraph.edges)}"
-            )
-        if self.env_bearing_dist_weighted is None:
-            logging.error(
-                f"env_bearing_dist_weighted is None. Distribution: {self.env_bearing_dist_weighted}, Number of edges in subgraph: {len(self.subgraph.edges)}"
-            )
 
         # Circular cross-correlation to find the strongest and closest correlation
         strongest_correlation, closest_strongest_correlation = (
