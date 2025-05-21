@@ -43,7 +43,7 @@ def plot_orientation(
     ax: PolarAxes | None = None,
     figsize: tuple[float, float] = (5, 5),
     area: bool = True,
-    color: str = "#003366",
+    color: str = "#004991",
     edgecolor: str = "k",
     linewidth: float = 0.5,
     alpha: float = 0.7,
@@ -54,64 +54,13 @@ def plot_orientation(
 ) -> tuple[Figure, PolarAxes]:
     """
     Plot a polar histogram of a spatial network's edge bearings.
-
-    Ignores self-loop edges as their bearings are undefined. If `G` is a
-    MultiGraph, all edge bearings will be bidirectional (ie, two reciprocal
-    bearings per undirected edge). If `G` is a MultiDiGraph, all edge bearings
-    will be directional (ie, one bearing per directed edge). See also the
-    `bearings` module.
-
-    For more info see: Boeing, G. 2019. "Urban Spatial Order: Street Network
-    Orientation, Configuration, and Entropy." Applied Network Science, 4 (1),
-    67. https://doi.org/10.1007/s41109-019-0189-1
-
-    Parameters
-    ----------
-    G
-        Unprojected graph with `bearing` attributes on each edge.
-    num_bins
-        Number of bins. For example, if `num_bins=36` is provided, then each
-        bin will represent 10 degrees around the compass.
-    min_length
-        Ignore edges with "length" attribute values less than `min_length`.
-    weight
-        If not None, weight the edges' bearings by this (non-null) edge
-        attribute.
-    ax
-        If not None, plot on this pre-existing axes instance (must have
-        projection=polar).
-    figsize
-        If `ax` is None, create new figure with size `(width, height)`.
-    area
-        If True, set bar length so area is proportional to frequency.
-        Otherwise, set bar length so height is proportional to frequency.
-    color
-        Color of the histogram bars.
-    edgecolor
-        Color of the histogram bar edges.
-    linewidth
-        Width of the histogram bar edges.
-    alpha
-        Opacity of the histogram bars.
-    title
-        The figure's title.
-    title_y
-        The y position to place `title`.
-    title_font
-        The title's `fontdict` to pass to matplotlib.
-    xtick_font
-        The xtick labels' `fontdict` to pass to matplotlib.
-
-    Returns
-    -------
-    fig, ax
     """
 
     if title_font is None:
         title_font = {"family": "DejaVu Sans", "size": 24, "weight": "bold"}
     if xtick_font is None:
         xtick_font = {
-            "family": "DejaVu Sans",
+            "family": "Courier New",
             "size": 10,
             "weight": "bold",
             "alpha": 1.0,
@@ -119,7 +68,6 @@ def plot_orientation(
         }
     num_bins = len(bin_counts)
     bin_centers = np.arange(0, 180, 180 / num_bins)  # Ensure this matches the number of labels
-    print(f"e_dist:{num_bins}, bin centers: {bin_centers}")
 
     positions = np.radians(bin_centers)
 
@@ -131,22 +79,23 @@ def plot_orientation(
     bin_frequency = bin_counts / bin_counts.sum()
     radius = np.sqrt(bin_frequency) if area else bin_frequency
 
-    fig, ax = _get_fig_ax(ax=ax, figsize=figsize, bgcolor=None, polar=True)
+    fig, ax = plt.subplots(subplot_kw={"projection": "polar"}, figsize=figsize)
     ax.set_theta_zero_location("W")
     ax.set_theta_direction(-1)  # Set the direction to counter-clockwise
     ax.set_ylim(top=radius.max())
 
     # Set the theta limits to display only the upper half of the plot
     ax.set_thetamin(0)
-    ax.set_thetamax(180)
+    ax.set_thetamax(175)
 
     # configure the y-ticks and remove their labels
     ax.set_yticks(np.linspace(0, radius.max(), 5))
     ax.set_yticklabels(labels="")
 
-    # configure the x-ticks and their labels
-    xticklabels = ["0", "30", "60", "90", "120", "150", "180"]
-    ax.set_xticks(np.radians(np.arange(0, 181, 30)))  # Set ticks to match labels
+    # configure the x-ticks and their labels for 10 degree increments
+    xtick_degrees = np.arange(0, 181, 10)
+    xticklabels = [str(deg) for deg in xtick_degrees]
+    ax.set_xticks(np.radians(xtick_degrees))
     ax.set_xticklabels(labels=xticklabels, fontdict=xtick_font)
     ax.tick_params(axis="x", which="major", pad=-2)
 

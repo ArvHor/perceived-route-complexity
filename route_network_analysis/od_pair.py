@@ -6,6 +6,7 @@ import logging
 import hashlib
 from matplotlib.projections.polar import PolarAxes
 import matplotlib.pyplot as plt
+from scipy.signal import correlate
 
 # Local modules
 from . import alignment
@@ -251,31 +252,56 @@ class od_pair:
         subgraph = od_pair_analysis.get_od_pair_subgraph(G=graph, polygon=self.polygon)
         return subgraph
 
+
     def create_orientation_plot(self, filepath, graph):
-        subgraph = self.get_subgraph(graph)
-        undirected_subgraph = ox.convert.to_undirected(subgraph)
-        e_dist = alignment.fold_dist(self.env_bearing_dist_weighted)
-        fig, ax = orientation_plotting.plot_orientation(e_dist)
-        r_dist = self.route_direction_bearing_dist
-        r_dist = alignment.fold_dist(r_dist)
-        self._plot_overlaid_distribution(ax, r_dist, num_bins=18)
+        #subgraph = self.get_subgraph(graph)
+        #undirected_subgraph = ox.convert.to_undirected(subgraph)
+        
+        env_dist = self.env_bearing_dist_weighted
+        route_dist = self.route_direction_bearing_dist
+
+        peak_alignment = alignment.find_peaks_alignment(
+            route_dist, env_dist
+        )
+        strongest_peak = peak_alignment["strongest_env_peak"]
+        closest_peak = peak_alignment["closest_env_peak"]
+
+        #print(f"peak_alignment: {peak_alignment['distance_to_strongest']}")
+        #print(f"strongest_env_peak_value: {peak_alignment['strongest_env_peak_value']}")
+
+        # prepare the distributions for plotting
+        env_dist = alignment.fold_dist(self.env_bearing_dist_weighted)
+        route_dist = alignment.fold_dist(self.route_direction_bearing_dist)
+        #print("len env_dist: ", len(env_dist))
+        #print("len route_dist: ", len(route_dist))
+        route_dist = route_dist / route_dist.sum()
+        env_dist = env_dist / env_dist.sum()
+
+        max_index = np.argmax(route_dist)
+
+        route_dist = alignment.roll_to_max(route_dist, max_index)
+        env_dist = alignment.roll_to_max(env_dist, max_index)
+
+        # Plot the distributions
+        fig, ax = orientation_plotting.plot_orientation(env_dist)
+
+        self._plot_overlaid_distribution(ax, route_dist, strongest_peak,closest_peak, num_bins=18)
         fig.savefig(filepath)
 
     def _plot_overlaid_distribution(
         self,
         ax: plt.PolarAxes,
         new_distribution: np.ndarray,
+        strongest_peak: int,
+        closest_peak: int,
         num_bins: int,
     ) -> None:
         # Calculate bin centers from 0 to 180 degrees
-        bin_centers = np.linspace(0, 170, num_bins, endpoint=False)
+        bin_centers = np.arange(0, 180, 180 / num_bins) 
         positions = np.radians(bin_centers)
         width = 2 * np.pi / 36  # Each bin is 10 degrees wide
 
-        # Normalize the new distribution to calculate height/area
-        new_bin_frequency = new_distribution / new_distribution.sum()
-
-        new_radius = new_bin_frequency
+        new_radius = new_distribution
 
         # Plot the histogram
         ax.bar(
@@ -284,25 +310,58 @@ class od_pair:
             width=width,
             align="center",
             bottom=0,
-            zorder=3,  # Ensure red bars are on top
+            zorder=1,  # Ensure red bars are on top
+            color="green",
+            edgecolor="k",
+            linewidth=0.5,
+            alpha=0.7,  # 50% transparency
+            label="Route",
+            hatch="//",
+        )
+
+        # Add a transparent green bar at the bin corresponding to the lag
+        ax.bar(
+            positions[strongest_peak],
+            height=1,
+            width=width,
+            align="center",
+            bottom=0,
+            zorder=1,
             color="red",
             edgecolor="k",
             linewidth=0.5,
-            alpha=0.5,  # 50% transparency
+            alpha=0.7,
+        )
+        ax.bar(
+            positions[closest_peak],
+            height=1,
+            width=width,
+            align="center",
+            bottom=0,
+            zorder=1,
+            color="purple",
+            edgecolor="k",
+            linewidth=0.5,
+            alpha=0.7,
         )
 
         # Set the radial limits to 50%
-        ax.set_ylim(0, 0.2)
+        ax.set_ylim(0, 0.5)
 
-        # Set radial ticks to indicate each 10%, but only label the 50% tick
+        # Set radial ticks to indicate each 10%, and label them accordingly
         ax.set_yticks([i * 0.1 for i in range(6)])
-        ax.set_yticklabels([""] * 5 + ["50%"])  # Only label the 50% tick
+        ax.set_yticklabels([f"{int(i * 10)}%" for i in range(6)])
+
+        # Set angular (x) ticks from -90 to +90 degrees
+        xticks_deg = np.arange(-90, 91, 10)
+        ax.set_xticks(np.radians(xticks_deg + 90))  # shift so 0 is at center
+        ax.set_xticklabels([f"{int(deg)}°" for deg in xticks_deg])
 
         # Set the theta limits to display only from 0 to 180 degrees
         ax.set_theta_zero_location("W")
         ax.set_theta_direction(-1)  # Set the direction to counter-clockwise
-        ax.set_thetamin(0)
-        ax.set_thetamax(170)
+        ax.set_thetamin(-5)
+        ax.set_thetamax(175)
 
     def get_comparison_dict(self):
         env_dist = self.env_bearing_dist
@@ -339,9 +398,7 @@ class od_pair:
             "od_distance": self.od_distance,
             "od_cardinal_direction": self.cardinal_direction,
             # Difference values
-            "shortest_simplest_hausdorff_distance": self.shortest_path.route_linestring.hausdorff_distance(
-                self.simplest_path.route_linestring
-            ),
+            "shortest_simplest_hausdorff_distance": self.shortest_path.route_linestring.hausdorff_distance(self.simplest_path.route_linestring),
             # Alignment values
             "closest_strongest_lag": closest_strongest_correlation["lag"],
             "closest_strongest_correlation": closest_strongest_correlation["strength"],
@@ -389,6 +446,13 @@ class od_pair:
             "street_length_avg": self.subgraph_stats["street_length_avg"],
             "circuity_avg": self.subgraph_stats["circuity_avg"],
             "node_density_km": self.subgraph_stats["node_density_km"],
+            # Peak alignment values
+            "peak_distance_to_strongest": closest_strongest_correlation["distance_to_strongest"],
+            "peak_distance_to_closest": closest_strongest_correlation["distance_to_closest"],
+            "peak_distance_to_strongest_value": closest_strongest_correlation["strongest_env_peak_value"],
+            "peak_distance_to_closest_value": closest_strongest_correlation["closest_env_peak_value"],
+            "peak_distance_to_strongest_lag": strongest_correlation["lag"],
+            "peak_distance_to_closest_lag": closest_strongest_correlation["lag"],
         }
         # print("now adding the route dicts")
         shortest_path_dict = {
@@ -407,20 +471,6 @@ class od_pair:
         route_dist = self.route_direction_bearing_dist
         env_dist_weighted = self.env_bearing_dist_weighted
 
-        # Check for None distributions and print their contents if any
-        if self.env_bearing_dist is None:
-            logging.error(
-                f"env_bearing_dist is None. Number of edges in subgraph: {len(self.subgraph.edges)}"
-            )
-        if self.route_direction_bearing_dist is None:
-            logging.error(
-                f"route_direction_bearing_dist is None. Distribution: {self.route_direction_bearing_dist}, Number of edges in subgraph: {len(self.subgraph.edges)}"
-            )
-        if self.env_bearing_dist_weighted is None:
-            logging.error(
-                f"env_bearing_dist_weighted is None. Distribution: {self.env_bearing_dist_weighted}, Number of edges in subgraph: {len(self.subgraph.edges)}"
-            )
-
         # Circular cross-correlation to find the strongest and closest correlation
         strongest_correlation, closest_strongest_correlation = (
             alignment.find_optimal_correlation(route_dist, env_dist_weighted)
@@ -435,6 +485,10 @@ class od_pair:
         wasserstein_distance = alignment.get_EMD_alignment(
             route_dist, env_dist_weighted
         )
+        peak_alignment = alignment.find_peaks_alignment(
+            route_dist, env_dist_weighted
+        )
+
 
         route_dist = route_dist / np.sum(route_dist)
         env_dist = env_dist / np.sum(env_dist)
@@ -465,6 +519,14 @@ class od_pair:
             ],
             "wasserstein_distance": wasserstein_distance,
             "cosine_similarity": cosine_similarity_weighted,
+            # Peak alignment values
+            "peak_route_main": peak_alignment["route_main_peak"],
+            "peak_closest_env": peak_alignment["closest_env_peak"],
+            "peak_strongest_env": peak_alignment["strongest_env_peak"],
+            "peak_closest_env_value": env_dist[peak_alignment["closest_env_peak"]],
+            "peak_strongest_env_value": env_dist[peak_alignment["strongest_env_peak"]],
+            "peak_distance_to_closest": peak_alignment["distance_to_closest"],
+            "peak_distance_to_strongest": peak_alignment["distance_to_strongest"],
             # Street orientation values
             "orientation_entropy": self.environment_orientation_entropy,
             "orientation_entropy_weighted": self.environment_orientation_entropy_weighted,
@@ -493,6 +555,7 @@ class od_pair:
             "street_length_avg": self.subgraph_stats["street_length_avg"],
             "circuity_avg": self.subgraph_stats["circuity_avg"],
             "node_density_km": self.subgraph_stats["node_density_km"],
+
         }
         path_dict = {f"route_{key}": value for key, value in vars(self.path).items()}
 
