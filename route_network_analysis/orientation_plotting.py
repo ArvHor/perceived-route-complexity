@@ -76,8 +76,8 @@ def plot_orientation(
 
     # radius: how long to make each bar. set bar length so either the bar area
     # (ie, via sqrt) or the bar height is proportional to the bin's frequency
-    bin_frequency = bin_counts / bin_counts.sum()
-    radius = np.sqrt(bin_frequency) if area else bin_frequency
+   
+    radius = np.sqrt(bin_counts) if area else bin_counts
 
     fig, ax = plt.subplots(subplot_kw={"projection": "polar"}, figsize=figsize)
     ax.set_theta_zero_location("W")

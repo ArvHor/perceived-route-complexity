@@ -253,7 +253,7 @@ class od_pair:
         return subgraph
 
 
-    def create_orientation_plot(self, filepath, graph):
+    def create_orientation_plot(self, filepath):
         #subgraph = self.get_subgraph(graph)
         #undirected_subgraph = ox.convert.to_undirected(subgraph)
         
@@ -346,11 +346,11 @@ class od_pair:
         )
 
         # Set the radial limits to 50%
-        ax.set_ylim(0, 0.5)
+        ax.set_ylim(0, 0.6)
 
         # Set radial ticks to indicate each 10%, and label them accordingly
-        ax.set_yticks([i * 0.1 for i in range(6)])
-        ax.set_yticklabels([f"{int(i * 10)}%" for i in range(6)])
+        ax.set_yticks([i * 0.1 for i in range(7)])
+        ax.set_yticklabels([f"{int(i * 10)}%" for i in range(7)])
 
         # Set angular (x) ticks from -90 to +90 degrees
         xticks_deg = np.arange(-90, 91, 10)
@@ -383,6 +383,9 @@ class od_pair:
             route_dist, env_dist_weighted
         )
 
+        peak_alignment = alignment.find_peaks_alignment(
+            route_dist, env_dist_weighted
+        )
         route_dist = route_dist / np.sum(route_dist)
         env_dist = env_dist / np.sum(env_dist)
         env_dist_weighted = env_dist_weighted / np.sum(env_dist_weighted)
@@ -447,12 +450,13 @@ class od_pair:
             "circuity_avg": self.subgraph_stats["circuity_avg"],
             "node_density_km": self.subgraph_stats["node_density_km"],
             # Peak alignment values
-            "peak_distance_to_strongest": closest_strongest_correlation["distance_to_strongest"],
-            "peak_distance_to_closest": closest_strongest_correlation["distance_to_closest"],
-            "peak_distance_to_strongest_value": closest_strongest_correlation["strongest_env_peak_value"],
-            "peak_distance_to_closest_value": closest_strongest_correlation["closest_env_peak_value"],
-            "peak_distance_to_strongest_lag": strongest_correlation["lag"],
-            "peak_distance_to_closest_lag": closest_strongest_correlation["lag"],
+            "peak_route_main": peak_alignment["route_main_peak"],
+            "peak_closest_env": peak_alignment["closest_env_peak"],
+            "peak_strongest_env": peak_alignment["strongest_env_peak"],
+            "peak_closest_env_value": env_dist_weighted[peak_alignment["closest_env_peak"]],
+            "peak_strongest_env_value": env_dist_weighted[peak_alignment["strongest_env_peak"]],
+            "peak_distance_to_closest": peak_alignment["distance_to_closest"],
+            "peak_distance_to_strongest": peak_alignment["distance_to_strongest"],
         }
         # print("now adding the route dicts")
         shortest_path_dict = {
