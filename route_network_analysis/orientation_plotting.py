@@ -35,18 +35,173 @@ def plot_all_city_routes_html(od_pair_data,city_name):
 
     mp.plot_all_routes(all_city_routes,"demonstration/barcelona.html",unique_origins)
 
+def create_orientation_plot(self, filepath):
+    fig, ax = ox.plot_orientation(self.undirected_subgraph, weight="length", min_length=10)
+    r_dist = self.route_direction_bearing_dist
+
+    self._plot_overlaid_distribution(ax, r_dist, num_bins=36, area=True)
+    fig.savefig(filepath)
+
+  
 
 
-def plot_orientation(
+def plot_orientation(  # noqa: PLR0913
+    bin_frequency,
+    *,
+    ax: PolarAxes | None = None,
+    figsize: tuple[float, float] = (10, 10),
+    area: bool = True,
+    color: str = "#d3d3d3",
+    edgecolor: str = "k",
+    linewidth: float = 0.5,
+    alpha: float = 1,
+    title: str | None = None,
+    title_y: float = 1.05,
+    title_font: dict[str, Any] | None = None,
+    xtick_font: dict[str, Any] | None = None,
+) -> tuple[Figure, PolarAxes]:
+    """
+    Plot a polar histogram of a spatial network's edge bearings.
+
+    Ignores self-loop edges as their bearings are undefined. If `G` is a
+    MultiGraph, all edge bearings will be bidirectional (ie, two reciprocal
+    bearings per undirected edge). If `G` is a MultiDiGraph, all edge bearings
+    will be directional (ie, one bearing per directed edge). See also the
+    `bearings` module.
+
+    For more info see: Boeing, G. 2019. "Urban Spatial Order: Street Network
+    Orientation, Configuration, and Entropy." Applied Network Science, 4 (1),
+    67. https://doi.org/10.1007/s41109-019-0189-1
+
+    Parameters
+    ----------
+    G
+        Unprojected graph with `bearing` attributes on each edge.
+    num_bins
+        Number of bins. For example, if `num_bins=36` is provided, then each
+        bin will represent 10 degrees around the compass.
+    min_length
+        Ignore edges with "length" attribute values less than `min_length`.
+    weight
+        If not None, weight the edges' bearings by this (non-null) edge
+        attribute.
+    ax
+        If not None, plot on this pre-existing axes instance (must have
+        projection=polar).
+    figsize
+        If `ax` is None, create new figure with size `(width, height)`.
+    area
+        If True, set bar length so area is proportional to frequency.
+        Otherwise, set bar length so height is proportional to frequency.
+    color
+        Color of the histogram bars.
+    edgecolor
+        Color of the histogram bar edges.
+    linewidth
+        Width of the histogram bar edges.
+    alpha
+        Opacity of the histogram bars.
+    title
+        The figure's title.
+    title_y
+        The y position to place `title`.
+    title_font
+        The title's `fontdict` to pass to matplotlib.
+    xtick_font
+        The xtick labels' `fontdict` to pass to matplotlib.
+
+    Returns
+    -------
+    fig, ax
+    """
+
+    if title_font is None:
+        title_font = {"family": "monospace","name":"Courier","size": 24, "weight": "bold"}
+    if xtick_font is None:
+        xtick_font = {
+            "family": "monospace",
+            "name":"Courier",
+            "size": 10,
+            "weight": "bold",
+            "alpha": 1.0,
+            "zorder": 3,
+        }
+
+    # get the bearing distribution's bin counts and center values in degrees
+
+    num_bins = len(bin_frequency)
+    bin_centers = np.arange(0, 360, 360 / num_bins)
+
+    positions = np.radians(bin_centers)
+
+    # width: make bars fill the circumference without gaps or overlaps
+    width = 2 * np.pi / num_bins
+
+    # radius: how long to make each bar. set bar length so either the bar area
+    # (ie, via sqrt) or the bar height is proportional to the bin's frequency
+    radius = np.sqrt(bin_frequency) if area else bin_frequency
+    # create PolarAxes (if not passed-in) then set N at top and go clockwise
+    fig, ax = _get_fig_ax(ax=ax, figsize=figsize, bgcolor=None, polar=True)
+    ax.set_theta_zero_location("N")  # Set 0 degrees to the right (east)
+    ax.set_theta_direction("clockwise")
+    ax.set_ylim(top=radius.max()+(radius.max()*0.1))
+
+    # Set the theta limits to display only from 355 degrees to 175 degrees
+    #ax.set_thetamin(0)
+    #ax.set_thetamax(175)
+
+    # configure the y-ticks and remove their labels
+    ax.set_yticks(np.linspace(0, radius.max(), 5))
+    ax.set_yticklabels(labels="")
+
+    # configure the x-ticks and their labels
+    xtick_angles = np.radians(np.arange(0, 361, 10))
+    # Create labels for every 10 degrees, with cardinal directions at 0, 90, 180, 270, 360
+    xticklabels = []
+    for deg in range(0, 361, 10):
+        if deg == 0 or deg == 360:
+            xticklabels.append("N")
+        elif deg == 90:
+            xticklabels.append("E")
+        elif deg == 180:
+            xticklabels.append("S")
+        elif deg == 270:
+            xticklabels.append("W")
+        else:
+            xticklabels.append("")
+    ax.set_xticks(xtick_angles)
+    ax.set_xticklabels(labels=xticklabels, fontdict=xtick_font)
+    ax.tick_params(axis="x", which="major", pad=-2)
+
+    # draw the bars
+    ax.bar(
+        positions,
+        height=radius,
+        width=width,
+        align="center",
+        bottom=0,
+        zorder=2,
+        color=color,
+        alpha=alpha,
+        edgecolor=edgecolor,
+        linewidth=linewidth,
+    )
+
+    if title:
+        ax.set_title(title, y=title_y, fontdict=title_font)
+    fig.tight_layout()
+    return fig, ax
+
+def plot_alignment_orientation(
     bin_counts,
     *,
     ax: PolarAxes | None = None,
-    figsize: tuple[float, float] = (5, 5),
+    figsize: tuple[float, float] = (10, 6),
     area: bool = True,
-    color: str = "#004991",
+    color: str = "#d3d3d3",
     edgecolor: str = "k",
     linewidth: float = 0.5,
-    alpha: float = 0.7,
+    alpha: float = 1,
     title: str | None = None,
     title_y: float = 1.05,
     title_font: dict[str] | None = None,
@@ -57,10 +212,11 @@ def plot_orientation(
     """
 
     if title_font is None:
-        title_font = {"family": "DejaVu Sans", "size": 24, "weight": "bold"}
+        title_font = {"family": "monospace","name":"Courier","size": 24, "weight": "bold"}
     if xtick_font is None:
         xtick_font = {
-            "family": "Courier New",
+            "family": "monospace",
+            "name":"Courier",
             "size": 10,
             "weight": "bold",
             "alpha": 1.0,
@@ -82,7 +238,7 @@ def plot_orientation(
     fig, ax = plt.subplots(subplot_kw={"projection": "polar"}, figsize=figsize)
     ax.set_theta_zero_location("W")
     ax.set_theta_direction(-1)  # Set the direction to counter-clockwise
-    ax.set_ylim(top=radius.max())
+    ax.set_ylim(top=radius.max()+(radius.max()*0.1))  # Add some space above the max radius
 
     # Set the theta limits to display only the upper half of the plot
     ax.set_thetamin(0)
@@ -108,9 +264,9 @@ def plot_orientation(
         bottom=0,
         zorder=2,
         color=color,
+        alpha=alpha,
         edgecolor=edgecolor,
         linewidth=linewidth,
-        alpha=1.0,  # Ensure this is not transparent
     )
 
     if title:

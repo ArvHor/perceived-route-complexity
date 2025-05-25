@@ -29,8 +29,6 @@ def plot_route_gdf(
     return_bbox=False,
     flip=False,
 ):
-    # print(map_tiles)
-    # apikey = '54NexSXPLjyL0FsLdsoy'
     geom = route_gdf["geometry"].unary_union
     route_gdf["geometry"] = geo_util.merge_and_simplify_geometry(geom, 0.0001)
     start_location = (G.nodes[start_node]["y"], G.nodes[start_node]["x"])
@@ -41,8 +39,7 @@ def plot_route_gdf(
         (start_location[1] + end_location[1]) / 2,
     )
 
-    # m = route_gdf.explore(tiles="CartoDB.VoyagerNoLabels",color='blue', control_scale=False,location=midpoint, style_kwds={"weight": 5,"opacity":1},width="2100px",height='1400px',zoom_snap=0.25,zoom_start=16,set_zoom=16,legend=False,zoom_control=False)
-
+    # Create the map centered at the midpoint, but don't set zoom levels
     m = route_gdf.explore(
         tiles=map_tiles,
         color="blue",
@@ -51,20 +48,16 @@ def plot_route_gdf(
         location=midpoint,
         style_kwds={"weight": 7, "opacity": 0.7, "dashArray": "1,20"},
         height="100%",
-        zoom_start=16,
-        min_zoom=16,
-        max_zoom=16,
         legend=False,
         attr=None,
     )
 
-    midpoint = (
-        (start_location[0] + end_location[0]) / 2,
-        (start_location[1] + end_location[1]) / 2,
-    )
-    bbox = map_analysis.calculate_bounding_box(
-        midpoint[0], midpoint[1], width_pixels=1600, height_pixels=1200, zoom=16
-    )
+    # Calculate bounds from the route geometry
+    bounds = route_gdf.total_bounds  # [minx, miny, maxx, maxy]
+    # Convert to [[south, west], [north, east]] for folium
+    fit_bounds = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
+    m.fit_bounds(fit_bounds)
+
     if info_text != "null":
         folium.map.Marker(
             [midpoint[0], midpoint[1]],
@@ -75,30 +68,29 @@ def plot_route_gdf(
             ),
         ).add_to(m)
 
-    if flip == True:
+    if flip:
         m = flip_map(m, end_location, start_location)
     else:
         folium.Marker(
             location=start_location,
             icon=folium.Icon(
                 color="green", icon="fa-map-marker", prefix="fa-solid"
-            ),  # green map pin icon without dot
+            ),
         ).add_to(m)
-
-        # Add destination marker (end location)
         folium.Marker(
             location=end_location,
             icon=folium.Icon(
                 color="black", icon="fa-flag-checkered", prefix="fa"
-            ),  # red map pin icon with dot
+            ),
         ).add_to(m)
-    #m.save(file_path)
+
+    m.save(file_path)
     full_path = os.path.abspath(file_path)
     imgpath = full_path.replace(".html", ".png")
 
-    #screenshot_map(full_path, imgpath)
+    screenshot_map(full_path, imgpath)
     if return_bbox:
-        return bbox
+        return fit_bounds
 
 
 def screenshot_map(full_path, imgpath):

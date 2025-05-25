@@ -251,14 +251,82 @@ class od_pair:
     def get_subgraph(self, graph):
         subgraph = od_pair_analysis.get_od_pair_subgraph(G=graph, polygon=self.polygon)
         return subgraph
-
-
+    
     def create_orientation_plot(self, filepath):
+            env_dist = self.env_bearing_dist_weighted / self.env_bearing_dist_weighted.sum()
+            fig, ax = orientation_plotting.plot_orientation(env_dist)
+            r_dist = self.route_direction_bearing_dist / self.route_direction_bearing_dist.sum()
+            self._plot_overlaid_distribution(ax, r_dist, num_bins=36)
+            fig.savefig(filepath)
+
+
+    def _plot_overlaid_distribution(self,
+                                    ax: plt.PolarAxes,
+                                    new_distribution: np.ndarray,
+                                    num_bins: int,
+                                    ) -> None:
+        bin_centers = 360 / num_bins * np.arange(num_bins)
+        positions = np.radians(bin_centers)
+        width = 2 * np.pi / num_bins
+
+        # Normalize the new distribution to calculate height/area
+        new_bin_frequency = new_distribution / new_distribution.sum()
+
+        new_radius = new_bin_frequency
+
+        # Plot the histogram
+        ax.bar(
+            positions,
+            height=new_radius,
+            width=width,
+            align="center",
+            bottom=0,
+            zorder=4, 
+            edgecolor="k",
+            linewidth=0.5,
+            facecolor="none", 
+            alpha=1,  
+            hatch=".",
+            label="Route",
+        )
+        ax.bar(
+            positions,
+            height=new_radius,
+            width=width,
+            align="center",
+            bottom=0,
+            zorder=4, 
+            edgecolor="k",
+            linewidth=0.5,
+            facecolor="blue", 
+            alpha=0.2,
+        )
+
+        # Set the radial limits to fit the data
+        ax.set_ylim(0, new_radius.max() * 1.1)
+
+        # Set radial ticks to indicate each 10%, and label them accordingly
+        ax.set_yticks([i * 0.1 for i in range(6)])
+        ax.set_yticklabels([f"{int(i * 10)}%" for i in range(6)])
+
+        # Set the angular range to show the full circle
+        ax.set_theta_zero_location("N")
+        ax.set_theta_direction(-1)
+
+
+    def create_alignment_plot(self, filepath,peaks=True):
         #subgraph = self.get_subgraph(graph)
         #undirected_subgraph = ox.convert.to_undirected(subgraph)
         
         env_dist = self.env_bearing_dist_weighted
         route_dist = self.route_direction_bearing_dist
+        
+        strongest_crosscorr, closest_strongest_correlation = alignment.find_optimal_correlation(route_dist, env_dist)
+        closest_lag = closest_strongest_correlation["lag"]
+        strongest_lag = strongest_crosscorr["lag"]
+
+        closest_lag = closest_lag - len(route_dist) // 2
+        strongest_lag = strongest_lag - len(route_dist) // 2
 
         peak_alignment = alignment.find_peaks_alignment(
             route_dist, env_dist
@@ -266,8 +334,10 @@ class od_pair:
         strongest_peak = peak_alignment["strongest_env_peak"]
         closest_peak = peak_alignment["closest_env_peak"]
 
-        #print(f"peak_alignment: {peak_alignment['distance_to_strongest']}")
-        #print(f"strongest_env_peak_value: {peak_alignment['strongest_env_peak_value']}")
+        print("strongest_lag: ", strongest_lag)
+        print("closest_lag: ", closest_lag) 
+        print("strongest_peak: ", strongest_peak)
+        print("closest_peak: ", closest_peak)
 
         # prepare the distributions for plotting
         env_dist = alignment.fold_dist(self.env_bearing_dist_weighted)
@@ -283,12 +353,14 @@ class od_pair:
         env_dist = alignment.roll_to_max(env_dist, max_index)
 
         # Plot the distributions
-        fig, ax = orientation_plotting.plot_orientation(env_dist)
-
-        self._plot_overlaid_distribution(ax, route_dist, strongest_peak,closest_peak, num_bins=18)
+        fig, ax = orientation_plotting.plot_alignment_orientation(env_dist)
+        if peaks:
+            self._plot_overlaid_alignment_distribution(ax, route_dist, strongest_peak, closest_peak, num_bins=18)
+        else:
+            self._plot_overlaid_alignment_distribution(ax, route_dist, strongest_lag, closest_lag, num_bins=18)
         fig.savefig(filepath)
 
-    def _plot_overlaid_distribution(
+    def _plot_overlaid_alignment_distribution(
         self,
         ax: plt.PolarAxes,
         new_distribution: np.ndarray,
@@ -310,41 +382,86 @@ class od_pair:
             width=width,
             align="center",
             bottom=0,
-            zorder=1,  # Ensure red bars are on top
-            color="green",
+            zorder=4, 
             edgecolor="k",
             linewidth=0.5,
-            alpha=0.7,  # 50% transparency
+            facecolor="none", 
+            alpha=1,  
+            hatch=".",
             label="Route",
-            hatch="//",
+        )
+        ax.bar(
+            positions,
+            height=new_radius,
+            width=width,
+            align="center",
+            bottom=0,
+            zorder=4, 
+            edgecolor="k",
+            linewidth=0.5,
+            facecolor="blue", 
+            alpha=0.2,
         )
 
-        # Add a transparent green bar at the bin corresponding to the lag
+        # Second bar: transparent face, opaque hatch
         ax.bar(
             positions[strongest_peak],
             height=1,
             width=width,
             align="center",
             bottom=0,
-            zorder=1,
-            color="red",
+            zorder=5,
             edgecolor="k",
             linewidth=0.5,
-            alpha=0.7,
+            facecolor="none",
+            hatch="--",
+            alpha=1,
+            label="Strongest Peak",
         )
+
         ax.bar(
             positions[closest_peak],
             height=1,
             width=width,
             align="center",
             bottom=0,
-            zorder=1,
-            color="purple",
+            zorder=4,
             edgecolor="k",
             linewidth=0.5,
-            alpha=0.7,
+            facecolor="none", 
+            alpha=1,
+            hatch="||",
+            label="Closest Peak",
         )
-
+        
+        ax.bar(
+            positions[closest_peak],
+            height=1,
+            width=width,
+            align="center",
+            bottom=0,
+            zorder=4,
+            edgecolor="k",
+            linewidth=0.5,
+            facecolor="yellow",      #"#ff7f0e", # orange
+            alpha=0.3,
+            label="Closest Peak",
+        )
+        # Add a transparent red bar at the bin corresponding to the lag
+        ax.bar(
+            positions[strongest_peak],
+            height=1,
+            width=width,
+            align="center",
+            bottom=0,
+            zorder=4,
+            edgecolor="none",
+            linewidth=0.5,
+            facecolor="red",      #"#d62728", # red
+            alpha=0.3,
+            label=None,
+        )
+        
         # Set the radial limits to 50%
         ax.set_ylim(0, 0.6)
 
