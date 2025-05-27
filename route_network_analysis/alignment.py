@@ -1,8 +1,7 @@
 import numpy as np
-from scipy.signal import correlate
 from scipy.spatial.distance import cosine, euclidean
 from scipy.stats import wasserstein_distance
-from scipy.signal import find_peaks
+from scipy.signal import find_peaks, correlation_lags,correlate
 
 def get_crosscorrelation_alignment(route_dist, env_dist):
     route_dist = route_dist / np.sum(route_dist)
@@ -137,7 +136,6 @@ def find_peaks_alignment(route_dist, env_dist):
     return peak_alignment
 
 def find_optimal_correlation(route_dist, env_dist, proximity_weight=1):
-    """ """
     route_dist = fold_dist(route_dist)
     env_dist = fold_dist(env_dist)
 
@@ -149,9 +147,10 @@ def find_optimal_correlation(route_dist, env_dist, proximity_weight=1):
     env_dist = env_dist / np.sum(env_dist)
     route_dist_len = len(route_dist)
     corr = correlate(route_dist, env_dist, mode="same", method="direct")
-    corr_lags = np.arange(0, route_dist_len)
+    #corr_lags = np.arange(0, route_dist_len)
 
-    max_lag = len(corr) // 2
+    corr_lags = correlation_lags(len(env_dist), len(env_dist),mode="same")
+    max_lag = np.max(np.abs(corr_lags))
 
     weighted_corr = corr.copy()
 
@@ -159,42 +158,29 @@ def find_optimal_correlation(route_dist, env_dist, proximity_weight=1):
 
     max_correlation = np.max(corr)
 
-    for i in corr_lags:
-        strength = corr[i]
-        penalty = (max_correlation * (i / max_lag)) * proximity_weight
+    for i, strength in enumerate(corr):
+        lag = np.abs(corr_lags[i])
+        penalty = (max_correlation * (lag / max_lag)) * proximity_weight
         weighted_correlation = strength - penalty
         weighted_corr[i] = weighted_correlation
 
     # Calculate the circular lag of the strongest correlation
-    strongest_lag = np.argmax(corr)
+    strongest_lag = corr_lags[np.argmax(corr)]
     strongest_correlation = corr[strongest_lag]
-    """
-    print("len of corr", len(corr))
-    print("len of weighted corr", len(weighted_corr))
-    print("strongest_lag", strongest_lag)
-    print("strongest_correlation", strongest_correlation)
-    """
-    # Adjust the lag to be within the range of -max_lag to max_lag
-    #if strongest_lag >= max_lag:
-    #    strongest_lag -= len(corr)
 
-    # Calculate the circular lag of the closest strongest correlation
-    closest_strongest_lag = np.argmax(weighted_corr)
+    closest_strongest_lag = corr_lags[np.argmax(weighted_corr)]
     closest_strongest_correlation = weighted_corr[closest_strongest_lag]
-    #print("weighted correlation:", weighted_corr)
-    #print("lag of closest strongest corr:", closest_strongest_lag)
-    #print("closest strongest correlation:", closest_strongest_correlation)
+
 
     cos_dist = cosine(route_dist, env_dist)
     euc_dist = euclidean(route_dist, env_dist)
 
-    # Shift env_dist by the optimal lag
     shifted_env_dist = np.roll(env_dist, closest_strongest_lag)
     shifted_cos_dist = cosine(route_dist, shifted_env_dist)
     shifted_euc_dist = euclidean(route_dist, shifted_env_dist)
 
     strongest_correlation = {
-        "zero_lag" : corr[max_lag],
+        "zero_lag" : corr[corr_lags[0]],
         "lag": strongest_lag,
         "strength": corr[np.argmax(corr)],
         "cross_correlation": corr,
