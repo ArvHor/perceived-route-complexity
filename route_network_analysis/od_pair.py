@@ -520,6 +520,7 @@ class od_pair:
             # Difference values
             "shortest_simplest_hausdorff_distance": self.shortest_path.route_linestring.hausdorff_distance(self.simplest_path.route_linestring),
             # Alignment values
+            "zero_lag_strongest": strongest_correlation["zero_lag"],
             "closest_strongest_lag": closest_strongest_correlation["lag"],
             "closest_strongest_correlation": closest_strongest_correlation["strength"],
             "closest_strongest_crosscorr": closest_strongest_correlation[
@@ -570,8 +571,8 @@ class od_pair:
             "peak_route_main": peak_alignment["route_main_peak"],
             "peak_closest_env": peak_alignment["closest_env_peak"],
             "peak_strongest_env": peak_alignment["strongest_env_peak"],
-            "peak_closest_env_value": env_dist_weighted[peak_alignment["closest_env_peak"]],
-            "peak_strongest_env_value": env_dist_weighted[peak_alignment["strongest_env_peak"]],
+            "peak_closest_env_value": peak_alignment["closest_env_peak_value"],
+            "peak_strongest_env_value": peak_alignment["strongest_env_peak_value"],
             "peak_distance_to_closest": peak_alignment["distance_to_closest"],
             "peak_distance_to_strongest": peak_alignment["distance_to_strongest"],
         }

@@ -101,13 +101,13 @@ def find_peaks_alignment(route_dist, env_dist):
 
     if len(route_peaks) == 0 or len(env_peaks) == 0:
         peak_alignment = {
-            "route_main_peak": "No peaks found",
-            "closest_env_peak": "No peaks found",
-            "strongest_env_peak": "No peaks found",
-            "closest_env_peak_value": "No peaks found",
-            "strongest_env_peak_value": "No peaks found",
-            "distance_to_closest": "No peaks found",
-            "distance_to_strongest": "No peaks found",
+            "route_main_peak": "None",
+            "closest_env_peak": "None",
+            "strongest_env_peak": "None",
+            "closest_env_peak_value": "None",
+            "strongest_env_peak_value": "None",
+            "distance_to_closest": "None",
+            "distance_to_strongest": "None",
         }
         return peak_alignment
     
