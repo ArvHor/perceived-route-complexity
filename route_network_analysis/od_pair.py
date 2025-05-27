@@ -338,7 +338,7 @@ class od_pair:
         print("closest_lag: ", closest_lag) 
         print("strongest_peak: ", strongest_peak)
         print("closest_peak: ", closest_peak)
-
+        print("zero_lag_strongest: ", strongest_crosscorr["zero_lag"])
         # prepare the distributions for plotting
         env_dist = alignment.fold_dist(self.env_bearing_dist_weighted)
         route_dist = alignment.fold_dist(self.route_direction_bearing_dist)

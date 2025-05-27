@@ -166,10 +166,10 @@ def find_optimal_correlation(route_dist, env_dist, proximity_weight=1):
 
     # Calculate the circular lag of the strongest correlation
     strongest_lag = corr_lags[np.argmax(corr)]
-    strongest_correlation = corr[strongest_lag]
+    strongest_correlation = corr[np.argmax(corr)]
 
     closest_strongest_lag = corr_lags[np.argmax(weighted_corr)]
-    closest_strongest_correlation = weighted_corr[closest_strongest_lag]
+    closest_strongest_correlation = weighted_corr[np.argmax(weighted_corr)]
 
 
     cos_dist = cosine(route_dist, env_dist)
@@ -179,16 +179,19 @@ def find_optimal_correlation(route_dist, env_dist, proximity_weight=1):
     shifted_cos_dist = cosine(route_dist, shifted_env_dist)
     shifted_euc_dist = euclidean(route_dist, shifted_env_dist)
 
+    zero_lag_index = np.where(corr_lags == 0)[0][0]
+    zero_lag_strength = corr[zero_lag_index]
+
     strongest_correlation = {
-        "zero_lag" : corr[corr_lags[0]],
+        "zero_lag" : zero_lag_strength,
         "lag": strongest_lag,
-        "strength": corr[np.argmax(corr)],
+        "strength": strongest_correlation,
         "cross_correlation": corr,
     }
 
     closest_strongest_correlation = {
         "lag": closest_strongest_lag,
-        "strength": np.argmax(weighted_corr),
+        "strength": closest_strongest_correlation,
         "cross_correlation": weighted_corr,
         "cosine_distance": cos_dist,
         "euclidean_distance": euc_dist,
