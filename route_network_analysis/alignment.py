@@ -4,6 +4,11 @@ from scipy.stats import wasserstein_distance
 from scipy.signal import find_peaks, correlation_lags,correlate
 
 def get_crosscorrelation_alignment(route_dist, env_dist):
+    route_dist = fold_dist(route_dist)
+    env_dist = fold_dist(env_dist)
+    max_index = np.argmax(route_dist)
+    route_dist = roll_to_max(route_dist, max_index)
+    env_dist = roll_to_max(env_dist, max_index)
     route_dist = route_dist / np.sum(route_dist)
     env_dist = env_dist / np.sum(env_dist)
     cross_correlation = np.correlate(env_dist, route_dist, mode="full")
@@ -135,7 +140,7 @@ def find_peaks_alignment(route_dist, env_dist):
     }
     return peak_alignment
 
-def find_optimal_correlation(route_dist, env_dist, proximity_weight=1):
+def find_optimal_correlation(route_dist, env_dist, proximity_weight=1,method="direct",mode="same"):
     route_dist = fold_dist(route_dist)
     env_dist = fold_dist(env_dist)
 
@@ -146,10 +151,14 @@ def find_optimal_correlation(route_dist, env_dist, proximity_weight=1):
     route_dist = route_dist / np.sum(route_dist)
     env_dist = env_dist / np.sum(env_dist)
     route_dist_len = len(route_dist)
-    corr = correlate(route_dist, env_dist, mode="same", method="direct")
+
+    corr = correlate(route_dist, env_dist, mode=mode, method=method)
+
+        
+
     #corr_lags = np.arange(0, route_dist_len)
 
-    corr_lags = correlation_lags(len(env_dist), len(env_dist),mode="same")
+    corr_lags = correlation_lags(len(env_dist), len(env_dist),mode=mode)
     max_lag = np.max(np.abs(corr_lags))
 
     weighted_corr = corr.copy()
