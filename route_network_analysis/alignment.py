@@ -1,7 +1,8 @@
 import numpy as np
 from scipy.spatial.distance import cosine, euclidean
 from scipy.stats import wasserstein_distance
-from scipy.signal import find_peaks, correlation_lags,correlate
+from scipy.signal import find_peaks, correlation_lags, correlate
+
 
 def get_crosscorrelation_alignment(route_dist, env_dist):
     route_dist = fold_dist(route_dist)
@@ -69,21 +70,23 @@ def fold_dist(dist):
 
     return folded
 
+
 def circular_distance(a, b, n):
     """Compute the minimum circular distance between indices a and b in array of length n."""
     return min(abs(a - b), n - abs(a - b))
+
 
 def roll_to_max(dist, max_index):
     """Roll the distribution so that the specified index is at the center."""
     center = len(dist) // 2
     shift = center - max_index
     dist = np.roll(dist, shift)
-    #print(f"dist after rolling: {dist}")
     return dist
+
 
 def find_peaks_alignment(route_dist, env_dist):
     # Normalize
-    
+
     route_dist = fold_dist(route_dist)
     env_dist = fold_dist(env_dist)
 
@@ -93,15 +96,9 @@ def find_peaks_alignment(route_dist, env_dist):
     max_index = np.argmax(route_dist)
     route_dist = roll_to_max(route_dist, max_index)
     env_dist = roll_to_max(env_dist, max_index)
-    #print(f"len route_dist: {len(route_dist)}")
-    #print(f"len env_dist: {len(env_dist)}")
-
-
-    #print(f"!! envdistsum {np.sum(env_dist)} \n env_dist: {env_dist} \n ")
     # Find peaks
     route_peaks, _ = find_peaks(route_dist)
-    env_peaks, properties = find_peaks(env_dist,prominence=0.01)
-    #print(f"env_peaks: {env_peaks} \n properties: {properties} \n ")
+    env_peaks, properties = find_peaks(env_dist, prominence=0.01)
 
     if len(route_peaks) == 0 or len(env_peaks) == 0:
         peak_alignment = {
@@ -114,7 +111,6 @@ def find_peaks_alignment(route_dist, env_dist):
             "distance_to_strongest": "None",
         }
         return peak_alignment
-    
 
     # Take the main peak in route_dist (highest)
     route_main_peak = route_peaks[np.argmax(route_dist[route_peaks])]
@@ -125,10 +121,13 @@ def find_peaks_alignment(route_dist, env_dist):
     # Find the strongest peak in env_dist
     strongest_env_peak = env_peaks[np.argmax(env_dist[env_peaks])]
 
-
     # Calculate distances
-    distance_to_closest = circular_distance(route_main_peak, closest_env_peak, len(env_dist))
-    distance_to_strongest = circular_distance(route_main_peak, strongest_env_peak, len(env_dist))
+    distance_to_closest = circular_distance(
+        route_main_peak, closest_env_peak, len(env_dist)
+    )
+    distance_to_strongest = circular_distance(
+        route_main_peak, strongest_env_peak, len(env_dist)
+    )
     peak_alignment = {
         "route_main_peak": route_main_peak,
         "closest_env_peak": closest_env_peak,
@@ -140,7 +139,10 @@ def find_peaks_alignment(route_dist, env_dist):
     }
     return peak_alignment
 
-def find_optimal_correlation(route_dist, env_dist, proximity_weight=1,method="direct",mode="same"):
+
+def find_optimal_correlation(
+    route_dist, env_dist, proximity_weight=1, method="direct", mode="same"
+):
     route_dist = fold_dist(route_dist)
     env_dist = fold_dist(env_dist)
 
@@ -150,15 +152,11 @@ def find_optimal_correlation(route_dist, env_dist, proximity_weight=1,method="di
 
     route_dist = route_dist / np.sum(route_dist)
     env_dist = env_dist / np.sum(env_dist)
-    route_dist_len = len(route_dist)
 
-    corr = correlate(route_dist, env_dist, mode=mode, method=method)
+    corr = correlate(env_dist,route_dist, mode=mode, method=method)
 
-        
-
-    #corr_lags = np.arange(0, route_dist_len)
-
-    corr_lags = correlation_lags(len(env_dist), len(env_dist),mode=mode)
+    corr_lags = correlation_lags(len(env_dist), len(env_dist), mode=mode)
+    #print("Correlation lags:", corr_lags)
     max_lag = np.max(np.abs(corr_lags))
 
     weighted_corr = corr.copy()
@@ -180,7 +178,6 @@ def find_optimal_correlation(route_dist, env_dist, proximity_weight=1,method="di
     closest_strongest_lag = corr_lags[np.argmax(weighted_corr)]
     closest_strongest_correlation = weighted_corr[np.argmax(weighted_corr)]
 
-
     cos_dist = cosine(route_dist, env_dist)
     euc_dist = euclidean(route_dist, env_dist)
 
@@ -192,8 +189,9 @@ def find_optimal_correlation(route_dist, env_dist, proximity_weight=1,method="di
     zero_lag_strength = corr[zero_lag_index]
 
     strongest_correlation = {
-        "zero_lag" : zero_lag_strength,
+        "zero_lag": zero_lag_strength,
         "lag": strongest_lag,
+        "env_index": len(env_dist) // 2 + strongest_lag,
         "strength": strongest_correlation,
         "cross_correlation": corr,
     }
@@ -201,6 +199,7 @@ def find_optimal_correlation(route_dist, env_dist, proximity_weight=1,method="di
     closest_strongest_correlation = {
         "lag": closest_strongest_lag,
         "strength": closest_strongest_correlation,
+        "env_index": len(env_dist) // 2 + closest_strongest_lag,
         "cross_correlation": weighted_corr,
         "cosine_distance": cos_dist,
         "euclidean_distance": euc_dist,
