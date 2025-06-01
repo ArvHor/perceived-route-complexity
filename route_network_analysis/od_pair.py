@@ -270,7 +270,8 @@ class od_pair:
         bin_centers = 360 / num_bins * np.arange(num_bins)
         positions = np.radians(bin_centers)
         width = 2 * np.pi / num_bins
-
+        bin_edges = np.linspace(0,360, num_bins + 1)
+        positions_edges = np.radians(bin_edges)
         # Normalize the new distribution to calculate height/area
         new_bin_frequency = new_distribution / new_distribution.sum()
 
@@ -303,10 +304,23 @@ class od_pair:
             facecolor="blue",
             alpha=0.2,
         )
+        peak_index = np.argmax(new_distribution)
+        start_index = (peak_index - 9) % num_bins
+        end_index = (peak_index + 9) % num_bins
+
+        start_angle = positions_edges[start_index]
+        end_angle = positions_edges[end_index]
 
         # Set the radial limits to fit the data
         ax.set_ylim(0, new_radius.max() * 1.1)
-
+        ax.plot(
+            [start_angle, end_angle],
+            [ax.get_ylim()[1], ax.get_ylim()[1]],
+            color="red",
+            linewidth=2,
+            zorder=5,
+            linestyle="--",
+        )
         # Set radial ticks to indicate each 10%, and label them accordingly
         ax.set_yticks([i * 0.1 for i in range(6)])
         ax.set_yticklabels([f"{int(i * 10)}%" for i in range(6)])
@@ -440,7 +454,7 @@ class od_pair:
             edgecolor="k",
             linewidth=0.5,
             facecolor="yellow",  # "#ff7f0e", # orange
-            alpha=0.3,
+            alpha=0.1,
             label="Closest Peak",
         )
         # Add a transparent red bar at the bin corresponding to the lag
@@ -454,7 +468,7 @@ class od_pair:
             edgecolor="none",
             linewidth=0.5,
             facecolor="red",  # "#d62728", # red
-            alpha=0.3,
+            alpha=0.1,
             label=None,
         )
 

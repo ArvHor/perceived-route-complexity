@@ -145,7 +145,18 @@ def plot_orientation(  # noqa: PLR0913
     ax.set_theta_zero_location("N")  # Set 0 degrees to the right (east)
     ax.set_theta_direction("clockwise")
     ax.set_ylim(top=radius.max()+(radius.max()*0.1))
-
+    ax.bar(
+        positions,
+        height=radius,
+        width=width,
+        align="center",
+        bottom=0,
+        zorder=1,
+        color=color,
+        alpha=1,
+        edgecolor=edgecolor,
+        linewidth=linewidth,
+    )
     # Set the theta limits to display only from 355 degrees to 175 degrees
     #ax.set_thetamin(0)
     #ax.set_thetamax(175)
@@ -174,18 +185,7 @@ def plot_orientation(  # noqa: PLR0913
     ax.tick_params(axis="x", which="major", pad=-2)
 
     # draw the bars
-    ax.bar(
-        positions,
-        height=radius,
-        width=width,
-        align="center",
-        bottom=0,
-        zorder=2,
-        color=color,
-        alpha=alpha,
-        edgecolor=edgecolor,
-        linewidth=linewidth,
-    )
+
 
     if title:
         ax.set_title(title, y=title_y, fontdict=title_font)
@@ -264,7 +264,7 @@ def plot_alignment_orientation(
         bottom=0,
         zorder=2,
         color=color,
-        alpha=alpha,
+        alpha=1,
         edgecolor=edgecolor,
         linewidth=linewidth,
     )
