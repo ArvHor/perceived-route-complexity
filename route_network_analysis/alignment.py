@@ -153,12 +153,12 @@ def find_optimal_correlation(
     route_dist = route_dist / np.sum(route_dist)
     env_dist = env_dist / np.sum(env_dist)
 
-    corr = correlate(env_dist,route_dist, mode=mode, method=method)
+    corr = correlate(env_dist, route_dist, mode=mode, method=method)
 
     corr_lags = correlation_lags(len(env_dist), len(env_dist), mode=mode)
-    #print("Correlation lags:", corr_lags)
+    # print("Correlation lags:", corr_lags)
     max_lag = np.max(np.abs(corr_lags))
-
+    print("Max lag:", max_lag)
     weighted_corr = corr.copy()
 
     # Apply the proximity penalty to the circular cross-correlation

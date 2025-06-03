@@ -511,9 +511,9 @@ class od_pair:
         )
 
         peak_alignment = alignment.find_peaks_alignment(route_dist, env_dist_weighted)
-        route_dist = route_dist / np.sum(route_dist)
-        env_dist = env_dist / np.sum(env_dist)
-        env_dist_weighted = env_dist_weighted / np.sum(env_dist_weighted)
+        #route_dist = route_dist / np.sum(route_dist)
+        #env_dist = env_dist / np.sum(env_dist)
+        #env_dist_weighted = env_dist_weighted / np.sum(env_dist_weighted)
 
         comparison_dict = {
             # od pair values

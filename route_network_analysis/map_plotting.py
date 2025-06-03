@@ -11,7 +11,7 @@ from selenium.webdriver import Firefox, FirefoxOptions
 from folium.features import DivIcon
 from folium.elements import *
 import folium
-
+import shapely.geometry
 # Local modules
 from . import geo_util
 from . import map_analysis
@@ -28,6 +28,7 @@ def plot_route_gdf(
     map_tiles="CartoDB.VoyagerNoLabels",
     return_bbox=False,
     flip=False,
+    truncation_polygon:shapely.geometry.polygon.Polygon = None,
 ):
     geom = route_gdf["geometry"].unary_union
     route_gdf["geometry"] = geo_util.merge_and_simplify_geometry(geom, 0.0001)
@@ -52,11 +53,27 @@ def plot_route_gdf(
         attr=None,
     )
 
-    # Calculate bounds from the route geometry
-    bounds = route_gdf.total_bounds  # [minx, miny, maxx, maxy]
-    # Convert to [[south, west], [north, east]] for folium
-    fit_bounds = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
-    m.fit_bounds(fit_bounds)
+    # If truncation polygon is provided, plot the polygon on the map
+    if truncation_polygon:
+        folium.GeoJson(
+            truncation_polygon,
+            style_function=lambda x: {
+                "color": "red",
+                "weight": 2,
+                "fillOpacity": 0.1,
+            },
+        ).add_to(m)
+        bounds = truncation_polygon.bounds  # [minx, miny, maxx, maxy]
+        fit_bounds = [
+            [bounds[1], bounds[0]], [bounds[3], bounds[2]]
+        ]
+        m.fit_bounds(fit_bounds)
+    else:
+        # Calculate bounds from the route geometry
+        bounds = route_gdf.total_bounds  # [minx, miny, maxx, maxy]
+        # Convert to [[south, west], [north, east]] for folium
+        fit_bounds = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
+        m.fit_bounds(fit_bounds)
 
     if info_text != "null":
         folium.map.Marker(
