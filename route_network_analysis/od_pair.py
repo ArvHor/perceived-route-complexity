@@ -1,20 +1,14 @@
-import math
 import numpy as np
-import networkx as nx
 import osmnx as ox
 import logging
 import hashlib
-from matplotlib.projections.polar import PolarAxes
 import matplotlib.pyplot as plt
-from scipy.signal import correlate
 
 # Local modules
 from . import alignment
 from . import street_network_analysis
 from . import geo_util
-from . import route_analysis
 from . import od_pair_analysis
-from . import map_plotting
 from .route import route
 from . import orientation_plotting
 
@@ -270,7 +264,7 @@ class od_pair:
         bin_centers = 360 / num_bins * np.arange(num_bins)
         positions = np.radians(bin_centers)
         width = 2 * np.pi / num_bins
-        bin_edges = np.linspace(0,360, num_bins + 1)
+        bin_edges = np.linspace(0, 360, num_bins + 1)
         positions_edges = np.radians(bin_edges)
         # Normalize the new distribution to calculate height/area
         new_bin_frequency = new_distribution / new_distribution.sum()
@@ -350,8 +344,6 @@ class od_pair:
         env_dist = alignment.fold_dist(self.env_bearing_dist_weighted)
         route_dist = alignment.fold_dist(self.route_direction_bearing_dist)
 
-       
-
         max_index = np.argmax(route_dist)
         route_dist = alignment.roll_to_max(route_dist, max_index)
         env_dist = alignment.roll_to_max(env_dist, max_index)
@@ -366,7 +358,11 @@ class od_pair:
             )
         else:
             self._plot_overlaid_alignment_distribution(
-                ax, route_dist, strongest_crosscorr["env_index"], closest_strongest_correlation["env_index"], num_bins=18
+                ax,
+                route_dist,
+                strongest_crosscorr["env_index"],
+                closest_strongest_correlation["env_index"],
+                num_bins=18,
             )
         fig.savefig(filepath)
 
@@ -511,9 +507,9 @@ class od_pair:
         )
 
         peak_alignment = alignment.find_peaks_alignment(route_dist, env_dist_weighted)
-        #route_dist = route_dist / np.sum(route_dist)
-        #env_dist = env_dist / np.sum(env_dist)
-        #env_dist_weighted = env_dist_weighted / np.sum(env_dist_weighted)
+        # route_dist = route_dist / np.sum(route_dist)
+        # env_dist = env_dist / np.sum(env_dist)
+        # env_dist_weighted = env_dist_weighted / np.sum(env_dist_weighted)
 
         comparison_dict = {
             # od pair values
