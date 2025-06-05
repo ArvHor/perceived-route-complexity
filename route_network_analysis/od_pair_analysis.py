@@ -4,10 +4,7 @@ import numpy as np
 # Local modules
 
 
-
-
-def get_od_pair_bearing_dist(fwd,bwd, perp_fwd=None, perp_bwd=None):
-
+def get_od_pair_bearing_dist(fwd, bwd, perp_fwd=None, perp_bwd=None):
 
     if perp_fwd and perp_bwd:
         bearings = [fwd, bwd, perp_fwd, perp_bwd]
@@ -27,9 +24,12 @@ def get_od_pair_bearing_dist(fwd,bwd, perp_fwd=None, perp_bwd=None):
 
 
 def get_od_cardinal_direction(G, origin, destination):
-    origin_point = (G.nodes[origin]['x'],G.nodes[origin]['y'])
-    destination_point = (G.nodes[destination]['x'],G.nodes[destination]['y'])
-    bearing = ox.bearing.calculate_bearing(origin_point[0], origin_point[1], destination_point[0], destination_point[1])
+    lat1 = G.nodes[origin]["y"]
+    lon1 = G.nodes[origin]["x"]
+    lat2 = G.nodes[origin]["y"]
+    lon2 = G.nodes[origin]["x"]
+
+    bearing = ox.bearing.calculate_bearing(lat1, lon1, lat2, lon2)
 
     # Define cardinal direction ranges
     if 337.5 <= bearing < 360 or 0 <= bearing < 22.5:
@@ -45,15 +45,20 @@ def get_od_cardinal_direction(G, origin, destination):
     elif 202.5 <= bearing < 247.5:
         cardinal_direction = "SW"
     elif 247.5 <= bearing < 292.5:
-            cardinal_direction = "W"
+        cardinal_direction = "W"
     elif 292.5 <= bearing < 337.5:
         cardinal_direction = "NW"
 
     return cardinal_direction
 
-def get_od_pair_subgraph(G,bbox=None,polygon=None):
+
+def get_od_pair_subgraph(G, bbox=None, polygon=None):
     if bbox:
-        subgraph = ox.truncate.truncate_graph_bbox(G=G, bbox=bbox, truncate_by_edge=True)
+        subgraph = ox.truncate.truncate_graph_bbox(
+            G=G, bbox=bbox, truncate_by_edge=True
+        )
     elif polygon:
-        subgraph = ox.truncate.truncate_graph_polygon(G=G, polygon=polygon, truncate_by_edge=True)
+        subgraph = ox.truncate.truncate_graph_polygon(
+            G=G, polygon=polygon, truncate_by_edge=True
+        )
     return subgraph
