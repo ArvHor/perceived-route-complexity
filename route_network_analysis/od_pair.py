@@ -306,18 +306,16 @@ class od_pair:
         end_angle = positions_edges[end_index]
 
         # Set the radial limits to fit the data
-        ax.set_ylim(0, new_radius.max() * 1.1)
-        ax.plot(
-            [start_angle, end_angle],
-            [ax.get_ylim()[1], ax.get_ylim()[1]],
-            color="red",
-            linewidth=2,
-            zorder=5,
-            linestyle="--",
-        )
+        #ax.set_ylim(0, new_radius.max() * 1.1)
+        #ax.plot(
+        #    [start_angle, end_angle],
+        #    [ax.get_ylim()[1], ax.get_ylim()[1]],
+        #    color="red",
+        #    linewidth=2,
+        #    zorder=5,
+        #    linestyle="--",
+        #)
         # Set radial ticks to indicate each 10%, and label them accordingly
-        ax.set_yticks([i * 0.1 for i in range(6)])
-        ax.set_yticklabels([f"{int(i * 10)}%" for i in range(6)])
 
         # Set the angular range to show the full circle
         ax.set_theta_zero_location("N")

@@ -117,7 +117,7 @@ def screenshot_map(full_path, imgpath):
     opts.add_argument("--headless")
     opts.add_argument("--window-size=1600,1286")
 
-    opts.binary_location = "/bin/firefox"
+    opts.binary_location = "/usr/local/bin/geckodriver"
 
     driver = Firefox(options=opts)
     driver.set_page_load_timeout(60)

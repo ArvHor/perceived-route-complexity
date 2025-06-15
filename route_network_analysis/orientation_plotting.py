@@ -144,7 +144,7 @@ def plot_orientation(  # noqa: PLR0913
     fig, ax = _get_fig_ax(ax=ax, figsize=figsize, bgcolor=None, polar=True)
     ax.set_theta_zero_location("N")  # Set 0 degrees to the right (east)
     ax.set_theta_direction("clockwise")
-    ax.set_ylim(top=radius.max()+(radius.max()*0.1))
+    
     ax.bar(
         positions,
         height=radius,
@@ -157,13 +157,31 @@ def plot_orientation(  # noqa: PLR0913
         edgecolor=edgecolor,
         linewidth=linewidth,
     )
+    ax.set_ylim(top=radius.max()+(radius.max()*0.1))
     # Set the theta limits to display only from 355 degrees to 175 degrees
     #ax.set_thetamin(0)
     #ax.set_thetamax(175)
 
     # configure the y-ticks and remove their labels
-    ax.set_yticks(np.linspace(0, radius.max(), 5))
+    yticks = np.linspace(0, 0.5, 5)
+    ax.set_yticks(yticks)
     ax.set_yticklabels(labels="")
+
+    # Add markers on the y-axis to represent the radius of the bars
+    for r in yticks[1:]:  # skip the center (r=0)
+        ax.plot(0, r, marker="o", color="k", markersize=4, zorder=10)
+        # Add a label slightly offset from the marker
+        ax.text(
+            np.radians(-8),  # a small angle to the left of the y-axis (adjust as needed)
+            r,
+            f"{r:.1f}",
+            va="center",
+            ha="right",
+            fontsize=16,
+            color="k",
+            zorder=11,
+        )
+
 
     # configure the x-ticks and their labels
     xtick_angles = np.radians(np.arange(0, 361, 10))
