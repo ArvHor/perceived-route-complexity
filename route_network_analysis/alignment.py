@@ -139,7 +139,33 @@ def find_peaks_alignment(route_dist, env_dist):
     }
     return peak_alignment
 
+def to_orientation_distribution(dist):
+    """Transforms a distribution to a circular distribution."""
+    half = len(dist) // 2
+    a = dist[half:]
+    b = dist[:half]
+    orientation_dist = np.empty(half, dtype=int)
+    for i in range(0, half):
+        orientation_dist[i] = a[i] + b[i]
+    return orientation_dist
 
+def center_orientations_to_OD(orientation_dist, OD_index):
+    """Roll the distribution so that the specified index is at the center."""
+    center = len(orientation_dist) // 2
+    shift = center - OD_index
+    dist = np.roll(orientation_dist, shift)
+    return dist
+
+def find_closest_strongest_index(orientation_dist):
+    max_orientation_frequency = np.max(orientation_dist)
+    rotation_steps = np.arange(-len(orientation_dist) // 2, len(orientation_dist) // 2)
+
+    for i, frequency in enumerate(orientation_dist):
+        lag = np.abs([i])
+        penalty = (max_correlation * (lag / max_lag)) * proximity_weight
+        weighted_correlation = strength - penalty
+        weighted_corr[i] = weighted_correlation
+    return 
 def find_optimal_correlation(
     route_dist, env_dist, proximity_weight=1, method="direct", mode="same"
 ):
