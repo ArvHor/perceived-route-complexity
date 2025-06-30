@@ -1,6 +1,7 @@
 import numpy as np
 import pyproj
-from shapely import Polygon, orient_polygons,LineString, MultiLineString, Point
+from shapely import Polygon, LineString, MultiLineString, Point
+from shapely.geometry.polygon import orient
 import osmnx as ox
 import networkx as nx
 from shapely.ops import transform
@@ -62,7 +63,7 @@ def get_od_pair_polygon(origin_point, destination_point,padding=0.25):
     perp_point2 = (perp_lon2, perp_lat2)
 
     polygon = Polygon([ext_point1, perp_point1, ext_point2, perp_point2])
-    polygon = orient_polygons(polygon)
+    polygon = orient(polygon)
     bbox = polygon.bounds
 
     bbox_coords = [
