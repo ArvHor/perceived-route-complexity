@@ -3,6 +3,7 @@ import networkx as nx
 import numpy as np
 
 from . import map_plotting as mp
+from . import alignment
 
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -34,16 +35,6 @@ def plot_all_city_routes_html(od_pair_data,city_name):
         all_city_routes.append(route_gdf)
 
     mp.plot_all_routes(all_city_routes,"demonstration/barcelona.html",unique_origins)
-
-def create_orientation_plot(self, filepath):
-    fig, ax = ox.plot_orientation(self.undirected_subgraph, weight="length", min_length=10)
-    r_dist = self.route_direction_bearing_dist
-
-    self._plot_overlaid_distribution(ax, r_dist, num_bins=36, area=True)
-    fig.savefig(filepath)
-
-  
-
 
 def plot_orientation(  # noqa: PLR0913
     bin_frequency,
@@ -210,6 +201,192 @@ def plot_orientation(  # noqa: PLR0913
     fig.tight_layout()
     return fig, ax
 
+def _plot_overlaid_distribution(
+    ax: PolarAxes,
+    new_distribution: np.ndarray,
+    num_bins: int,
+) -> None:
+    bin_centers = 360 / num_bins * np.arange(num_bins)
+    positions = np.radians(bin_centers)
+    width = 2 * np.pi / num_bins
+    bin_edges = np.linspace(0, 360, num_bins + 1)
+    positions_edges = np.radians(bin_edges)
+    # Normalize the new distribution to calculate height/area
+    new_bin_frequency = new_distribution / new_distribution.sum()
+
+    new_radius = new_bin_frequency
+
+    # Plot the histogram
+    ax.bar(
+        positions,
+        height=new_radius,
+        width=width,
+        align="center",
+        bottom=0,
+        zorder=4,
+        edgecolor="k",
+        linewidth=0.5,
+        facecolor="none",
+        alpha=1,
+        hatch=".",
+        label="Route",
+    )
+    ax.bar(
+        positions,
+        height=new_radius,
+        width=width,
+        align="center",
+        bottom=0,
+        zorder=4,
+        edgecolor="k",
+        linewidth=0.5,
+        facecolor="blue",
+        alpha=0.2,
+    )
+    peak_index = np.argmax(new_distribution)
+    start_index = (peak_index - 9) % num_bins
+    end_index = (peak_index + 9) % num_bins
+
+    start_angle = positions_edges[start_index]
+    end_angle = positions_edges[end_index]
+
+    # Set the radial limits to fit the data
+    #ax.set_ylim(0, new_radius.max() * 1.1)
+    #ax.plot(
+    #    [start_angle, end_angle],
+    #    [ax.get_ylim()[1], ax.get_ylim()[1]],
+    #    color="red",
+    #    linewidth=2,
+    #    zorder=5,
+    #    linestyle="--",
+    #)
+    # Set radial ticks to indicate each 10%, and label them accordingly
+
+    # Set the angular range to show the full circle
+    ax.set_theta_zero_location("N")
+    ax.set_theta_direction(-1)
+
+
+def _plot_overlaid_alignment_distribution(
+    ax: PolarAxes,
+    new_distribution: np.ndarray,
+    strongest_peak: int,
+    closest_peak: int,
+    num_bins: int,
+) -> None:
+    # Calculate bin centers from 0 to 180 degrees
+    bin_centers = np.arange(0, 180, 180 / num_bins)
+    positions = np.radians(bin_centers)
+    width = 2 * np.pi / 36  # Each bin is 10 degrees wide
+    print(new_distribution)
+    new_radius = new_distribution
+
+    # Plot the histogram
+    ax.bar(
+        positions,
+        height=new_radius,
+        width=width,
+        align="center",
+        bottom=0,
+        zorder=4,
+        edgecolor="k",
+        linewidth=0.5,
+        facecolor="none",
+        alpha=1,
+        hatch=".",
+        label="Route",
+    )
+    ax.bar(
+        positions,
+        height=new_radius,
+        width=width,
+        align="center",
+        bottom=0,
+        zorder=4,
+        edgecolor="k",
+        linewidth=0.5,
+        facecolor="blue",
+        alpha=0.2,
+    )
+
+    # Second bar: transparent face, opaque hatch
+    ax.bar(
+        positions[strongest_peak],
+        height=1,
+        width=width,
+        align="center",
+        bottom=0,
+        zorder=5,
+        edgecolor="k",
+        linewidth=0.5,
+        facecolor="none",
+        hatch="--",
+        alpha=1,
+        label="Strongest Peak",
+    )
+
+    ax.bar(
+        positions[closest_peak],
+        height=1,
+        width=width,
+        align="center",
+        bottom=0,
+        zorder=4,
+        edgecolor="k",
+        linewidth=0.5,
+        facecolor="none",
+        alpha=1,
+        hatch="||",
+        label="Closest Peak",
+    )
+
+    ax.bar(
+        positions[closest_peak],
+        height=1,
+        width=width,
+        align="center",
+        bottom=0,
+        zorder=4,
+        edgecolor="k",
+        linewidth=0.5,
+        facecolor="yellow",  # "#ff7f0e", # orange
+        alpha=0.1,
+        label="Closest Peak",
+    )
+    # Add a transparent red bar at the bin corresponding to the lag
+    ax.bar(
+        positions[strongest_peak],
+        height=1,
+        width=width,
+        align="center",
+        bottom=0,
+        zorder=4,
+        edgecolor="none",
+        linewidth=0.5,
+        facecolor="red",  # "#d62728", # red
+        alpha=0.1,
+        label=None,
+    )
+
+    # Set the radial limits to 50%
+    ax.set_ylim(0, 0.6)
+
+    # Set radial ticks to indicate each 10%, and label them accordingly
+    ax.set_yticks([i * 0.1 for i in range(7)])
+    ax.set_yticklabels([f"{int(i * 10)}%" for i in range(7)])
+
+    # Set angular (x) ticks from -90 to +90 degrees
+    xticks_deg = np.arange(-90, 91, 10)
+    ax.set_xticks(np.radians(xticks_deg + 90))  # shift so 0 is at center
+    ax.set_xticklabels([f"{int(deg)}°" for deg in xticks_deg])
+
+    # Set the theta limits to display only from 0 to 180 degrees
+    ax.set_theta_zero_location("W")
+    ax.set_theta_direction(-1)  # Set the direction to counter-clockwise
+    ax.set_thetamin(-5)
+    ax.set_thetamax(175)
+
+
 def plot_alignment_orientation(
     bin_counts,
     *,
@@ -220,7 +397,7 @@ def plot_alignment_orientation(
     edgecolor: str = "k",
     linewidth: float = 0.5,
     alpha: float = 1,
-    title: str | None = None,
+    title: str| None = None,
     title_y: float = 1.05,
     title_font: dict[str] | None = None,
     xtick_font: dict[str] | None = None,
@@ -252,8 +429,8 @@ def plot_alignment_orientation(
     # (ie, via sqrt) or the bar height is proportional to the bin's frequency
    
     radius = np.sqrt(bin_counts) if area else bin_counts
-
     fig, ax = plt.subplots(subplot_kw={"projection": "polar"}, figsize=figsize)
+
     ax.set_theta_zero_location("W")
     ax.set_theta_direction(-1)  # Set the direction to counter-clockwise
     ax.set_ylim(top=radius.max()+(radius.max()*0.1))  # Add some space above the max radius

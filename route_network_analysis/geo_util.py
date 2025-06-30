@@ -1,11 +1,9 @@
 import numpy as np
 import pyproj
-from shapely.geometry import Polygon
-from shapely.geometry.polygon import orient
+from shapely import Polygon, orient_polygons,LineString, MultiLineString, Point
 import osmnx as ox
 import networkx as nx
 from shapely.ops import transform
-from shapely.geometry import LineString, MultiLineString, Point
 from shapely.ops import linemerge
 
 
@@ -64,7 +62,7 @@ def get_od_pair_polygon(origin_point, destination_point,padding=0.25):
     perp_point2 = (perp_lon2, perp_lat2)
 
     polygon = Polygon([ext_point1, perp_point1, ext_point2, perp_point2])
-    polygon = orient(polygon)
+    polygon = orient_polygons(polygon)
     bbox = polygon.bounds
 
     bbox_coords = [
@@ -79,8 +77,7 @@ def get_od_pair_polygon(origin_point, destination_point,padding=0.25):
     bbox_tuple = (miny, maxy, minx, maxx)
 
     bbox_polygon = Polygon(bbox_coords)
-
-
+    
     fwd_bearing = ox.bearing.calculate_bearing(lat1, lon1, lat2, lon2)
     bwd_bearing = ox.bearing.calculate_bearing(lat2, lon2, lat1, lon1)
 
@@ -174,7 +171,6 @@ def get_azimuth(G, point_a, point_b, return_all=False):
     """Calculate the azimuth and distance between two points.
 
     Pyproj uses an equidistant azimuthal projection with the north pole as the center of a flat circle.
-    This means that the azimuth
     ----
     Parameters:
     point_a: The coordinates of the first point.

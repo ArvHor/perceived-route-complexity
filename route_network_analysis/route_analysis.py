@@ -1,10 +1,11 @@
 import math
+from typing import Any
 import shapely
 import logging
 import networkx as nx
+import numpy as np
+import osmnx as ox
 
-# Local modules
-from .performance_tracker import PerformanceTracker, track_performance
 from . import geo_util
 from . import path_search
 logging.basicConfig(
@@ -13,40 +14,6 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     level=logging.INFO           # Set the minimum logging level
 )
-
-def get_city_name(graph):
-    return graph.graph['city_name']
-
-def get_start_node(graph):
-    return graph.graph['start_node']
-
-def get_avg_degree(graph):
-    degrees = []
-    for node in graph.nodes():
-        degrees.append(graph.out_degree(node))
-    return sum(degrees) / len(degrees) if degrees else 0
-
-def get_node_count(graph):
-    return len(graph.nodes)
-
-def get_edge_count(graph):
-    return len(graph.edges)
-
-def get_density(graph):
-    return nx.density(graph)
-
-def get_len(array_type):
-    return len(array_type)
-
-route_metrics = {
-    'city_name': get_city_name,
-    'start_node': get_start_node,
-    'nodes': get_node_count,
-    'edges': get_edge_count,
-    'avg_degree': get_avg_degree,
-    'n_count': get_len,
-}
-route_tracker = PerformanceTracker(output_file='route_analysis_performance.json')
 def get_nodes_avg(G,route_nodes,weightstring):
     nodes_sum = 0
     for node in route_nodes:
@@ -71,7 +38,50 @@ def get_edges_sum(G,route_edges,weightstring):
         edges_sum += G.edges[edge[0],edge[1],0][weightstring]
     return edges_sum
 
-#@track_performance(route_tracker, metrics_funcs=route_metrics)
+def extract_route_bearings(G, route_nodes, weight=None,get_undirected=True):
+    weights = []
+    bearings = []
+    # Iterate over consecutive pairs of route nodes to get the edges in the route
+    for i in range(len(route_nodes) - 1):
+        u = route_nodes[i]
+        v = route_nodes[i + 1]
+        if u != v and G.has_edge(u, v):
+            w = G.edges[u, v, 0][weight] if weight is not None else 1.0
+            length = G.edges[u, v, 0]["length"]
+            bearings.append(length)
+            weights.append(w)
+
+    bearings_array = np.array(bearings)
+    weights_array = np.array(weights)
+    keep_idx = ~np.isnan(bearings_array)
+    bearings_array = bearings_array[keep_idx]
+    weights_array = weights_array[keep_idx]
+
+    if get_undirected:
+        bearings_array = np.concatenate([bearings_array, (bearings_array - 180) % 360])
+        weights_array = np.concatenate([weights_array, weights_array])
+    return bearings_array, weights_array
+
+
+def get_route_bearing_dist(G,route_nodes,weight=None,num_bins=36, get_undirected=True) -> tuple[np.ndarray[tuple[int, ...], np.dtype[Any]], np.ndarray[tuple[int, ...], np.dtype[Any]]]:
+    num_split_bins = num_bins * 2
+    split_bin_edges = np.arange(num_split_bins + 1) * 360 / num_split_bins
+
+    bearings, weights = extract_route_bearings(G, route_nodes, weight=weight,get_undirected=get_undirected)
+
+    split_bin_counts, split_bin_edges = np.histogram(
+        bearings,
+        bins=split_bin_edges,
+        weights=weights,
+    )
+
+    # Move last bin to front, so eg 0.01 degrees and 359.99 degrees will be
+    # binned together. Then combine counts from pairs of split bins.
+    split_bin_counts = np.roll(split_bin_counts, 1)
+    bin_counts = split_bin_counts[::2] + split_bin_counts[1::2]
+    bin_centers = split_bin_edges[range(0, num_split_bins - 1, 2)]
+    return bin_counts, bin_centers
+
 def get_route_complexity(G,route_edges):
     turn_types = []
     total_complexity = 0

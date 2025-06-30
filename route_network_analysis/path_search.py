@@ -2,54 +2,9 @@ import heapq
 import networkx as nx
 import logging
 
-# Local modules
-from .performance_tracker import PerformanceTracker, track_performance
 from . import geo_util
 
 
-logging.basicConfig(
-    filename='app.log',          # Log file name
-    filemode='a',                # 'a' for append, 'w' for overwrite
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    level=logging.INFO           # Set the minimum logging level
-)
-
-def get_node_count(graph):
-    return len(graph.nodes)
-
-def get_edge_count(graph):
-    return len(graph.edges)
-
-def get_avg_degree(graph):
-    degrees = []
-    for node in graph.nodes():
-        degrees.append(graph.out_degree(node))
-    return sum(degrees) / len(degrees) if degrees else 0
-
-def get_density(graph):
-    return nx.density(graph)
-
-def get_city_name(graph):
-    return graph.graph['city_name']
-
-def get_start_node(graph):
-    return graph.graph['start_node']
-
-def get_len(array_type):
-    return len(array_type)
-
-graph_metrics = {
-    'city_name': get_city_name,
-    'start_node': get_start_node,
-    'nodes': get_node_count,
-    'edges': get_edge_count,
-    'avg_degree': get_avg_degree,
-    'density': get_density
-}
-path_search_tracker = PerformanceTracker(output_file='path_search_performance.json')
-
-
-#@track_performance(path_search_tracker, metrics_funcs=graph_metrics)
 def simplest_path_from_source_heapq(G, start_node):
     logging.info(f"Finding simplest paths in {G.graph['city_name']}")
     # Define the empty set of processed edges S

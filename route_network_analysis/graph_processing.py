@@ -48,8 +48,15 @@ def process_single_graph(row, folder_path, remove_parallel, distance_from_point,
 
     try:
         print(f"Creating graph for {row['city_name']} with origin point: {lat}, {lon}")
-        o_graph = origin_graph(origin_point=(lat, lon), origin_info=origin_info, network_type=network_type,
-                               remove_parallel=remove_parallel, distance_from_point=distance_from_point)
+        o_graph = origin_graph(
+            origin_point=(lat, lon),
+            city_name=origin_info["city_name"],
+            region_name=origin_info["region_name"],
+            country_name=origin_info["country_name"],
+            network_type=network_type,
+            remove_parallel=remove_parallel,
+            distance_from_point=distance_from_point
+        )
         o_graph.add_weights(weightstring="decision_complexity")
         o_graph.add_weights(weightstring="deviation_from_prototypical")
         o_graph.add_weights(weightstring="instruction_equivalent")

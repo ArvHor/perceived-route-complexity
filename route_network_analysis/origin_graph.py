@@ -263,7 +263,10 @@ class origin_graph:
             self.edge_weights.append("decision_complexity")
             self.graph.graph["edge_weights"] = self.edge_weights
 
-    def add_weights(self, weightstrings: List[str]):
+    def add_weights(self, weightstrings: str | List[str]):
+        if isinstance(weightstrings, str):
+            weightstrings = [weightstrings]
+
         if "deviation_from_prototypical" in weightstrings:
             if "deviation_from_prototypical" in self.edge_weights:
                 logging.info(
@@ -423,13 +426,37 @@ class origin_graph:
         self.od_pairs = od_pairs
 
     def get_od_pair_data(self):
-        od_pair_data = []
+        od_pair_dfs = []
         for od_p in self.od_pairs:
-            od_pair_dict = od_p.get_comparison_dict()
-            od_pair_dict["graph_path"] = self.graph_path
-            od_pair_data.append(od_p.get_comparison_dict())
-        od_pair_data = pd.DataFrame(od_pair_data)
+            od_pair_df = od_p.get_odpair_df()
+            od_pair_df["graph_path"] = self.graph_path
+            od_pair_dfs.append(od_pair_df)
+        od_pair_data = pd.concat(od_pair_dfs, ignore_index=False)
+        od_pair_data = od_pair_data.reset_index()
+        #print(od_pair_data['id'])
         return od_pair_data
+    
+    def get_od_pair_geom_data(self):
+        od_pair_geoms = []
+        for od_p in self.od_pairs:
+            od_pair_geom_dict = od_p.get_geometry_dict()
+            od_pair_geom_dict["graph_path"] = self.graph_path
+            od_pair_geom_df = pd.DataFrame([od_pair_geom_dict]).set_index('id')
+            od_pair_geoms.append(od_pair_geom_df)
+        od_pair_geom_data = pd.concat(od_pair_geoms, ignore_index=False)
+        od_pair_geom_data = od_pair_geom_data.reset_index()
+        #print(od_pair_geom_data['id'])
+        return od_pair_geom_data
+    
+
+    def get_odpair_geomdata(self):
+        od_pair_geometries = []
+        for od_p in self.od_pairs:
+            od_pair_geom = od_p.get_geometry_dict()
+            od_pair_geom["graph_path"] = self.graph_path
+            od_pair_geometries.append(od_pair_geom)
+        od_pair_geomdata = pd.DataFrame(od_pair_geometries)
+        return od_pair_geomdata
 
     def ensure_data_types(self):
         for u, v, data in self.graph.edges(data=True):

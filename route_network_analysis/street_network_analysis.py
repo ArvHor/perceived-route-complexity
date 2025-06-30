@@ -10,51 +10,7 @@ import scipy
 
 # Local modules
 from . import geo_util
-from .performance_tracker import PerformanceTracker, track_performance
 
-
-def get_node_count(graph):
-    return len(graph.nodes)
-
-
-def get_edge_count(graph):
-    return len(graph.edges)
-
-
-def get_avg_degree(graph):
-    degrees = []
-    for node in graph.nodes():
-        degrees.append(graph.out_degree(node))
-    return sum(degrees) / len(degrees) if degrees else 0
-
-
-def get_density(graph):
-    return nx.density(graph)
-
-
-def get_city_name(graph):
-    return graph.graph["city_name"]
-
-
-def get_start_node(graph):
-    return graph.graph["start_node"]
-
-
-def get_len(array_type):
-    return len(array_type)
-
-# asdasd
-street_network_metrics = {
-    "city_name": get_city_name,
-    "start_node": get_start_node,
-    "nodes": get_node_count,
-    "edges": get_edge_count,
-    "density": get_density,
-}
-
-street_network_tracker = PerformanceTracker(
-    output_file="street_network_performance.json"
-)
 
 
 def add_deviation_from_prototypical_weights(G):
@@ -321,7 +277,7 @@ def extract_edge_bearings(
             "edge). If you want bidirectional edge bearings (two reciprocal bearings "
             "per edge), pass a MultiGraph instead. Use `convert.to_undirected`."
         )
-        warn(msg, category=UserWarning, stacklevel=2)
+        #warn(msg, category=UserWarning, stacklevel=2)
         return bearings_array, weights_array
     # for undirected graphs, add reverse bearings
     bearings_array = np.concatenate([bearings_array, (bearings_array - 180) % 360])
@@ -329,7 +285,6 @@ def extract_edge_bearings(
     return bearings_array, weights_array
 
 
-@track_performance(street_network_tracker, metrics_funcs=street_network_metrics)
 def bearings_distribution(
     G: nx.MultiGraph | nx.MultiDiGraph,
     num_bins: int,
@@ -389,7 +344,6 @@ def bearings_distribution(
     return bin_counts, bin_centers
 
 
-@track_performance(street_network_tracker, metrics_funcs=street_network_metrics)
 def add_edge_bearings(G: nx.MultiDiGraph) -> nx.MultiDiGraph:
     """
     Calculate and add compass `bearing` attributes to all graph edges.

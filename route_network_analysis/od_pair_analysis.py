@@ -4,17 +4,18 @@ import numpy as np
 # Local modules
 
 
-def get_od_pair_bearing_dist(fwd, bwd, perp_fwd=None, perp_bwd=None):
+def get_od_pair_bearing_dist(fwd, bwd=None, perp_fwd=None, perp_bwd=None):
 
-    if perp_fwd and perp_bwd:
+    if fwd and bwd and perp_fwd and perp_bwd:
         bearings = [fwd, bwd, perp_fwd, perp_bwd]
-    else:
+    elif fwd and bwd:
         bearings = [fwd, bwd]
+    elif fwd:
+        bearings = [fwd]
 
     num_bins = 36
     num_split_bins = num_bins * 2
     split_bin_edges = np.arange(num_split_bins + 1) * 360 / num_split_bins
-
     split_bin_counts, split_bin_edges = np.histogram(bearings, bins=split_bin_edges)
     split_bin_counts = np.roll(split_bin_counts, 1)
     bin_counts = split_bin_counts[::2] + split_bin_counts[1::2]
@@ -33,32 +34,30 @@ def get_od_cardinal_direction(G, origin, destination):
 
     # Define cardinal direction ranges
     if 337.5 <= bearing < 360 or 0 <= bearing < 22.5:
-        cardinal_direction = "N"
+        return "N"
     elif 22.5 <= bearing < 67.5:
-        cardinal_direction = "NE"
+        return "NE"
     elif 67.5 <= bearing < 112.5:
-        cardinal_direction = "E"
+        return "E"
     elif 112.5 <= bearing < 157.5:
-        cardinal_direction = "SE"
+        return "SE"
     elif 157.5 <= bearing < 202.5:
-        cardinal_direction = "S"
+        return "S"
     elif 202.5 <= bearing < 247.5:
-        cardinal_direction = "SW"
+        return "SW"
     elif 247.5 <= bearing < 292.5:
-        cardinal_direction = "W"
+        return "W"
     elif 292.5 <= bearing < 337.5:
-        cardinal_direction = "NW"
+        return "NW"
 
-    return cardinal_direction
 
 
 def get_od_pair_subgraph(G, bbox=None, polygon=None):
     if bbox:
-        subgraph = ox.truncate.truncate_graph_bbox(
+        return ox.truncate.truncate_graph_bbox(
             G=G, bbox=bbox, truncate_by_edge=True
         )
     elif polygon:
-        subgraph = ox.truncate.truncate_graph_polygon(
+        return ox.truncate.truncate_graph_polygon(
             G=G, polygon=polygon, truncate_by_edge=True
         )
-    return subgraph
