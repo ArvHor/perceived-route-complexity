@@ -1,7 +1,57 @@
+import math
 import numpy as np
 from scipy.spatial.distance import cosine, euclidean
 from scipy.stats import wasserstein_distance
 from scipy.signal import find_peaks, correlation_lags, correlate
+
+def COT_sample_distance(route_bearings, env_bearings, typeOfData="Angles"):
+
+    if typeOfData == "UnitInt":
+            route_bearings = route_bearings % 1
+            env_bearings = env_bearings % 1
+        elif typeOfData == "Radian":
+            route_bearings = (route_bearings % (2 * math.pi)) / (2 * math.pi)
+            env_bearings = (env_bearings % (2 * math.pi)) / (2 * math.pi)
+        elif typeOfData == "Angles":
+            route_bearings = (route_bearings % 360) / 360
+            env_bearings = (env_bearings % 360) / 360
+        else:
+            raise ValueError("Type of Data has to be specified as \"UnitInt\", \"Radian\" or \"Angles\".")
+    # Combine and order samples
+    combined_sample = np.concatenate([route_bearings, env_bearings])
+    order_of_samples = np.argsort(combined_sample)
+    combined_sample_sorted = np.concatenate([combined_sample[order_of_samples], [1]])
+
+    k = len(combined_sample_sorted) - 1
+
+    # Calculate diffCDFs
+    diffCDFs_part1 = np.repeat(1/len(route_bearings), len(route_bearings))
+    diffCDFs_part2 = np.repeat(-1/len(env_bearings), len(env_bearings))
+    diffCDFs_parts = np.concatenate([diffCDFs_part1, diffCDFs_part2])
+    diffCDFs_ordered = diffCDFs_parts[order_of_samples]
+    diffCDFs = np.cumsum(diffCDFs_ordered)
+
+    # Order diffCDFs
+    order_diffCDFs = np.argsort(diffCDFs)
+    sorted_diffCDFs = diffCDFs[order_diffCDFs]
+
+    # Calculate weighting
+    combined_sample_with_1 = combined_sample_sorted
+    weighting = combined_sample_with_1[1:(k+1)] - combined_sample_with_1[:k]
+
+    # Find the median level
+    cumsum_weighting = np.cumsum(weighting[order_diffCDFs])
+    if len(np.where(cumsum_weighting >= 0.5)[0]) == 0:
+        levMed_index = 0
+    else:
+        levMed_index = np.where(cumsum_weighting >= 0.5)[0][0]
+    levMed = sorted_diffCDFs[levMed_index]
+
+    # Final calculation
+    result = np.sum(np.abs(diffCDFs - levMed) * weighting)
+
+    return result
+
 
 
 def get_crosscorrelation_alignment(route_dist, env_dist):

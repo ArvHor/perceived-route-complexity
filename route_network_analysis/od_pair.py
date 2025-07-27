@@ -131,6 +131,9 @@ class od_pair:
                 G=undirected_subgraph, min_length=10, weight="length"
             )
         )
+
+        
+
         env_directed_bearings, env_directed_weights = (
             street_network_analysis.extract_edge_bearings(
                 G=subgraph, min_length=10, weight="length"
@@ -153,9 +156,20 @@ class od_pair:
         od_undirected_bearing_dist = od_pair_analysis.get_od_pair_bearing_dist(
             self.shape_dict["fwd_bearing"], self.shape_dict["bwd_bearing"]
         )
+        od_undirected_bearing_perp_dist = od_pair_analysis.get_od_pair_bearing_dist(
+            fwd=self.shape_dict["fwd_bearing"], bwd=self.shape_dict["bwd_bearing"], 
+            perp_bwd= self.shape_dict["perpendicular_bwd_bearing"], perp_fwd=self.shape_dict["perpendicular_fwd_bearing"]
+        )
         od_directed_bearing_dist = od_pair_analysis.get_od_pair_bearing_dist(
             self.shape_dict["fwd_bearing"]
         )
+
+        od_bearings_array = np.array(
+            [self.shape_dict["fwd_bearing"],self.shape_dict["bwd_bearing"],self.shape_dict["perpendicular_fwd_bearing"], self.shape_dict["perpendicular_bwd_bearing"]]
+        )
+
+        self.cot_alignment = alignment.COT_sample_distance(route_bearings=od_bearings_array,env_bearings= env_undirected_bearings)
+
         self.bearing_data = {
             "undirected": env_undirected_bearings,
             "undirected_weights": env_undirected_weights,
@@ -332,6 +346,7 @@ class od_pair:
             "destination_point": str(self.destination_point),
             "od_distance": self.od_distance,
             "od_cardinal_direction": self.cardinal_direction,
+            "cot_alignment": self.cot_alignment,
         }
 
         # 2 Bearing and orientation data
@@ -381,7 +396,7 @@ class od_pair:
 
         odpair_dict = {}
         odpair_dict.update(basic_dict)
-        odpair_dict.update(bearing_dict)
+        #odpair_dict.update(bearing_dict)
         odpair_dict.update(bearing_dist_dict)
         odpair_dict.update(distribution_properties_dict)
         odpair_dict.update(subgraph_stats_dict)
