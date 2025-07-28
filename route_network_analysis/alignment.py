@@ -1,6 +1,5 @@
 import math
 import numpy as np
-from scipy.spatial.distance import cosine, euclidean
 from scipy.stats import wasserstein_distance
 from scipy.signal import find_peaks, correlation_lags, correlate
 
@@ -99,9 +98,11 @@ def circular_cross_correlation(route, env):
 
     return result
 
+
 def circular_distance(a, b, n):
     """Compute the minimum circular distance between indices a and b in array of length n."""
     return min(abs(a - b), n - abs(a - b))
+
 
 def wrap_dist(dist):
     half = len(dist) // 2
@@ -113,6 +114,7 @@ def wrap_dist(dist):
         folded[i] = a[i] + b[i]
 
     return folded
+
 
 def center_around_index(dist, max_index):
     """Roll the distribution so that the specified index is at the center."""
@@ -129,7 +131,6 @@ def wrap_and_center_dists(od_dist, env_dist):
     max_index = np.argmax(od_dist)
     od_dist = center_around_index(od_dist, max_index)
     env_dist = center_around_index(env_dist, max_index)
-    
 
     return od_dist, env_dist
 
@@ -183,6 +184,7 @@ def get_peaks_alignment(od_dist, env_dist):
     }
     return peak_alignment
 
+
 def to_orientation_distribution(dist):
     """Transforms a distribution to a circular distribution."""
     half = len(dist) // 2
@@ -194,7 +196,9 @@ def to_orientation_distribution(dist):
     return orientation_dist
 
 
-def get_weighted_crosscorr(crosscorr, rotation_steps, weighting="relative", proximity_weight=1):
+def get_weighted_crosscorr(
+    crosscorr, rotation_steps, weighting="relative", proximity_weight=1
+):
 
     max_orientation_frequency = np.max(crosscorr)
     max_steps = np.max(np.abs(rotation_steps))
@@ -216,11 +220,16 @@ def get_weighted_crosscorr(crosscorr, rotation_steps, weighting="relative", prox
 
 
 def crosscorrelate_alignment(
-    route_dist, env_dist, proximity_weight=1, method="direct", mode="same",weighting="relative"
+    route_dist,
+    env_dist,
+    proximity_weight=1,
+    method="direct",
+    mode="same",
+    weighting="relative",
 ):
 
     crosscorr = correlate(env_dist, route_dist, mode="same", method="direct")
-    rotation_steps = correlation_lags(len(env_dist), len(route_dist), mode="same" )
+    rotation_steps = correlation_lags(len(env_dist), len(route_dist), mode="same")
     zero_rotation_index = len(env_dist) // 2
     zero_rotation_frequency = crosscorr[zero_rotation_index]
     rotation_steps_to_strongest = rotation_steps[np.argmax(crosscorr)]
@@ -234,7 +243,9 @@ def crosscorrelate_alignment(
         "steps_to_strongest": rotation_steps_to_strongest,
         "strongest_frequency": strongest_rotation_frequency,
     }
-    weighted_corr = get_weighted_crosscorr(crosscorr,rotation_steps, weighting, proximity_weight)
+    weighted_corr = get_weighted_crosscorr(
+        crosscorr, rotation_steps, weighting, proximity_weight
+    )
     rotation_steps_to_closest_strongest = rotation_steps[np.argmax(weighted_corr)]
     closest_strongest_frequency = np.max(weighted_corr)
     closest_strongest_correlation = {
