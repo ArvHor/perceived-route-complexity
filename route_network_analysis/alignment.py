@@ -6,16 +6,16 @@ from scipy.signal import find_peaks, correlation_lags, correlate
 def COT_sample_distance(route_bearings, env_bearings, typeOfData="Angles"):
 
     if typeOfData == "UnitInt":
-            route_bearings = route_bearings % 1
-            env_bearings = env_bearings % 1
-        elif typeOfData == "Radian":
-            route_bearings = (route_bearings % (2 * math.pi)) / (2 * math.pi)
-            env_bearings = (env_bearings % (2 * math.pi)) / (2 * math.pi)
-        elif typeOfData == "Angles":
-            route_bearings = (route_bearings % 360) / 360
-            env_bearings = (env_bearings % 360) / 360
-        else:
-            raise ValueError("Type of Data has to be specified as \"UnitInt\", \"Radian\" or \"Angles\".")
+        route_bearings = route_bearings % 1
+        env_bearings = env_bearings % 1
+    elif typeOfData == "Radian":
+        route_bearings = (route_bearings % (2 * math.pi)) / (2 * math.pi)
+        env_bearings = (env_bearings % (2 * math.pi)) / (2 * math.pi)
+    elif typeOfData == "Angles":
+        route_bearings = (route_bearings % 360) / 360
+        env_bearings = (env_bearings % 360) / 360
+    else:
+        raise ValueError("Type of Data has to be specified as \"UnitInt\", \"Radian\" or \"Angles\".")
     # Combine and order samples
     combined_sample = np.concatenate([route_bearings, env_bearings])
     order_of_samples = np.argsort(combined_sample)
@@ -48,6 +48,31 @@ def COT_sample_distance(route_bearings, env_bearings, typeOfData="Angles"):
 
     # Final calculation
     result = np.sum(np.abs(diffCDFs - levMed) * weighting)
+
+    return result
+
+def COT_sample_distance(route_dist, env_dist, D=1000):
+    positions = np.linspace(0, 1 - (1 / len(route_dist)), num=len(route_dist))
+    mu_D = np.zeros(D)
+    nu_D = np.zeros(D)
+
+    for i in range(D):
+        bin_start = i / D
+        bin_end = (i + 1) / D
+        for j in range(len(positions)):
+            if positions[j] >= bin_start and positions[j] < bin_end:
+                mu_D[i] += route_dist[j]
+                nu_D[i] += env_dist[j]
+
+
+
+    F_mu = np.cumsum(mu_D)
+    F_nu = np.cumsum(nu_D)
+    diff_F = F_mu - F_nu
+
+    lev_med = np.median(diff_F)
+
+    result = np.sum(np.abs(diff_F - lev_med)) / D
 
     return result
 

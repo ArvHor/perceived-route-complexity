@@ -187,6 +187,7 @@ class od_pair:
             "env_undirected_dist": env_undirected_bearing_dist,
             "od_undirected_dist": od_undirected_bearing_dist,
             "od_directed_dist": od_directed_bearing_dist,
+            "od_undirected_dist_perp": od_undirected_bearing_perp_dist,
         }
         # Distribution properties of undirected environment bearings
         environment_orientation_undirected_entropy_weighted = (
@@ -255,10 +256,11 @@ class od_pair:
 
     def create_orientation_plot(self, filepath):
         """Create an orientation plot showing environment and route distributions."""
-        env_dist = self.bearing_dist_data["env_undirected_dist_weighted"]
+        env_dist = self.bearing_dist_data["env_undirected_dist"]
         env_dist = env_dist / env_dist.sum()
+        print(f"Environment distribution: {env_dist}")
         fig, ax = orientation_plotting.plot_orientation(env_dist)
-        r_dist = self.bearing_dist_data["od_undirected_dist"]
+        r_dist = self.bearing_dist_data["od_undirected_dist_perp"]
         r_dist = r_dist / r_dist.sum()
         orientation_plotting._plot_overlaid_distribution(
             ax=ax, new_distribution=r_dist, num_bins=36
@@ -272,7 +274,7 @@ class od_pair:
         env_dist = alignment.wrap_dist(env_dist)
         env_dist = env_dist / np.sum(env_dist)
 
-        route_dist = self.bearing_dist_data["od_undirected_dist"]
+        route_dist = self.bearing_dist_data["od_undirected_dist_perp"]
         route_dist = alignment.wrap_dist(route_dist)
         route_dist = route_dist / np.sum(route_dist)
 
@@ -280,8 +282,6 @@ class od_pair:
         fig, ax = orientation_plotting.plot_alignment_orientation(
             bin_counts=env_dist
         )
-
-        # For now, use default indices - this may need to be updated based on correlation results
         orientation_plotting._plot_overlaid_alignment_distribution(
             ax,
             route_dist,

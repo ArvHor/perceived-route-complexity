@@ -3,6 +3,7 @@ __pycache__/
 .ipynb_checkpoints/
 cache/
 bug_testing/
+evaluation/*
 =3.0.1
 local_*/
 api_keys.csv/

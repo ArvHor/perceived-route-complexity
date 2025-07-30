@@ -41,7 +41,7 @@ def plot_orientation(  # noqa: PLR0913
     *,
     ax: PolarAxes | None = None,
     figsize: tuple[float, float] = (10, 10),
-    area: bool = True,
+    area: bool = False,
     color: str = "#d3d3d3",
     edgecolor: str = "k",
     linewidth: float = 0.5,
@@ -148,13 +148,13 @@ def plot_orientation(  # noqa: PLR0913
         edgecolor=edgecolor,
         linewidth=linewidth,
     )
-    ax.set_ylim(top=radius.max()+(radius.max()*0.1))
+    ax.set_ylim(0,0.4)
     # Set the theta limits to display only from 355 degrees to 175 degrees
     #ax.set_thetamin(0)
     #ax.set_thetamax(175)
 
     # configure the y-ticks and remove their labels
-    yticks = np.linspace(0, 0.5, 5)
+    yticks = np.linspace(0, 0.4, 4)
     ax.set_yticks(yticks)
     ax.set_yticklabels(labels="")
 
@@ -249,7 +249,7 @@ def _plot_overlaid_distribution(
 
     start_angle = positions_edges[start_index]
     end_angle = positions_edges[end_index]
-
+    ax.set_ylim(0, 0.4)
     # Set the radial limits to fit the data
     #ax.set_ylim(0, new_radius.max() * 1.1)
     #ax.plot(
