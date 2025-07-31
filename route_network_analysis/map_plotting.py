@@ -15,7 +15,7 @@ import shapely.geometry
 # Local modules
 from . import geo_util
 from . import map_analysis
-
+from PIL import Image
 
 def plot_route_gdf(
     G,
@@ -58,9 +58,9 @@ def plot_route_gdf(
         folium.GeoJson(
             truncation_polygon,
             style_function=lambda x: {
-                "color": "red",
+                "color": "black",
                 "weight": 2,
-                "fillOpacity": 0.1,
+                "fillOpacity": 0,
             },
         ).add_to(m)
         bounds = truncation_polygon.bounds  # [minx, miny, maxx, maxy]
@@ -112,10 +112,10 @@ def plot_route_gdf(
 
 def screenshot_map(full_path, imgpath):
     opts = webdriver.FirefoxOptions()
-    opts.add_argument("--width=1600")
-    opts.add_argument("--height=1286")
+    opts.add_argument("--width=3200")
+    opts.add_argument("--height=2572")
     opts.add_argument("--headless")
-    opts.add_argument("--window-size=1600,1286")
+    opts.add_argument("--window-size=3000,2572")
 
     opts.binary_location = "/usr/local/bin/geckodriver"
 
@@ -125,11 +125,14 @@ def screenshot_map(full_path, imgpath):
     # driver.set_window_size(1600, 1200)
     print(f"full path: {full_path}")
     driver.get(f"file://{full_path}")
-    driver.set_window_size(1600, 1286)
+    driver.set_window_size(3000, 2572)
     time.sleep(2)
     driver.save_screenshot(imgpath)
 
     driver.quit()
+    with Image.open(imgpath) as im:
+        im = im.resize((3000, 2572), Image.LANCZOS)
+        im.save(imgpath,  format='PNG', dpi=(300, 300)) 
 
 
 def flip_map(m, end_location, start_location):

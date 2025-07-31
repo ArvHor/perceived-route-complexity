@@ -3,6 +3,7 @@ import osmnx as ox
 import logging
 import hashlib
 import matplotlib.pyplot as plt
+import pandas as pd
 
 # Local modules
 from . import alignment
@@ -11,7 +12,8 @@ from . import geo_util
 from . import od_pair_analysis
 from .route import route
 from . import orientation_plotting
-import pandas as pd
+from . import map_plotting
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -170,6 +172,10 @@ class od_pair:
 
         self.cot_alignment = alignment.COT_sample_distance(route_bearings=od_bearings_array,env_bearings= env_undirected_bearings)
 
+        p_od_undirected_bearing_perp_dist = od_undirected_bearing_perp_dist / sum(od_undirected_bearing_perp_dist)
+        p_env_undirected_bearing_dist = env_undirected_bearing_dist / sum(env_undirected_bearing_dist)
+        self.cot_distribution_alignment = alignment.COT_distribution_distance(route_dist=p_env_undirected_bearing_dist,env_dist= p_od_undirected_bearing_perp_dist)
+
         self.bearing_data = {
             "undirected": env_undirected_bearings,
             "undirected_weights": env_undirected_weights,
@@ -291,6 +297,57 @@ class od_pair:
         )
         fig.savefig(filepath)
 
+    def plot_on_map(self,html_path,graph_plot_path):
+        route_gdf = ox.routing.route_to_gdf(self.graph, self.shortest_path.nodes, weight='length')
+        filepath = html_path
+        polygon = self.polygon
+        map_plotting.plot_route_gdf(G=self.graph, start_node=self.origin_node,
+                                        end_node=self.destination_node,
+                                        route_gdf=route_gdf,
+                                        map_tiles="OpenStreetMap.Mapnik",
+                                        file_path=filepath,
+                                        truncation_polygon=polygon)
+        filepath = "html_path"
+        map_plotting.plot_route_gdf(G=self.graph, start_node=self.origin_node,
+                                        end_node=self.destination_node,
+                                        route_gdf=route_gdf,
+                                        map_tiles="OpenStreetMap.Mapnik",
+                                        file_path=filepath)
+
+        if self.path:
+            subgraph = od_pair_analysis.get_od_pair_subgraph(
+                G=self.graph, bbox=self.path_map_bbox
+            )
+            self.area = geo_util.calculate_bbox_area_with_utm(self.path_map_bbox)
+        else:
+            subgraph = od_pair_analysis.get_od_pair_subgraph(
+                G=self.graph, polygon=self.polygon
+            )
+            self.area = geo_util.calculate_area_with_utm(self.polygon)
+
+        try:
+        #undirected_subgraph = ox.convert.to_undirected(subgraph)
+            fig,_ = ox.plot_graph_route(
+                subgraph,
+                self.shortest_path.nodes,
+                node_size=5,
+                bgcolor='white',
+                route_color='blue',
+                edge_color="black",
+                node_color="black",
+                route_linewidth=4,
+                edge_linewidth=0.5,
+                show=False,
+                close=False
+            )
+            graph_plot_path
+            fig.savefig(graph_plot_path, bbox_inches='tight')
+            plt.close(fig)
+        except Exception as e:
+            print(f"error {e}")
+
+
+
     def _calculate_alignment_metrics(self, directed=True, weighted=True):
         """Calculate all alignment metrics between route and environment."""
         
@@ -347,17 +404,9 @@ class od_pair:
             "od_distance": self.od_distance,
             "od_cardinal_direction": self.cardinal_direction,
             "cot_alignment": self.cot_alignment,
+            "cot_dist_alignment": self.cot_distribution_alignment
         }
 
-        # 2 Bearing and orientation data
-        bearing_dict = {}
-        for key, value in self.bearing_data.items():
-            if isinstance(value, (int, float, str, bool, np.integer, np.floating)):
-                bearing_dict[f"bearings_{key}"] = value
-            elif isinstance(value, list):
-                bearing_dict[f"bearings_{key}"] = value
-            else:
-                bearing_dict[f"bearings_{key}"] = value.tolist()
 
         # 3 Bearing distribution data
         bearing_dist_dict = {}
@@ -454,8 +503,17 @@ class od_pair:
 
     def get_geometry_dict(self):
         """Build the geometry and area dictionary."""
+        bearing_dict = {}
+        for key, value in self.bearing_data.items():
+            if isinstance(value, (int, float, str, bool, np.integer, np.floating)):
+                bearing_dict[f"bearings_{key}"] = value
+            elif isinstance(value, list):
+                bearing_dict[f"bearings_{key}"] = value
+            else:
+                bearing_dict[f"bearings_{key}"] = value.tolist()
+
         if not self.path:
-            return {
+            geom_dict = {
                 "id": self.id,
                 "city_name": self.city_name,
                 "origin_node": self.origin_node,
@@ -470,8 +528,10 @@ class od_pair:
                 "diamond": str(self.polygon.wkt),
                 "area": self.area,
             }
+            geom_dict.update(bearing_dict)
+            return geom_dict
         else:
-            return {
+            geom_dict =  {
                 "id": self.id,
                 "city_name": self.city_name,
                 "origin_node": self.origin_node,
@@ -484,3 +544,5 @@ class od_pair:
                 "diamond": str(self.polygon.wkt),
                 "area": self.area,
             }
+            geom_dict.update(bearing_dict)
+            return geom_dict

@@ -51,7 +51,7 @@ def COT_sample_distance(route_bearings, env_bearings, typeOfData="Angles"):
 
     return result
 
-def COT_sample_distance(route_dist, env_dist, D=1000):
+def COT_distribution_distance(route_dist, env_dist, D=1000):
     positions = np.linspace(0, 1 - (1 / len(route_dist)), num=len(route_dist))
     mu_D = np.zeros(D)
     nu_D = np.zeros(D)
