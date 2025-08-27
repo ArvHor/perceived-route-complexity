@@ -306,13 +306,8 @@ class od_pair:
                                         route_gdf=route_gdf,
                                         map_tiles="OpenStreetMap.Mapnik",
                                         file_path=filepath,
-                                        truncation_polygon=polygon)
-        filepath = "html_path"
-        map_plotting.plot_route_gdf(G=self.graph, start_node=self.origin_node,
-                                        end_node=self.destination_node,
-                                        route_gdf=route_gdf,
-                                        map_tiles="OpenStreetMap.Mapnik",
-                                        file_path=filepath)
+                                        truncation_polygon=polygon,
+                                        cot_dist=self.cot_distribution_alignment)
 
         if self.path:
             subgraph = od_pair_analysis.get_od_pair_subgraph(

@@ -29,6 +29,7 @@ def plot_route_gdf(
     return_bbox=False,
     flip=False,
     truncation_polygon:shapely.geometry.polygon.Polygon = None,
+    cot_dist=None
 ):
     geom = route_gdf["geometry"].unary_union
     route_gdf["geometry"] = geo_util.merge_and_simplify_geometry(geom, 0.0001)
@@ -47,7 +48,7 @@ def plot_route_gdf(
         control_scale=False,
         zoom_control=False,
         location=midpoint,
-        style_kwds={"weight": 7, "opacity": 0.7, "dashArray": "1,20"},
+        style_kwds={"weight": 7, "opacity": 0.7},
         height="100%",
         legend=False,
         attr=None,
@@ -84,7 +85,15 @@ def plot_route_gdf(
                 html=f'<div style="font-size: 10pt">{info_text}</div>',
             ),
         ).add_to(m)
-
+    if cot_dist is not None:
+        folium.map.Marker(
+            [start_location[0], start_location[1]],
+            icon=DivIcon(
+                icon_size=(150, 40),
+                icon_anchor=(0, 0),
+                html=f'<div style=" font-size:24pt; padding: 3px; border: 1px solid black; color: black; font-weight: bold;position: relative; left: 10px; top: 10px; background-color: rgba(255, 255, 255, 0.7)">{cot_dist:.5f}</div>',
+            ),
+        ).add_to(m)
     if flip:
         m = flip_map(m, end_location, start_location)
     else:
