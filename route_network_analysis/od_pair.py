@@ -100,6 +100,7 @@ class od_pair:
         self.cardinal_direction = od_pair_analysis.get_od_cardinal_direction(
             G=self.graph, origin=self.origin_node, destination=self.destination_node
         )
+
     def get_subgraph(self):
         """Get the subgraph for the OD pair."""
         if self.path:
@@ -341,8 +342,6 @@ class od_pair:
         except Exception as e:
             print(f"error {e}")
 
-
-
     def _calculate_alignment_metrics(self, directed=True, weighted=True):
         """Calculate all alignment metrics between route and environment."""
         
@@ -438,6 +437,11 @@ class od_pair:
             else:
                 subgraph_stats_dict[f"subgraph_stats_{key}"] = value.tolist()
 
+        avg_node_betweenness = street_network_analysis.get_node_avg(self.subgraph, 'betweenness_centrality')
+
+        # Add avg_node_betweenness to subgraph_stats_dict
+        subgraph_stats_dict['subgraph_stats_avg_node_betweenness'] = avg_node_betweenness
+
         odpair_dict = {}
         odpair_dict.update(basic_dict)
         #odpair_dict.update(bearing_dict)
@@ -494,7 +498,6 @@ class od_pair:
             path_dict.update(differences)
 
             return path_dict
-
 
     def get_geometry_dict(self):
         """Build the geometry and area dictionary."""
