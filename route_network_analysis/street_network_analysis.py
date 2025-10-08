@@ -13,20 +13,14 @@ from . import geo_util
 
 
 #betweenness_centrality
-def get_node_avg(G,data_string):
-    total_value = 0
-    node_count = 0
-
-    for node, attributes in G.items():
-        if data_string in attributes:
-            total_value += attributes[data_string]
-            node_count += 1
-
-    if node_count == 0:
-        return 0  # Avoid division by zero
-
-    average_value = total_value / node_count
-    return average_value
+def get_node_avg(G, attribute):
+    total = 0
+    count = 0
+    for node, attributes in G.nodes(data=True):
+        if attribute in attributes:
+            total += attributes[attribute]
+            count += 1
+    return total / count if count > 0 else 0
 
 
 

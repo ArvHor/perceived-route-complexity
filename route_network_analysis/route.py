@@ -40,7 +40,12 @@ class route:
         self.map_street_count = None
 
         # Generate a unique identifier
-        self.identifier = self.generate_identifier(city_name=graph.graph["city_name"],weightstring=weightstring,origin_node=origin_node, destination_node=destination_node)
+        self.identifier = self.generate_identifier(
+            city_name=graph.graph["city_name"],
+            weightstring=weightstring,
+            origin_node=origin_node,
+            destination_node=destination_node,
+        )
 
     @classmethod
     def from_nodes(cls, graph, nodes, weightstring):
@@ -52,14 +57,16 @@ class route:
         # Set the attributes that constrain the route
         graph = graph
         instance.nodes = nodes
-        weightstring = weightstring
+        instance.weightstring = weightstring
         origin_node = nodes[0]
         destination_node = nodes[-1]
         city_name = graph.graph["city_name"]
-        instance.identifier = instance.generate_identifier()
+        instance.identifier = instance.generate_identifier(
+            city_name, instance.weightstring, origin_node, destination_node
+        )
         instance._initialize_basics(graph, origin_node, destination_node)
 
-        instance.analyze_map_clutter(graph, generate_plot=True, city_name=city_name)
+        instance.analyze_map_clutter(graph, generate_plot=False, city_name=city_name)
 
         return instance
 
@@ -98,18 +105,26 @@ class route:
                 graph, self.nodes, get_undirected=True, weight="length"
             )
         )
-        
-        self.undirected_bearing_dist_weighted, _ = route_analysis.get_route_bearing_dist(
-            graph, self.nodes, get_undirected=True, num_bins=36, weight="length"
+
+        self.undirected_bearing_dist_weighted, _ = (
+            route_analysis.get_route_bearing_dist(
+                graph, self.nodes, get_undirected=True, num_bins=36, weight="length"
+            )
         )
         self.undirected_bearing_dist, _ = route_analysis.get_route_bearing_dist(
-            graph, self.nodes, get_undirected=True, num_bins=36,
+            graph,
+            self.nodes,
+            get_undirected=True,
+            num_bins=36,
         )
         self.directed_bearing_dist_weighted, _ = route_analysis.get_route_bearing_dist(
             graph, self.nodes, get_undirected=True, num_bins=36, weight="length"
         )
         self.directed_bearing_dist, _ = route_analysis.get_route_bearing_dist(
-            graph, self.nodes, get_undirected=True, num_bins=36,
+            graph,
+            self.nodes,
+            get_undirected=True,
+            num_bins=36,
         )
 
         # Get the attributes derived from Duckham and Kulik's simplest path search algorithm
@@ -160,14 +175,13 @@ class route:
 
     def analyze_map_clutter(self, graph, generate_plot=False, city_name=None):
         """Analyze map clutter metrics for this route."""
+        route_gdf = ox.routing.route_to_gdf(graph, self.nodes, weight="length")
+        origin_node = self.nodes[0]
+        destination_node = self.nodes[-1]
+        
         if generate_plot and city_name:
-            # Generate route plot
-            route_gdf = ox.routing.route_to_gdf(graph, self.nodes, weight="length")
             cwd = os.getcwd()
             filepath = os.path.join(cwd, f"{city_name}_route_map.html")
-            origin_node = self.nodes[0]
-            destination_node = self.nodes[-1]
-
             self.map_bbox = mp.plot_route_gdf(
                 graph,
                 route_gdf,
@@ -178,27 +192,28 @@ class route:
                 return_bbox=True,
             )
         else:
-            # Get bbox without plotting
-            self.map_bbox = map_analysis.get_routegdf_bbox(
-                graph, self.nodes, buffer_percentage=0.1
+            geom = route_gdf["geometry"].unary_union
+            route_gdf["geometry"] = geo_util.merge_and_simplify_geometry(geom, 0.0001)
+            start_location = (graph.nodes[origin_node]["y"], graph.nodes[origin_node]["x"])
+            end_location = (graph.nodes[destination_node]["y"], graph.nodes[destination_node]["x"])
+            midpoint = (
+                (start_location[0] + end_location[0]) / 2,
+                (start_location[1] + end_location[1]) / 2,
             )
-
+            self.map_bbox = map_analysis.calculate_bounding_box(center_lat=midpoint[0],center_lng=midpoint[1])
         # Calculate map clutter metrics
         self.map_road_length, self.map_intersection_count, self.map_street_count = (
             map_analysis.get_map_clutter(G=graph, map_bbox=self.map_bbox)
         )
 
-
     def get_route_dict(self):
         """Get a comprehensive dictionary with all route metrics and attributes."""
         route_dict = {
-
             # Basic route information
             "identifier": self.identifier,
             "length": self.length,
             "n_nodes": self.n_nodes,
             "n_segments": self.n_segments,
-            
             # Bearing data
             "directed_bearings": self.directed_bearings.tolist(),
             "directed_weights": self.directed_weights.tolist(),
@@ -208,19 +223,16 @@ class route:
             "undirected_bearing_dist_weighted": self.undirected_bearing_dist_weighted.tolist(),
             "directed_bearing_dist": self.directed_bearing_dist.tolist(),
             "directed_bearing_dist_weighted": self.directed_bearing_dist_weighted.tolist(),
-
             # Complexity metrics
             "complexity": self.complexity,
             "complexity_list": self.complexity_list,
             "turn_types": self.turn_types,
             "turn_count": self.turn_count,
             "turn_frequency": self.turn_frequency,
-            
             # Turn degree metrics
             "total_turn_degree": self.total_turn_degree,
             "total_turn_degree_abs": self.total_turn_degree_abs,
             "avg_turn_degree": self.avg_turn_degree,
-            
             # Node attributes
             "sum_deviation_from_prototypical": self.sum_deviation_from_prototypical,
             "avg_deviation_from_prototypical": self.avg_deviation_from_prototypical,
@@ -231,19 +243,22 @@ class route:
             "avg_betweenness": self.avg_betweenness,
             "sum_od_betweenness": self.sum_od_betweenness,
             "avg_od_betweenness": self.avg_od_betweenness,
-            }
-            # Map-related attributes (may be None if not calculated)
+        }
 
         if self.map_bbox:
-            route_dict.update({
-            "map_bbox": self.map_bbox,
-            "map_road_length": self.map_road_length,
-            "map_intersection_count": self.map_intersection_count,
-            "map_street_count": self.map_street_count,
-            })
-        
+            route_dict.update(
+                {
+                    "map_bbox": self.map_bbox,
+                    "map_road_length": self.map_road_length,
+                    "map_intersection_count": self.map_intersection_count,
+                    "map_street_count": self.map_street_count,
+                }
+            )
+
         return route_dict
 
-    def generate_identifier(self,city_name,weightstring,origin_node, destination_node):
+    def generate_identifier(
+        self, city_name, weightstring, origin_node, destination_node
+    ):
         route_string = f"{city_name}-{weightstring}-{origin_node}-{destination_node}"
         return route_string

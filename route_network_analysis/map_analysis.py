@@ -1,4 +1,5 @@
 import osmnx as ox
+import shapely 
 from pyproj import CRS
 from pyproj.aoi import AreaOfInterest
 from pyproj.database import query_utm_crs_info
@@ -47,6 +48,7 @@ def get_routegdf_bbox(G, route_nodes, buffer_percentage=0.1):
     )
 
     return bbox
+
 
 
 def calculate_bounding_box(center_lat, center_lng, zoom=16, width_pixels=1600, height_pixels=1200):

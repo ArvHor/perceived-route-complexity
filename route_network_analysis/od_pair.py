@@ -1,7 +1,6 @@
 import numpy as np
 import osmnx as ox
 import logging
-import hashlib
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -39,7 +38,6 @@ class od_pair:
 
         instance = cls.__new__(cls)
         instance.graph = G
-
         # Set up the path object (unique to from_route)
         instance.path = route.from_nodes(G, route_nodes, weightstring=weightstring)
         instance.path_map_bbox = instance.path.map_bbox
@@ -127,6 +125,11 @@ class od_pair:
 
         undirected_subgraph = ox.convert.to_undirected(subgraph)
         self.subgraph_stats = ox.stats.basic_stats(subgraph, area=self.area)
+        avg_node_betweenness = street_network_analysis.get_node_avg(subgraph, 'betweenness_centrality')
+
+        # Add avg_node_betweenness to subgraph_stats_dict
+        self.subgraph_stats['avg_node_betweenness'] = avg_node_betweenness
+
         # Environment bearing data
 
         env_undirected_bearings, env_undirected_weights = (
@@ -234,7 +237,10 @@ class od_pair:
             environment_orientation_directed_entropy
         )
 
+
+
         self.bearing_dist_properties = {
+            ""
             "environment_orientation_entropy_weighted": environment_orientation_undirected_entropy_weighted,
             "environment_orientation_entropy": environment_orientation_undirected_entropy,
             "environment_orientation_order_weighted": order_undirected_weighted,
@@ -437,10 +443,7 @@ class od_pair:
             else:
                 subgraph_stats_dict[f"subgraph_stats_{key}"] = value.tolist()
 
-        avg_node_betweenness = street_network_analysis.get_node_avg(self.subgraph, 'betweenness_centrality')
-
-        # Add avg_node_betweenness to subgraph_stats_dict
-        subgraph_stats_dict['subgraph_stats_avg_node_betweenness'] = avg_node_betweenness
+        
 
         odpair_dict = {}
         odpair_dict.update(basic_dict)
@@ -456,14 +459,15 @@ class od_pair:
 
     def _build_paths_dict(self):
         if self.path:
-            path_dict = self.path.get_route_dict()
-            for key, value in path_dict.items():
+            path_dict = {}
+            single_path_dict = self.path.get_route_dict()
+            for key, value in single_path_dict.items():
                 if isinstance(value, (int, float, str, bool, np.integer, np.floating)):
                     path_dict[f"path_{key}"] = value
                 elif isinstance(value, list):
                     path_dict[f"path_{key}"] = value
                 else:
-                    path_dict[f"path_{key}"] = value.tolist()
+                    path_dict[f"path_{key}"] = str(value)
 
             return path_dict
 
@@ -486,7 +490,6 @@ class od_pair:
                     path_dict[f"simplest_{key}"] = value
                 else:
                     path_dict[f"simplest_{key}"] = value.tolist()
-
 
             differences = {
             "length_diff": self.length_diff,

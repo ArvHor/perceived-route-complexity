@@ -17,6 +17,62 @@ from . import geo_util
 from . import map_analysis
 from PIL import Image
 
+
+
+def get_routeplot_bbox(
+    G,
+    route_gdf,
+    start_node,
+    end_node,
+    map_tiles="CartoDB.VoyagerNoLabels",
+    truncation_polygon:shapely.geometry.polygon.Polygon = None,
+):
+    geom = route_gdf["geometry"].unary_union
+    route_gdf["geometry"] = geo_util.merge_and_simplify_geometry(geom, 0.0001)
+    start_location = (G.nodes[start_node]["y"], G.nodes[start_node]["x"])
+    end_location = (G.nodes[end_node]["y"], G.nodes[end_node]["x"])
+    midpoint = (
+        (start_location[0] + end_location[0]) / 2,
+        (start_location[1] + end_location[1]) / 2,
+    )
+    # Create the map centered at the midpoint, but don't set zoom levels
+    m = route_gdf.explore(
+        tiles=map_tiles,
+        color="blue",
+        control_scale=False,
+        zoom_control=False,
+        location=midpoint,
+        style_kwds={"weight": 7, "opacity": 0.7},
+        height="100%",
+        legend=False,
+        attr=None,
+    )
+
+    # If truncation polygon is provided, plot the polygon on the map
+    if truncation_polygon:
+        folium.GeoJson(
+            truncation_polygon,
+            style_function=lambda x: {
+                "color": "black",
+                "weight": 2,
+                "fillOpacity": 0,
+            },
+        ).add_to(m)
+        bounds = truncation_polygon.bounds  # [minx, miny, maxx, maxy]
+        bbox = (
+            float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3])
+        )
+    else:
+        # Calculate bounds from the route geometry
+        # [, maxx, maxy]
+        bounds = route_gdf.total_bounds 
+        print(f"({float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3])})")
+        # This is converted to [south,west,east,north] for osmnx 
+        bbox = ( float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3]))
+
+    return(bbox)
+
+
 def plot_route_gdf(
     G,
     route_gdf,

@@ -89,11 +89,13 @@ def retrieve_simplest_path(G, origin, destination):
         min_edge = None
         for u, v, data in in_edges:
             decision_complexity = data.get('decision_complexity', float('inf'))
+            if type(decision_complexity) is str:
+                decision_complexity = float(decision_complexity)
+
             if decision_complexity < min_decision_complexity:
                 min_decision_complexity = decision_complexity
                 w_list.append(decision_complexity)
                 min_edge = (u, v)
-
         t = min_edge[0]
         route = [t] + route
 

@@ -2,6 +2,7 @@ import osmnx as ox
 import numpy as np
 import networkx as nx
 from typing import Union
+
 # Local modules
 
 
@@ -52,17 +53,16 @@ def get_od_cardinal_direction(G, origin, destination):
         return "NW"
 
 
-
 def get_od_pair_subgraph(
     G: nx.Graph, bbox=None, polygon=None
 ) -> Union[nx.Graph, nx.DiGraph]:
     if bbox:
-        return ox.truncate.truncate_graph_bbox(
-            G=G, bbox=bbox, truncate_by_edge=True
-        )
+        return ox.truncate.truncate_graph_bbox(G=G, bbox=bbox, truncate_by_edge=True)
     elif polygon:
         return ox.truncate.truncate_graph_polygon(
             G=G, polygon=polygon, truncate_by_edge=True
         )
     else:
-        raise ValueError("Either bbox or polygon must be provided for subgraph extraction.")
+        raise ValueError(
+            "Either bbox or polygon must be provided for subgraph extraction."
+        )
