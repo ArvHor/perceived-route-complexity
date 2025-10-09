@@ -125,6 +125,8 @@ class od_pair:
 
         undirected_subgraph = ox.convert.to_undirected(subgraph)
         self.subgraph_stats = ox.stats.basic_stats(subgraph, area=self.area)
+        betweenness_centrality = nx.betweenness_centrality(subgraph, normalized=True)
+        nx.set_node_attributes(graph, betweenness_centrality, "betweenness_centrality")
         avg_node_betweenness = street_network_analysis.get_node_avg(subgraph, 'betweenness_centrality')
 
         # Add avg_node_betweenness to subgraph_stats_dict
