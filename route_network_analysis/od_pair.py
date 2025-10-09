@@ -3,7 +3,7 @@ import osmnx as ox
 import logging
 import matplotlib.pyplot as plt
 import pandas as pd
-
+import networkx as nx
 # Local modules
 from . import alignment
 from . import street_network_analysis
@@ -12,7 +12,7 @@ from . import od_pair_analysis
 from .route import route
 from . import orientation_plotting
 from . import map_plotting
-
+from . import route_analysis
 
 logging.basicConfig(
     level=logging.INFO,
@@ -126,12 +126,13 @@ class od_pair:
         undirected_subgraph = ox.convert.to_undirected(subgraph)
         self.subgraph_stats = ox.stats.basic_stats(subgraph, area=self.area)
         betweenness_centrality = nx.betweenness_centrality(subgraph, normalized=True)
-        nx.set_node_attributes(graph, betweenness_centrality, "betweenness_centrality")
+        nx.set_node_attributes(subgraph, betweenness_centrality, "betweenness_centrality")
         avg_node_betweenness = street_network_analysis.get_node_avg(subgraph, 'betweenness_centrality')
-
         # Add avg_node_betweenness to subgraph_stats_dict
         self.subgraph_stats['avg_node_betweenness'] = avg_node_betweenness
 
+        route_avg_betweenness = route_analysis.get_nodes_avg(subgraph,self.path.nodes,weightstring="betweenness_centrality")
+        self.subgraph_stats['avg_routenode_betweenness'] = route_avg_betweenness
         # Environment bearing data
 
         env_undirected_bearings, env_undirected_weights = (
@@ -470,6 +471,8 @@ class od_pair:
                     path_dict[f"path_{key}"] = value
                 else:
                     path_dict[f"path_{key}"] = str(value)
+
+
 
             return path_dict
 

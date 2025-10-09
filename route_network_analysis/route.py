@@ -160,18 +160,6 @@ class route:
         self.sum_instruction_equivalent = route_analysis.get_edges_sum(
             G=graph, route_edges=self.edges, weightstring="instruction_equivalent"
         )
-        self.sum_betweenness = route_analysis.get_nodes_sum(
-            G=graph, route_nodes=self.nodes, weightstring="betweenness_centrality"
-        )
-        self.avg_betweenness = self.sum_betweenness / self.n_nodes
-
-        # Get the betweenness centrality based on all shortest paths between the origin and destination
-        self.sum_od_betweenness = (
-            route_analysis.get_origin_destination_betweenness_centrality(
-                graph, self.nodes, origin_node, destination_node
-            )
-        )
-        self.avg_od_betweenness = self.sum_od_betweenness / self.n_nodes
 
     def analyze_map_clutter(self, graph, generate_plot=False, city_name=None):
         """Analyze map clutter metrics for this route."""
@@ -239,10 +227,6 @@ class route:
             "sum_node_degree": self.sum_node_degree,
             "avg_node_degree": self.avg_node_degree,
             "sum_instruction_equivalent": self.sum_instruction_equivalent,
-            "sum_betweenness": self.sum_betweenness,
-            "avg_betweenness": self.avg_betweenness,
-            "sum_od_betweenness": self.sum_od_betweenness,
-            "avg_od_betweenness": self.avg_od_betweenness,
         }
 
         if self.map_bbox:
