@@ -7,16 +7,15 @@ import time
 import pandas as pd
 import pyproj
 import selenium.webdriver as webdriver
-from selenium.webdriver import Firefox, FirefoxOptions
+from selenium.webdriver import Firefox
 from folium.features import DivIcon
 from folium.elements import *
 import folium
 import shapely.geometry
+
 # Local modules
 from . import geo_util
-from . import map_analysis
 from PIL import Image
-
 
 
 def get_routeplot_bbox(
@@ -25,7 +24,7 @@ def get_routeplot_bbox(
     start_node,
     end_node,
     map_tiles="CartoDB.VoyagerNoLabels",
-    truncation_polygon:shapely.geometry.polygon.Polygon = None,
+    truncation_polygon: shapely.geometry.polygon.Polygon = None,
 ):
     geom = route_gdf["geometry"].unary_union
     route_gdf["geometry"] = geo_util.merge_and_simplify_geometry(geom, 0.0001)
@@ -59,18 +58,18 @@ def get_routeplot_bbox(
             },
         ).add_to(m)
         bounds = truncation_polygon.bounds  # [minx, miny, maxx, maxy]
-        bbox = (
-            float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3])
-        )
+        bbox = (float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3]))
     else:
         # Calculate bounds from the route geometry
         # [, maxx, maxy]
-        bounds = route_gdf.total_bounds 
-        print(f"({float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3])})")
-        # This is converted to [south,west,east,north] for osmnx 
-        bbox = ( float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3]))
+        bounds = route_gdf.total_bounds
+        print(
+            f"({float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3])})"
+        )
+        # This is converted to [south,west,east,north] for osmnx
+        bbox = (float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3]))
 
-    return(bbox)
+    return bbox
 
 
 def plot_route_gdf(
@@ -84,8 +83,8 @@ def plot_route_gdf(
     map_tiles="CartoDB.VoyagerNoLabels",
     return_bbox=False,
     flip=False,
-    truncation_polygon:shapely.geometry.polygon.Polygon = None,
-    cot_dist=None
+    truncation_polygon: shapely.geometry.polygon.Polygon = None,
+    cot_dist=None,
 ):
     geom = route_gdf["geometry"].unary_union
     route_gdf["geometry"] = geo_util.merge_and_simplify_geometry(geom, 0.0001)
@@ -121,9 +120,7 @@ def plot_route_gdf(
             },
         ).add_to(m)
         bounds = truncation_polygon.bounds  # [minx, miny, maxx, maxy]
-        fit_bounds = [
-            [bounds[1], bounds[0]], [bounds[3], bounds[2]]
-        ]
+        fit_bounds = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
         m.fit_bounds(fit_bounds)
     else:
         # Calculate bounds from the route geometry
@@ -155,15 +152,11 @@ def plot_route_gdf(
     else:
         folium.Marker(
             location=start_location,
-            icon=folium.Icon(
-                color="green", icon="fa-map-marker", prefix="fa-solid"
-            ),
+            icon=folium.Icon(color="green", icon="fa-map-marker", prefix="fa-solid"),
         ).add_to(m)
         folium.Marker(
             location=end_location,
-            icon=folium.Icon(
-                color="black", icon="fa-flag-checkered", prefix="fa"
-            ),
+            icon=folium.Icon(color="black", icon="fa-flag-checkered", prefix="fa"),
         ).add_to(m)
 
     m.save(file_path)
@@ -182,7 +175,7 @@ def screenshot_map(full_path, imgpath):
     opts.add_argument("--headless")
     opts.add_argument("--window-size=3000,2572")
 
-    opts.binary_location = "/usr/local/bin/geckodriver"
+    opts.binary_location = "/home/arvidh/geckodriver"
 
     driver = Firefox(options=opts)
     driver.set_page_load_timeout(60)
@@ -197,7 +190,7 @@ def screenshot_map(full_path, imgpath):
     driver.quit()
     with Image.open(imgpath) as im:
         im = im.resize((3000, 2572), Image.LANCZOS)
-        im.save(imgpath,  format='PNG', dpi=(300, 300)) 
+        im.save(imgpath, format="PNG", dpi=(300, 300))
 
 
 def flip_map(m, end_location, start_location):
@@ -533,5 +526,5 @@ def add_padding_to_bbox(bbox, padding_meters):
     )
     min_lon, min_lat = inverse_transformer.transform(min_x, min_y)
     max_lon, max_lat = inverse_transformer.transform(max_x, max_y)
-    print(f"Padding added to bbox")
+    print("Padding added to bbox")
     return max_lat, min_lat, max_lon, min_lon

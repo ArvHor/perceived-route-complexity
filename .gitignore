@@ -12,6 +12,7 @@ cache/
 graph_sets/
 example/
 parameter_data/
+experiment_routes.py
 t_turn_tests.py
 test.py
 azimuth_tests.py

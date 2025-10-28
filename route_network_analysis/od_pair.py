@@ -1,18 +1,23 @@
+import logging
+
+import matplotlib.pyplot as plt
+import networkx as nx
 import numpy as np
 import osmnx as ox
-import logging
-import matplotlib.pyplot as plt
 import pandas as pd
-import networkx as nx
+from shapely.geometry import Polygon
+
 # Local modules
-from . import alignment
-from . import street_network_analysis
-from . import geo_util
-from . import od_pair_analysis
+from . import (
+    alignment,
+    geo_util,
+    map_plotting,
+    od_pair_analysis,
+    orientation_plotting,
+    route_analysis,
+    street_network_analysis,
+)
 from .route import route
-from . import orientation_plotting
-from . import map_plotting
-from . import route_analysis
 
 logging.basicConfig(
     level=logging.INFO,
@@ -23,7 +28,6 @@ logging.basicConfig(
 
 
 class od_pair:
-
     def __init__(self, G, origin, destination):
         """Initialize an OD pair with origin and destination nodes."""
         self.graph = G
@@ -35,8 +39,8 @@ class od_pair:
 
     @classmethod
     def from_route(cls, G, route_nodes, weightstring):
-
         instance = cls.__new__(cls)
+        instance.weightstring = weightstring
         instance.graph = G
         # Set up the path object (unique to from_route)
         instance.path = route.from_nodes(G, route_nodes, weightstring=weightstring)
@@ -56,7 +60,11 @@ class od_pair:
         self.origin_node = origin
         self.destination_node = destination
         self.id = (
-            self.city_name + "-" + str(self.origin_node) + "-" + str(self.destination_node)
+            self.city_name
+            + "-"
+            + str(self.origin_node)
+            + "-"
+            + str(self.destination_node)
         )
         self.origin_point = (
             self.graph.nodes[self.origin_node]["y"],
@@ -66,6 +74,7 @@ class od_pair:
             self.graph.nodes[self.destination_node]["y"],
             self.graph.nodes[self.destination_node]["x"],
         )
+
         # Calculate the great circle distance between the origin and destination
         self.od_distance = float(
             ox.distance.great_circle(
@@ -75,18 +84,19 @@ class od_pair:
                 lon2=self.destination_point[1],
             )
         )
-        self.shortest_path = route(
-            self.graph,
-            origin=self.origin_node,
-            destination=self.destination_node,
-            weightstring="length",
-        )
-        self.simplest_path = route(
-            self.graph,
-            origin=self.origin_node,
-            destination=self.destination_node,
-            weightstring="decision_complexity",
-        )
+        if self.path is None:
+            self.shortest_path = route(
+                self.graph,
+                origin=self.origin_node,
+                destination=self.destination_node,
+                weightstring="length",
+            )
+            self.simplest_path = route(
+                self.graph,
+                origin=self.origin_node,
+                destination=self.destination_node,
+                weightstring="decision_complexity",
+            )
 
         self.shape_dict = geo_util.get_od_pair_polygon(
             self.origin_point, self.destination_point
@@ -126,13 +136,20 @@ class od_pair:
         undirected_subgraph = ox.convert.to_undirected(subgraph)
         self.subgraph_stats = ox.stats.basic_stats(subgraph, area=self.area)
         betweenness_centrality = nx.betweenness_centrality(subgraph, normalized=True)
-        nx.set_node_attributes(subgraph, betweenness_centrality, "betweenness_centrality")
-        avg_node_betweenness = street_network_analysis.get_node_avg(subgraph, 'betweenness_centrality')
+        nx.set_node_attributes(
+            subgraph, betweenness_centrality, "betweenness_centrality"
+        )
+        avg_node_betweenness = street_network_analysis.get_node_avg(
+            subgraph, "betweenness_centrality"
+        )
         # Add avg_node_betweenness to subgraph_stats_dict
-        self.subgraph_stats['avg_node_betweenness'] = avg_node_betweenness
+        self.subgraph_stats["avg_node_betweenness"] = avg_node_betweenness
 
-        route_avg_betweenness = route_analysis.get_nodes_avg(subgraph,self.path.nodes,weightstring="betweenness_centrality")
-        self.subgraph_stats['avg_routenode_betweenness'] = route_avg_betweenness
+        route_avg_betweenness = route_analysis.get_nodes_avg(
+            subgraph, self.path.nodes, weightstring="betweenness_centrality"
+        )
+        self.subgraph_stats["avg_routenode_betweenness"] = route_avg_betweenness
+        self.subgraph_stats["area"] = self.area
         # Environment bearing data
 
         env_undirected_bearings, env_undirected_weights = (
@@ -141,22 +158,24 @@ class od_pair:
             )
         )
 
-        
-
         env_directed_bearings, env_directed_weights = (
             street_network_analysis.extract_edge_bearings(
                 G=subgraph, min_length=10, weight="length"
             )
         )
 
-        env_undirected_bearing_dist_weighted, _ = street_network_analysis.bearings_distribution(
-            G=undirected_subgraph, num_bins=36, min_length=10, weight="length"
+        env_undirected_bearing_dist_weighted, _ = (
+            street_network_analysis.bearings_distribution(
+                G=undirected_subgraph, num_bins=36, min_length=10, weight="length"
+            )
         )
         env_undirected_bearing_dist, _ = street_network_analysis.bearings_distribution(
             G=undirected_subgraph, num_bins=36, min_length=10, weight=None
         )
-        env_directed_bearing_dist_weighted, _ = street_network_analysis.bearings_distribution(
-            G=subgraph, num_bins=36, min_length=10, weight="length"
+        env_directed_bearing_dist_weighted, _ = (
+            street_network_analysis.bearings_distribution(
+                G=subgraph, num_bins=36, min_length=10, weight="length"
+            )
         )
         env_directed_bearing_dist, _ = street_network_analysis.bearings_distribution(
             G=subgraph, num_bins=36, min_length=10, weight=None
@@ -166,22 +185,38 @@ class od_pair:
             self.shape_dict["fwd_bearing"], self.shape_dict["bwd_bearing"]
         )
         od_undirected_bearing_perp_dist = od_pair_analysis.get_od_pair_bearing_dist(
-            fwd=self.shape_dict["fwd_bearing"], bwd=self.shape_dict["bwd_bearing"], 
-            perp_bwd= self.shape_dict["perpendicular_bwd_bearing"], perp_fwd=self.shape_dict["perpendicular_fwd_bearing"]
+            fwd=self.shape_dict["fwd_bearing"],
+            bwd=self.shape_dict["bwd_bearing"],
+            perp_bwd=self.shape_dict["perpendicular_bwd_bearing"],
+            perp_fwd=self.shape_dict["perpendicular_fwd_bearing"],
         )
         od_directed_bearing_dist = od_pair_analysis.get_od_pair_bearing_dist(
             self.shape_dict["fwd_bearing"]
         )
 
         od_bearings_array = np.array(
-            [self.shape_dict["fwd_bearing"],self.shape_dict["bwd_bearing"],self.shape_dict["perpendicular_fwd_bearing"], self.shape_dict["perpendicular_bwd_bearing"]]
+            [
+                self.shape_dict["fwd_bearing"],
+                self.shape_dict["bwd_bearing"],
+                self.shape_dict["perpendicular_fwd_bearing"],
+                self.shape_dict["perpendicular_bwd_bearing"],
+            ]
         )
 
-        self.cot_alignment = alignment.COT_sample_distance(route_bearings=od_bearings_array,env_bearings= env_undirected_bearings)
+        self.cot_alignment = alignment.COT_sample_distance(
+            route_bearings=od_bearings_array, env_bearings=env_undirected_bearings
+        )
 
-        p_od_undirected_bearing_perp_dist = od_undirected_bearing_perp_dist / sum(od_undirected_bearing_perp_dist)
-        p_env_undirected_bearing_dist = env_undirected_bearing_dist / sum(env_undirected_bearing_dist)
-        self.cot_distribution_alignment = alignment.COT_distribution_distance(route_dist=p_env_undirected_bearing_dist,env_dist= p_od_undirected_bearing_perp_dist)
+        p_od_undirected_bearing_perp_dist = od_undirected_bearing_perp_dist / sum(
+            od_undirected_bearing_perp_dist
+        )
+        p_env_undirected_bearing_dist = env_undirected_bearing_dist / sum(
+            env_undirected_bearing_dist
+        )
+        self.cot_distribution_alignment = alignment.COT_distribution_distance(
+            route_dist=p_env_undirected_bearing_dist,
+            env_dist=p_od_undirected_bearing_perp_dist,
+        )
 
         self.bearing_data = {
             "undirected": env_undirected_bearings,
@@ -228,9 +263,7 @@ class od_pair:
             )
         )
         environment_orientation_directed_entropy = (
-            street_network_analysis.orientation_entropy(
-                subgraph, num_bins=36
-            )
+            street_network_analysis.orientation_entropy(subgraph, num_bins=36)
         )
         order_directed_weighted = street_network_analysis.get_orientation_order(
             environment_orientation_directed_entropy_weighted
@@ -239,8 +272,6 @@ class od_pair:
         order_directed = street_network_analysis.get_orientation_order(
             environment_orientation_directed_entropy
         )
-
-
 
         self.bearing_dist_properties = {
             ""
@@ -257,13 +288,19 @@ class od_pair:
     def _calculate_differences(self):
         """Calculate differences between routes and OD distance."""
         self.length_diff = self.simplest_path.length - self.shortest_path.length
-        self.complexity_diff = int(self.shortest_path.complexity) - int(self.simplest_path.complexity)
+        self.complexity_diff = int(self.shortest_path.complexity) - int(
+            self.simplest_path.complexity
+        )
         self.shortest_diff = self.shortest_path.length - self.od_distance
         try:
             # Safely access hausdorff_distance method using getattr
-            hausdorff_method = getattr(self.shortest_path.route_linestring, 'hausdorff_distance', None)
+            hausdorff_method = getattr(
+                self.shortest_path.route_linestring, "hausdorff_distance", None
+            )
             if hausdorff_method and callable(hausdorff_method):
-                self.hausdorff_diff = hausdorff_method(self.simplest_path.route_linestring)
+                self.hausdorff_diff = hausdorff_method(
+                    self.simplest_path.route_linestring
+                )
             else:
                 self.hausdorff_diff = 0.0
         except Exception:
@@ -295,9 +332,7 @@ class od_pair:
         route_dist = route_dist / np.sum(route_dist)
 
         # Create the plot
-        fig, ax = orientation_plotting.plot_alignment_orientation(
-            bin_counts=env_dist
-        )
+        fig, ax = orientation_plotting.plot_alignment_orientation(bin_counts=env_dist)
         orientation_plotting._plot_overlaid_alignment_distribution(
             ax,
             route_dist,
@@ -307,58 +342,109 @@ class od_pair:
         )
         fig.savefig(filepath)
 
-    def plot_on_map(self,html_path,graph_plot_path):
-        route_gdf = ox.routing.route_to_gdf(self.graph, self.shortest_path.nodes, weight='length')
-        filepath = html_path
-        polygon = self.polygon
-        map_plotting.plot_route_gdf(G=self.graph, start_node=self.origin_node,
-                                        end_node=self.destination_node,
-                                        route_gdf=route_gdf,
-                                        map_tiles="OpenStreetMap.Mapnik",
-                                        file_path=filepath,
-                                        truncation_polygon=polygon,
-                                        cot_dist=self.cot_distribution_alignment)
+    def plot_on_map(self, html_path, graph_plot_path):
+        if self.path:
+            route_gdf = ox.routing.route_to_gdf(
+                self.graph, self.path.nodes, weight=self.weightstring
+            )
+            filepath = html_path
+            bbox_poly = Polygon(
+                [
+                    (self.path_map_bbox[0], self.path_map_bbox[1]),
+                    (self.path_map_bbox[0], self.path_map_bbox[3]),
+                    (self.path_map_bbox[2], self.path_map_bbox[3]),
+                    (self.path_map_bbox[2], self.path_map_bbox[1]),
+                    (
+                        self.path_map_bbox[0],
+                        self.path_map_bbox[1],
+                    ),  # Closing the polygon
+                ]
+            )
+            map_plotting.plot_route_gdf(
+                G=self.graph,
+                start_node=self.origin_node,
+                end_node=self.destination_node,
+                route_gdf=route_gdf,
+                map_tiles="OpenStreetMap.Mapnik",
+                file_path=filepath,
+                truncation_polygon=bbox_poly,
+            )
+
+        else:
+            route_gdf = ox.routing.route_to_gdf(
+                self.graph, self.shortest_path.nodes, weight="length"
+            )
+            filepath = html_path
+            polygon = self.polygon
+            map_plotting.plot_route_gdf(
+                G=self.graph,
+                start_node=self.origin_node,
+                end_node=self.destination_node,
+                route_gdf=route_gdf,
+                map_tiles="OpenStreetMap.Mapnik",
+                file_path=filepath,
+                truncation_polygon=polygon,
+                cot_dist=self.cot_distribution_alignment,
+            )
 
         if self.path:
             subgraph = od_pair_analysis.get_od_pair_subgraph(
                 G=self.graph, bbox=self.path_map_bbox
             )
-            self.area = geo_util.calculate_bbox_area_with_utm(self.path_map_bbox)
+            try:
+                # undirected_subgraph = ox.convert.to_undirected(subgraph)
+                fig, _ = ox.plot_graph_route(
+                    subgraph,
+                    self.path.nodes,
+                    node_size=5,
+                    bgcolor="white",
+                    route_color="blue",
+                    edge_color="black",
+                    node_color="black",
+                    route_linewidth=4,
+                    edge_linewidth=0.5,
+                    show=False,
+                    close=False,
+                )
+                graph_plot_path
+                fig.savefig(graph_plot_path, bbox_inches="tight")
+                plt.close(fig)
+            except Exception as e:
+                print(f"error {e}")
         else:
             subgraph = od_pair_analysis.get_od_pair_subgraph(
                 G=self.graph, polygon=self.polygon
             )
             self.area = geo_util.calculate_area_with_utm(self.polygon)
-
-        try:
-        #undirected_subgraph = ox.convert.to_undirected(subgraph)
-            fig,_ = ox.plot_graph_route(
-                subgraph,
-                self.shortest_path.nodes,
-                node_size=5,
-                bgcolor='white',
-                route_color='blue',
-                edge_color="black",
-                node_color="black",
-                route_linewidth=4,
-                edge_linewidth=0.5,
-                show=False,
-                close=False
-            )
-            graph_plot_path
-            fig.savefig(graph_plot_path, bbox_inches='tight')
-            plt.close(fig)
-        except Exception as e:
-            print(f"error {e}")
+            try:
+                # undirected_subgraph = ox.convert.to_undirected(subgraph)
+                fig, _ = ox.plot_graph_route(
+                    subgraph,
+                    self.shortest_path.nodes,
+                    node_size=5,
+                    bgcolor="white",
+                    route_color="blue",
+                    edge_color="black",
+                    node_color="black",
+                    route_linewidth=4,
+                    edge_linewidth=0.5,
+                    show=False,
+                    close=False,
+                )
+                graph_plot_path
+                fig.savefig(graph_plot_path, bbox_inches="tight")
+                plt.close(fig)
+            except Exception as e:
+                print(f"error {e}")
 
     def _calculate_alignment_metrics(self, directed=True, weighted=True):
         """Calculate all alignment metrics between route and environment."""
-        
+
         # Select the appropriate distributions based on parameters
         if directed:
             route_dist = self.bearing_dist_data["od_directed_dist"]
             if weighted:
-                env_dist= self.bearing_dist_data["env_directed_dist_weighted"]
+                env_dist = self.bearing_dist_data["env_directed_dist_weighted"]
             else:
                 env_dist = self.bearing_dist_data["env_directed_dist"]
 
@@ -368,14 +454,14 @@ class od_pair:
             env_dist = alignment.center_around_index(env_dist, max_index)
             route_dist = route_dist / np.sum(route_dist)
             env_dist = env_dist / np.sum(env_dist)
-            
+
         else:
             route_dist = self.bearing_dist_data["od_undirected_dist"]
             if weighted:
                 env_dist = self.bearing_dist_data["env_undirected_dist_weighted"]
             else:
                 env_dist = self.bearing_dist_data["env_undirected_dist"]
-            
+
             # Process undirected distributions
             max_index = np.argmax(route_dist)
             route_dist = alignment.wrap_dist(route_dist)
@@ -392,7 +478,7 @@ class od_pair:
 
         return {
             "strongest_correlation": strongest_correlation,
-            "closest_strongest_correlation": closest_strongest_correlation
+            "closest_strongest_correlation": closest_strongest_correlation,
         }
 
     def get_odpair_df(self):
@@ -407,31 +493,18 @@ class od_pair:
             "od_distance": self.od_distance,
             "od_cardinal_direction": self.cardinal_direction,
             "cot_alignment": self.cot_alignment,
-            "cot_dist_alignment": self.cot_distribution_alignment
+            "cot_dist_alignment": self.cot_distribution_alignment,
         }
-
 
         # 3 Bearing distribution data
         bearing_dist_dict = {}
         for key, value in self.bearing_dist_data.items():
-            if isinstance(value, (int, float, str, bool, np.integer, np.floating)):
-                bearing_dist_dict[f"bearings_dist_{key}"] = value
-            elif isinstance(value, list):
-                bearing_dist_dict[f"bearings_dist_{key}"] = value
-            else:
-                bearing_dist_dict[f"bearings_dist_{key}"] = value.tolist()
-
+            bearing_dist_dict[f"bearings_dist_{key}"] = value
 
         # 4 Bearing distribution properties
         distribution_properties_dict = {}
         for key, value in self.bearing_dist_properties.items():
-            if isinstance(value, (int, float, str, bool, np.integer, np.floating)):
-                distribution_properties_dict[f"bearing_dist_prop_{key}"] = value
-            elif isinstance(value, list):
-                distribution_properties_dict[f"bearing_dist_prop_{key}"] = value
-            else:
-                distribution_properties_dict[f"bearing_dist_prop_{key}"] = value.tolist()
-                
+            distribution_properties_dict[f"bearing_dist_prop_{key}"] = value
 
         # 5 Route dict
         path_dict = self._build_paths_dict()
@@ -439,25 +512,18 @@ class od_pair:
         # 6 subgraph stats dict
         subgraph_stats_dict = {}
         for key, value in self.subgraph_stats.items():
-            if isinstance(value, (int, float, str, bool, np.integer, np.floating)):
-                subgraph_stats_dict[f"subgraph_stats_{key}"] = value
-            elif isinstance(value, dict):
-                subgraph_stats_dict[f"subgraph_stats_{key}"] = str(value)
-            else:
-                subgraph_stats_dict[f"subgraph_stats_{key}"] = value.tolist()
-
-        
+            subgraph_stats_dict[f"subgraph_stats_{key}"] = value
 
         odpair_dict = {}
         odpair_dict.update(basic_dict)
-        #odpair_dict.update(bearing_dict)
+        # odpair_dict.update(bearing_dict)
         odpair_dict.update(bearing_dist_dict)
         odpair_dict.update(distribution_properties_dict)
         odpair_dict.update(subgraph_stats_dict)
-        odpair_dict.update(path_dict) # type: ignore
+        odpair_dict.update(path_dict)  # type: ignore
 
-        odpair_df = pd.DataFrame([odpair_dict]).set_index('id')
-        
+        odpair_df = pd.DataFrame([odpair_dict]).set_index("id")
+
         return odpair_df
 
     def _build_paths_dict(self):
@@ -465,14 +531,7 @@ class od_pair:
             path_dict = {}
             single_path_dict = self.path.get_route_dict()
             for key, value in single_path_dict.items():
-                if isinstance(value, (int, float, str, bool, np.integer, np.floating)):
-                    path_dict[f"path_{key}"] = value
-                elif isinstance(value, list):
-                    path_dict[f"path_{key}"] = value
-                else:
-                    path_dict[f"path_{key}"] = str(value)
-
-
+                path_dict[f"path_{key}"] = value
 
             return path_dict
 
@@ -480,27 +539,17 @@ class od_pair:
             path_dict = {}
             shortest_path_dict = self.shortest_path.get_route_dict()
             for key, value in shortest_path_dict.items():
-                if isinstance(value, (int, float, str, bool, np.integer, np.floating)):
-                    path_dict[f"shortest_{key}"] = value
-                elif isinstance(value, list):
-                    path_dict[f"shortest_{key}"] = value
-                else:
-                    path_dict[f"shortest_{key}"] = value.tolist()
+                path_dict[f"shortest_{key}"] = value
 
             simplest_path_dict = self.simplest_path.get_route_dict()
             for key, value in simplest_path_dict.items():
-                if isinstance(value, (int, float, str, bool, np.integer, np.floating)):
-                    path_dict[f"simplest_{key}"] = value
-                elif isinstance(value, list):
-                    path_dict[f"simplest_{key}"] = value
-                else:
-                    path_dict[f"simplest_{key}"] = value.tolist()
+                path_dict[f"simplest_{key}"] = value
 
             differences = {
-            "length_diff": self.length_diff,
-            "complexity_diff": self.complexity_diff,
-            "shortest_diff": self.shortest_diff,
-            "hausdorff_diff": self.hausdorff_diff,
+                "length_diff": self.length_diff,
+                "complexity_diff": self.complexity_diff,
+                "shortest_diff": self.shortest_diff,
+                "hausdorff_diff": self.hausdorff_diff,
             }
 
             path_dict.update(differences)
@@ -511,12 +560,7 @@ class od_pair:
         """Build the geometry and area dictionary."""
         bearing_dict = {}
         for key, value in self.bearing_data.items():
-            if isinstance(value, (int, float, str, bool, np.integer, np.floating)):
-                bearing_dict[f"bearings_{key}"] = value
-            elif isinstance(value, list):
-                bearing_dict[f"bearings_{key}"] = value
-            else:
-                bearing_dict[f"bearings_{key}"] = value.tolist()
+            bearing_dict[f"bearings_{key}"] = value
 
         if not self.path:
             geom_dict = {
@@ -537,7 +581,7 @@ class od_pair:
             geom_dict.update(bearing_dict)
             return geom_dict
         else:
-            geom_dict =  {
+            geom_dict = {
                 "id": self.id,
                 "city_name": self.city_name,
                 "origin_node": self.origin_node,
