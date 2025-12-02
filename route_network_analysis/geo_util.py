@@ -1,9 +1,8 @@
 import numpy as np
 import pyproj
-from shapely import Polygon, LineString, MultiLineString, Point
+from shapely import Polygon, LineString, Point
 from shapely.geometry.polygon import orient
 import osmnx as ox
-import networkx as nx
 from shapely.ops import transform
 from shapely.ops import linemerge
 
@@ -29,11 +28,9 @@ def find_utm_zone(lat, lon):
     utm_crs = pyproj.crs.from_epsg(utm_crs_list[0].code)
 
     wgs84_to_utm = pyproj.Transformer.from_crs(wgs84, utm_crs, always_xy=True)
-    utm_to_wgs84 = pyproj.Transformer.from_crs(utm_crs, wgs84, always_xy=True)
 
     center_x_utm, center_y_utm = wgs84_to_utm.transform(lon, lat)
     return utm_crs, (center_x_utm, center_y_utm)
-
 
 def get_od_pair_polygon(origin_point, destination_point,padding=0.25):
     geod = pyproj.Geod(ellps='WGS84')
@@ -171,7 +168,7 @@ def calculate_bbox_area_with_utm(bbox):
 def get_azimuth(G, point_a, point_b, return_all=False):
     """Calculate the azimuth and distance between two points.
 
-    Pyproj uses an equidistant azimuthal projection with the north pole as the center of a flat circle.
+    Pyproj uses an equidistant azimuthal projection with the North Pole as the center of a flat circle.
     ----
     Parameters:
     point_a: The coordinates of the first point.

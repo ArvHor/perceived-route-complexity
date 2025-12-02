@@ -78,6 +78,7 @@ class route:
         route_geometry = ox.routing.route_to_gdf(
             graph, self.nodes, weight=self.weightstring
         )["geometry"].unary_union
+
         merged_geometry_series = GeoSeries([route_geometry]).line_merge()
 
         merged_geometry = merged_geometry_series.iloc[0]

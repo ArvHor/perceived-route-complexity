@@ -25,7 +25,6 @@ def get_od_pair_bearing_dist(fwd, bwd=None, perp_fwd=None, perp_bwd=None):
 
     return bin_counts
 
-
 def get_od_cardinal_direction(G, origin, destination):
     lat1 = G.nodes[origin]["y"]
     lon1 = G.nodes[origin]["x"]

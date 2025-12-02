@@ -3,7 +3,7 @@ import numpy as np
 from scipy.stats import wasserstein_distance
 from scipy.signal import find_peaks, correlation_lags, correlate
 
-def COT_sample_distance(route_bearings, env_bearings, typeOfData="Angles"):
+def COT_sample_distance(route_bearings, env_bearings, typeOfData="Bearing"):
 
     if typeOfData == "UnitInt":
         route_bearings = route_bearings % 1
@@ -11,11 +11,12 @@ def COT_sample_distance(route_bearings, env_bearings, typeOfData="Angles"):
     elif typeOfData == "Radian":
         route_bearings = (route_bearings % (2 * math.pi)) / (2 * math.pi)
         env_bearings = (env_bearings % (2 * math.pi)) / (2 * math.pi)
-    elif typeOfData == "Angles":
+    elif typeOfData == "Bearing":
         route_bearings = (route_bearings % 360) / 360
         env_bearings = (env_bearings % 360) / 360
     else:
-        raise ValueError("Type of Data has to be specified as \"UnitInt\", \"Radian\" or \"Angles\".")
+        raise ValueError("Type of Data has to be specified as \"UnitInt\", \"Radian\" or \"Bearing\".")
+
     # Combine and order samples
     combined_sample = np.concatenate([route_bearings, env_bearings])
     order_of_samples = np.argsort(combined_sample)
@@ -60,7 +61,7 @@ def COT_distribution_distance(route_dist, env_dist, D=1000):
         bin_start = i / D
         bin_end = (i + 1) / D
         for j in range(len(positions)):
-            if positions[j] >= bin_start and positions[j] < bin_end:
+            if bin_start <= positions[j] < bin_end:
                 mu_D[i] += route_dist[j]
                 nu_D[i] += env_dist[j]
 
@@ -248,8 +249,6 @@ def crosscorrelate_alignment(
     route_dist,
     env_dist,
     proximity_weight=1,
-    method="direct",
-    mode="same",
     weighting="relative",
 ):
 

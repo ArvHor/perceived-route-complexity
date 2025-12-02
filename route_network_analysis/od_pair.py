@@ -31,8 +31,8 @@ class od_pair:
     def __init__(self, G, origin, destination):
         """Initialize an OD pair with origin and destination nodes."""
         self.graph = G
-        self._initialize_basics(origin, destination)
         self.path = None  # Initialize path as None
+        self._initialize_basics(origin, destination)
         self.path_map_bbox = None  # Initialize path map bbox as None
         self._analyze_environment()
         self._calculate_differences()
@@ -45,7 +45,6 @@ class od_pair:
         # Set up the path object (unique to from_route)
         instance.path = route.from_nodes(G, route_nodes, weightstring=weightstring)
         instance.path_map_bbox = instance.path.map_bbox
-        print(f"Path map bbox: {instance.path_map_bbox}")
         # Reuse existing helpers where possible
         instance._initialize_basics(route_nodes[0], route_nodes[-1])
 
@@ -144,11 +143,6 @@ class od_pair:
         )
         # Add avg_node_betweenness to subgraph_stats_dict
         self.subgraph_stats["avg_node_betweenness"] = avg_node_betweenness
-
-        route_avg_betweenness = route_analysis.get_nodes_avg(
-            subgraph, self.path.nodes, weightstring="betweenness_centrality"
-        )
-        self.subgraph_stats["avg_routenode_betweenness"] = route_avg_betweenness
         self.subgraph_stats["area"] = self.area
         # Environment bearing data
 
@@ -312,7 +306,7 @@ class od_pair:
         env_dist = self.bearing_dist_data["env_undirected_dist"]
         env_dist = env_dist / env_dist.sum()
         print(f"Environment distribution: {env_dist}")
-        fig, ax = orientation_plotting.plot_orientation(env_dist)
+        fig, ax = orientation_plotting.plot_orientation(env_dist, num_bins=36)
         r_dist = self.bearing_dist_data["od_undirected_dist_perp"]
         r_dist = r_dist / r_dist.sum()
         orientation_plotting._plot_overlaid_distribution(

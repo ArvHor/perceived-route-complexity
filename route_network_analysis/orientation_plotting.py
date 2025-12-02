@@ -36,8 +36,59 @@ def plot_all_city_routes_html(od_pair_data,city_name):
 
     mp.plot_all_routes(all_city_routes,"demonstration/barcelona.html",unique_origins)
 
+def plot_COT_distribution_distance(filepath,route_dist, env_dist, D=1000):
+    env_dist = env_dist / sum(env_dist)
+    route_dist = route_dist / sum(route_dist)
+    positions = np.linspace(0, 1 - (1 / len(route_dist)), num=len(route_dist))
+    mu_D = np.zeros(D)
+    nu_D = np.zeros(D)
+
+    for i in range(D):
+        bin_start = i / D
+        bin_end = (i + 1) / D
+        for j in range(len(positions)):
+            if bin_start <= positions[j] < bin_end:
+                mu_D[i] += route_dist[j]
+                nu_D[i] += env_dist[j]
+
+    F_mu = np.cumsum(mu_D)
+    F_nu = np.cumsum(nu_D)
+    diff_F = F_mu - F_nu
+
+    lev_med = np.median(diff_F)
+
+    abs_dist = np.abs(diff_F - lev_med)
+    cot_distance = sum(abs_dist) / D
+
+    fig, ax = plot_orientation(env_dist,num_bins=D)
+    _plot_overlaid_distribution(
+        ax,
+        route_dist,
+        num_bins=D,
+        dist_color="blue"
+    )
+    _plot_overlaid_distribution(
+        ax,
+        abs_dist,
+        num_bins=D,
+        dist_color="purple"
+    )
+
+    ax.text(
+        0.95,  # x position (slightly outside the plot)
+        0.90,  # y position (near the top)
+        f"COT Distance: {cot_distance:.5f}",
+        transform=ax.transAxes,  # Use axes coordinates
+        fontsize=12,
+        verticalalignment='top',
+        horizontalalignment='right',
+        bbox=dict(boxstyle='round', facecolor='white', alpha=0.8)
+    )
+    fig.savefig(filepath)
+
 def plot_orientation(  # noqa: PLR0913
     bin_frequency,
+    num_bins,
     *,
     ax: PolarAxes | None = None,
     figsize: tuple[float, float] = (10, 10),
@@ -52,62 +103,18 @@ def plot_orientation(  # noqa: PLR0913
     xtick_font: dict[str, Any] | None = None,
 ) -> tuple[Figure, PolarAxes]:
     """
-    Plot a polar histogram of a spatial network's edge bearings.
-
-    Ignores self-loop edges as their bearings are undefined. If `G` is a
-    MultiGraph, all edge bearings will be bidirectional (ie, two reciprocal
-    bearings per undirected edge). If `G` is a MultiDiGraph, all edge bearings
-    will be directional (ie, one bearing per directed edge). See also the
-    `bearings` module.
-
-    For more info see: Boeing, G. 2019. "Urban Spatial Order: Street Network
+    Adapted from:
+    Boeing, G. 2019. "Urban Spatial Order: Street Network
     Orientation, Configuration, and Entropy." Applied Network Science, 4 (1),
     67. https://doi.org/10.1007/s41109-019-0189-1
-
-    Parameters
-    ----------
-    G
-        Unprojected graph with `bearing` attributes on each edge.
-    num_bins
-        Number of bins. For example, if `num_bins=36` is provided, then each
-        bin will represent 10 degrees around the compass.
-    min_length
-        Ignore edges with "length" attribute values less than `min_length`.
-    weight
-        If not None, weight the edges' bearings by this (non-null) edge
-        attribute.
-    ax
-        If not None, plot on this pre-existing axes instance (must have
-        projection=polar).
-    figsize
-        If `ax` is None, create new figure with size `(width, height)`.
-    area
-        If True, set bar length so area is proportional to frequency.
-        Otherwise, set bar length so height is proportional to frequency.
-    color
-        Color of the histogram bars.
-    edgecolor
-        Color of the histogram bar edges.
-    linewidth
-        Width of the histogram bar edges.
-    alpha
-        Opacity of the histogram bars.
-    title
-        The figure's title.
-    title_y
-        The y position to place `title`.
-    title_font
-        The title's `fontdict` to pass to matplotlib.
-    xtick_font
-        The xtick labels' `fontdict` to pass to matplotlib.
-
-    Returns
-    -------
-    fig, ax
     """
 
     if title_font is None:
-        title_font = {"family": "monospace","name":"Courier","size": 24, "weight": "bold"}
+        title_font = {"family": "monospace",
+                      "name":"Courier",
+                      "size": 24,
+                      "weight": "bold"
+                      }
     if xtick_font is None:
         xtick_font = {
             "family": "monospace",
@@ -120,7 +127,6 @@ def plot_orientation(  # noqa: PLR0913
 
     # get the bearing distribution's bin counts and center values in degrees
 
-    num_bins = len(bin_frequency)
     bin_centers = np.arange(0, 360, 360 / num_bins)
 
     positions = np.radians(bin_centers)
@@ -130,7 +136,8 @@ def plot_orientation(  # noqa: PLR0913
 
     # radius: how long to make each bar. set bar length so either the bar area
     # (ie, via sqrt) or the bar height is proportional to the bin's frequency
-    radius = np.sqrt(bin_frequency) if area else bin_frequency
+    radius = bin_frequency
+
     # create PolarAxes (if not passed-in) then set N at top and go clockwise
     fig, ax = _get_fig_ax(ax=ax, figsize=figsize, bgcolor=None, polar=True)
     ax.set_theta_zero_location("N")  # Set 0 degrees to the right (east)
@@ -148,13 +155,9 @@ def plot_orientation(  # noqa: PLR0913
         edgecolor=edgecolor,
         linewidth=linewidth,
     )
-    ax.set_ylim(0,0.4)
-    # Set the theta limits to display only from 355 degrees to 175 degrees
-    #ax.set_thetamin(0)
-    #ax.set_thetamax(175)
-
-    # configure the y-ticks and remove their labels
-    yticks = np.linspace(0, 0.4, 4)
+    ax.set_rorigin(-0.2)
+    ax.set_ylim(0,0.5)
+    yticks = np.linspace(0, 0.5, 5)
     ax.set_yticks(yticks)
     ax.set_yticklabels(labels="")
 
@@ -205,64 +208,31 @@ def _plot_overlaid_distribution(
     ax: PolarAxes,
     new_distribution: np.ndarray,
     num_bins: int,
+    dist_color = "blue",
 ) -> None:
     bin_centers = 360 / num_bins * np.arange(num_bins)
     positions = np.radians(bin_centers)
     width = 2 * np.pi / num_bins
     bin_edges = np.linspace(0, 360, num_bins + 1)
     positions_edges = np.radians(bin_edges)
-    # Normalize the new distribution to calculate height/area
-    new_bin_frequency = new_distribution / new_distribution.sum()
-
-    new_radius = new_bin_frequency
 
     # Plot the histogram
     ax.bar(
         positions,
-        height=new_radius,
+        height=new_distribution,
         width=width,
         align="center",
         bottom=0,
         zorder=4,
         edgecolor="k",
         linewidth=0.5,
-        facecolor="none",
-        alpha=1,
-        hatch=".",
-        label="Route",
-    )
-    ax.bar(
-        positions,
-        height=new_radius,
-        width=width,
-        align="center",
-        bottom=0,
-        zorder=4,
-        edgecolor="k",
-        linewidth=0.5,
-        facecolor="blue",
+        facecolor=dist_color,
         alpha=0.2,
     )
-    peak_index = np.argmax(new_distribution)
-    start_index = (peak_index - 9) % num_bins
-    end_index = (peak_index + 9) % num_bins
 
-    start_angle = positions_edges[start_index]
-    end_angle = positions_edges[end_index]
-    ax.set_ylim(0, 0.4)
-    # Set the radial limits to fit the data
-    #ax.set_ylim(0, new_radius.max() * 1.1)
-    #ax.plot(
-    #    [start_angle, end_angle],
-    #    [ax.get_ylim()[1], ax.get_ylim()[1]],
-    #    color="red",
-    #    linewidth=2,
-    #    zorder=5,
-    #    linestyle="--",
-    #)
-    # Set radial ticks to indicate each 10%, and label them accordingly
+    ax.set_rorigin(-0.2)
+    ax.set_ylim(0, 0.5)
 
-    # Set the angular range to show the full circle
     ax.set_theta_zero_location("N")
     ax.set_theta_direction(-1)
 

@@ -17,60 +17,9 @@ import shapely.geometry
 from . import geo_util
 from PIL import Image
 
-
-def get_routeplot_bbox(
-    G,
-    route_gdf,
-    start_node,
-    end_node,
-    map_tiles="CartoDB.VoyagerNoLabels",
-    truncation_polygon: shapely.geometry.polygon.Polygon = None,
-):
-    geom = route_gdf["geometry"].unary_union
-    route_gdf["geometry"] = geo_util.merge_and_simplify_geometry(geom, 0.0001)
-    start_location = (G.nodes[start_node]["y"], G.nodes[start_node]["x"])
-    end_location = (G.nodes[end_node]["y"], G.nodes[end_node]["x"])
-    midpoint = (
-        (start_location[0] + end_location[0]) / 2,
-        (start_location[1] + end_location[1]) / 2,
-    )
-    # Create the map centered at the midpoint, but don't set zoom levels
-    m = route_gdf.explore(
-        tiles=map_tiles,
-        color="blue",
-        control_scale=False,
-        zoom_control=False,
-        location=midpoint,
-        style_kwds={"weight": 7, "opacity": 0.7},
-        height="100%",
-        legend=False,
-        attr=None,
-    )
-
-    # If truncation polygon is provided, plot the polygon on the map
-    if truncation_polygon:
-        folium.GeoJson(
-            truncation_polygon,
-            style_function=lambda x: {
-                "color": "black",
-                "weight": 2,
-                "fillOpacity": 0,
-            },
-        ).add_to(m)
-        bounds = truncation_polygon.bounds  # [minx, miny, maxx, maxy]
-        bbox = (float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3]))
-    else:
-        # Calculate bounds from the route geometry
-        # [, maxx, maxy]
-        bounds = route_gdf.total_bounds
-        print(
-            f"({float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3])})"
-        )
-        # This is converted to [south,west,east,north] for osmnx
-        bbox = (float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3]))
-
-    return bbox
-
+# shutil is a standard library that helps with file operations in the shell
+import shutil
+FIREFOX_PATH = shutil.which("firefox")
 
 def plot_route_gdf(
     G,
@@ -175,7 +124,7 @@ def screenshot_map(full_path, imgpath):
     opts.add_argument("--headless")
     opts.add_argument("--window-size=3000,2572")
 
-    opts.binary_location = "/home/arvidh/geckodriver"
+    opts.binary_location = FIREFOX_PATH
 
     driver = Firefox(options=opts)
     driver.set_page_load_timeout(60)
@@ -310,7 +259,7 @@ def add_rotation_to_map(m, rotation_angle):
     return m
 
 
-def plot_all_routes_complexity(G, routes, map_path, startnode):
+def plot_graph_complexity(G, routes, map_path, startnode):
     """Plot all routes in a single map"""
     startnode = G.nodes[startnode]
     route_gdfs = []
@@ -426,7 +375,7 @@ def plot_all_routes_complexity(routes, map_path):
     # m.save(f'maps/interactive maps/{name}.html')
 
 
-def plot_all_routes(route_gdfs, map_path, point_list):
+def plot_all_routes(routes, map_path, point_list):
     """Plot all routes in a single map"""
 
     m = folium.Map(tiles="OpenStreetMap.Mapnik")
@@ -438,21 +387,6 @@ def plot_all_routes(route_gdfs, map_path, point_list):
 
         route_linestring = route_gdf["geometry"].unary_union
 
-        if route_linestring.geom_type == "LineString":
-            route_linestring = merge_and_simplify_geometry(route_linestring, 0.000001)
-            route_linestring = [
-                [coord[1], coord[0]] for coord in list(route_linestring.coords)
-            ]
-        elif route_linestring.geom_type == "MultiLineString":
-            route_linestring = merge_and_simplify_geometry(
-                route_gdf.geometry.explode().unary_union, 0.000001
-            )
-            if route_linestring.geom_type == "LineString":
-                route_linestring = [
-                    [coord[1], coord[0]] for coord in list(route_linestring.coords)
-                ]
-            else:
-                continue
         # Calculate bounds for the current route and add them to the list
         bounds = route_gdf.total_bounds  # Get bounds as [minx, miny, maxx, maxy]
 
