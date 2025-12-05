@@ -1,42 +1,38 @@
 import osmnx as ox
-import networkx as nx
 import numpy as np
 
 from . import map_plotting as mp
-from . import alignment
 
 import matplotlib.pyplot as plt
-from matplotlib import cm
-from matplotlib import colormaps
-from matplotlib import colors
 from matplotlib.axes._axes import Axes  # noqa: TC002
 from matplotlib.figure import Figure  # noqa: TC002
 from matplotlib.projections.polar import PolarAxes  # noqa: TC002
 
-from collections.abc import Iterable
-from collections.abc import Sequence
-from pathlib import Path
-from typing import TYPE_CHECKING
 from typing import Any
 from typing import Literal
 from typing import overload
 
-def plot_all_city_routes_html(od_pair_data,city_name):
-    
-    od_pair_data = od_pair_data[od_pair_data['city_name'] == city_name]
-    unique_origins  = od_pair_data['origin_point'].unique()
+
+def plot_all_city_routes_html(od_pair_data, city_name):
+    od_pair_data = od_pair_data[od_pair_data["city_name"] == city_name]
+    unique_origins = od_pair_data["origin_point"].unique()
 
     all_city_routes = []
     for unique_origin in unique_origins:
-        shortest_path_nodes = od_pair_data[od_pair_data['origin_point'] == unique_origin]['shortest_path_nodes'].values[0]
-        graph_path = od_pair_data[od_pair_data['origin_point'] == unique_origin]['graph_path'].values[0]
+        shortest_path_nodes = od_pair_data[
+            od_pair_data["origin_point"] == unique_origin
+        ]["shortest_path_nodes"].values[0]
+        graph_path = od_pair_data[od_pair_data["origin_point"] == unique_origin][
+            "graph_path"
+        ].values[0]
         graph = ox.load_graphml(graph_path)
-        route_gdf = ox.routing.route_to_gdf(graph, shortest_path_nodes, weight='length')
+        route_gdf = ox.routing.route_to_gdf(graph, shortest_path_nodes, weight="length")
         all_city_routes.append(route_gdf)
 
-    mp.plot_all_routes(all_city_routes,"demonstration/barcelona.html",unique_origins)
+    mp.plot_all_routes(all_city_routes, "demonstration/barcelona.html", unique_origins)
 
-def plot_COT_distribution_distance(filepath,route_dist, env_dist, D=1000):
+
+def plot_COT_distribution_distance(filepath, route_dist, env_dist, D=1000):
     env_dist = env_dist / sum(env_dist)
     route_dist = route_dist / sum(route_dist)
     positions = np.linspace(0, 1 - (1 / len(route_dist)), num=len(route_dist))
@@ -60,19 +56,9 @@ def plot_COT_distribution_distance(filepath,route_dist, env_dist, D=1000):
     abs_dist = np.abs(diff_F - lev_med)
     cot_distance = sum(abs_dist) / D
 
-    fig, ax = plot_orientation(env_dist,num_bins=D)
-    _plot_overlaid_distribution(
-        ax,
-        route_dist,
-        num_bins=D,
-        dist_color="blue"
-    )
-    _plot_overlaid_distribution(
-        ax,
-        abs_dist,
-        num_bins=D,
-        dist_color="purple"
-    )
+    fig, ax = plot_orientation(env_dist, num_bins=D)
+    _plot_overlaid_distribution(ax, route_dist, num_bins=D, dist_color="blue")
+    _plot_overlaid_distribution(ax, abs_dist, num_bins=D, dist_color="red")
 
     ax.text(
         0.95,  # x position (slightly outside the plot)
@@ -80,11 +66,12 @@ def plot_COT_distribution_distance(filepath,route_dist, env_dist, D=1000):
         f"COT Distance: {cot_distance:.5f}",
         transform=ax.transAxes,  # Use axes coordinates
         fontsize=12,
-        verticalalignment='top',
-        horizontalalignment='right',
-        bbox=dict(boxstyle='round', facecolor='white', alpha=0.8)
+        verticalalignment="top",
+        horizontalalignment="right",
+        bbox=dict(boxstyle="round", facecolor="white", alpha=0.8),
     )
     fig.savefig(filepath)
+
 
 def plot_orientation(  # noqa: PLR0913
     bin_frequency,
@@ -110,15 +97,16 @@ def plot_orientation(  # noqa: PLR0913
     """
 
     if title_font is None:
-        title_font = {"family": "monospace",
-                      "name":"Courier",
-                      "size": 24,
-                      "weight": "bold"
-                      }
+        title_font = {
+            "family": "monospace",
+            "name": "Courier",
+            "size": 24,
+            "weight": "bold",
+        }
     if xtick_font is None:
         xtick_font = {
             "family": "monospace",
-            "name":"Courier",
+            "name": "Courier",
             "size": 10,
             "weight": "bold",
             "alpha": 1.0,
@@ -142,7 +130,7 @@ def plot_orientation(  # noqa: PLR0913
     fig, ax = _get_fig_ax(ax=ax, figsize=figsize, bgcolor=None, polar=True)
     ax.set_theta_zero_location("N")  # Set 0 degrees to the right (east)
     ax.set_theta_direction("clockwise")
-    
+
     ax.bar(
         positions,
         height=radius,
@@ -156,8 +144,8 @@ def plot_orientation(  # noqa: PLR0913
         linewidth=linewidth,
     )
     ax.set_rorigin(-0.2)
-    ax.set_ylim(0,0.5)
-    yticks = np.linspace(0, 0.5, 5)
+    ax.set_ylim(0, 0.5)
+    yticks = np.linspace(0, 0.5, 3)
     ax.set_yticks(yticks)
     ax.set_yticklabels(labels="")
 
@@ -166,16 +154,15 @@ def plot_orientation(  # noqa: PLR0913
         ax.plot(0, r, marker="o", color="k", markersize=4, zorder=10)
         # Add a label slightly offset from the marker
         ax.text(
-            np.radians(-8),  # a small angle to the left of the y-axis (adjust as needed)
+            np.radians(-8),
             r,
-            f"{r:.1f}",
+            f"{r:.3f}",  # Show 3 decimal places
             va="center",
             ha="right",
             fontsize=16,
             color="k",
             zorder=11,
         )
-
 
     # configure the x-ticks and their labels
     xtick_angles = np.radians(np.arange(0, 361, 10))
@@ -198,17 +185,17 @@ def plot_orientation(  # noqa: PLR0913
 
     # draw the bars
 
-
     if title:
         ax.set_title(title, y=title_y, fontdict=title_font)
     fig.tight_layout()
     return fig, ax
 
+
 def _plot_overlaid_distribution(
     ax: PolarAxes,
     new_distribution: np.ndarray,
     num_bins: int,
-    dist_color = "blue",
+    dist_color="blue",
 ) -> None:
     bin_centers = 360 / num_bins * np.arange(num_bins)
     positions = np.radians(bin_centers)
@@ -229,9 +216,6 @@ def _plot_overlaid_distribution(
         facecolor=dist_color,
         alpha=0.2,
     )
-
-    ax.set_rorigin(-0.2)
-    ax.set_ylim(0, 0.5)
 
     ax.set_theta_zero_location("N")
     ax.set_theta_direction(-1)
@@ -367,7 +351,7 @@ def plot_alignment_orientation(
     edgecolor: str = "k",
     linewidth: float = 0.5,
     alpha: float = 1,
-    title: str| None = None,
+    title: str | None = None,
     title_y: float = 1.05,
     title_font: dict[str] | None = None,
     xtick_font: dict[str] | None = None,
@@ -377,18 +361,25 @@ def plot_alignment_orientation(
     """
 
     if title_font is None:
-        title_font = {"family": "monospace","name":"Courier","size": 24, "weight": "bold"}
+        title_font = {
+            "family": "monospace",
+            "name": "Courier",
+            "size": 24,
+            "weight": "bold",
+        }
     if xtick_font is None:
         xtick_font = {
             "family": "monospace",
-            "name":"Courier",
+            "name": "Courier",
             "size": 10,
             "weight": "bold",
             "alpha": 1.0,
             "zorder": 3,
         }
     num_bins = len(bin_counts)
-    bin_centers = np.arange(0, 180, 180 / num_bins)  # Ensure this matches the number of labels
+    bin_centers = np.arange(
+        0, 180, 180 / num_bins
+    )  # Ensure this matches the number of labels
 
     positions = np.radians(bin_centers)
 
@@ -397,13 +388,15 @@ def plot_alignment_orientation(
 
     # radius: how long to make each bar. set bar length so either the bar area
     # (ie, via sqrt) or the bar height is proportional to the bin's frequency
-   
+
     radius = np.sqrt(bin_counts) if area else bin_counts
     fig, ax = plt.subplots(subplot_kw={"projection": "polar"}, figsize=figsize)
 
     ax.set_theta_zero_location("W")
     ax.set_theta_direction(-1)  # Set the direction to counter-clockwise
-    ax.set_ylim(top=radius.max()+(radius.max()*0.1))  # Add some space above the max radius
+    ax.set_ylim(
+        top=radius.max() + (radius.max() * 0.1)
+    )  # Add some space above the max radius
 
     # Set the theta limits to display only the upper half of the plot
     ax.set_thetamin(0)

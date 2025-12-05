@@ -14,9 +14,9 @@ from . import (
     map_plotting,
     od_pair_analysis,
     orientation_plotting,
-    route_analysis,
     street_network_analysis,
 )
+
 from .route import route
 
 logging.basicConfig(
@@ -336,7 +336,7 @@ class od_pair:
         )
         fig.savefig(filepath)
 
-    def plot_on_map(self, html_path, graph_plot_path):
+    def plot_on_map(self, html_path, graph_plot_path, simplest=False, show_route=False):
         if self.path:
             route_gdf = ox.routing.route_to_gdf(
                 self.graph, self.path.nodes, weight=self.weightstring
@@ -363,25 +363,6 @@ class od_pair:
                 file_path=filepath,
                 truncation_polygon=bbox_poly,
             )
-
-        else:
-            route_gdf = ox.routing.route_to_gdf(
-                self.graph, self.shortest_path.nodes, weight="length"
-            )
-            filepath = html_path
-            polygon = self.polygon
-            map_plotting.plot_route_gdf(
-                G=self.graph,
-                start_node=self.origin_node,
-                end_node=self.destination_node,
-                route_gdf=route_gdf,
-                map_tiles="OpenStreetMap.Mapnik",
-                file_path=filepath,
-                truncation_polygon=polygon,
-                cot_dist=self.cot_distribution_alignment,
-            )
-
-        if self.path:
             subgraph = od_pair_analysis.get_od_pair_subgraph(
                 G=self.graph, bbox=self.path_map_bbox
             )
@@ -397,15 +378,37 @@ class od_pair:
                     node_color="black",
                     route_linewidth=4,
                     edge_linewidth=0.5,
-                    show=False,
+                    show=show_route,
                     close=False,
                 )
-                graph_plot_path
                 fig.savefig(graph_plot_path, bbox_inches="tight")
                 plt.close(fig)
             except Exception as e:
                 print(f"error {e}")
+
         else:
+            if simplest:
+                route_nodes = self.simplest_path.nodes
+            else:
+                route_nodes = self.shortest_path.nodes
+
+            route_gdf = ox.routing.route_to_gdf(
+                self.graph, route_nodes, weight="length"
+            )
+
+            filepath = html_path
+            polygon = self.polygon
+            map_plotting.plot_route_gdf(
+                G=self.graph,
+                start_node=self.origin_node,
+                end_node=self.destination_node,
+                route_gdf=route_gdf,
+                map_tiles="OpenStreetMap.Mapnik",
+                file_path=filepath,
+                truncation_polygon=polygon,
+                cot_dist=self.cot_distribution_alignment,
+            )
+
             subgraph = od_pair_analysis.get_od_pair_subgraph(
                 G=self.graph, polygon=self.polygon
             )
@@ -414,7 +417,7 @@ class od_pair:
                 # undirected_subgraph = ox.convert.to_undirected(subgraph)
                 fig, _ = ox.plot_graph_route(
                     subgraph,
-                    self.shortest_path.nodes,
+                    route_nodes,
                     node_size=5,
                     bgcolor="white",
                     route_color="blue",
@@ -422,10 +425,9 @@ class od_pair:
                     node_color="black",
                     route_linewidth=4,
                     edge_linewidth=0.5,
-                    show=False,
+                    show=show_route,
                     close=False,
                 )
-                graph_plot_path
                 fig.savefig(graph_plot_path, bbox_inches="tight")
                 plt.close(fig)
             except Exception as e:

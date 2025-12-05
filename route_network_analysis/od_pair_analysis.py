@@ -34,7 +34,9 @@ def get_od_cardinal_direction(G, origin, destination):
     bearing = ox.bearing.calculate_bearing(lat1, lon1, lat2, lon2)
 
     # Define cardinal direction ranges
-    if 337.5 <= bearing < 360 or 0 <= bearing < 22.5:
+    if 337.5 <= bearing < 360:
+        return "N"
+    elif 0 <= bearing < 22.5:
         return "N"
     elif 22.5 <= bearing < 67.5:
         return "NE"

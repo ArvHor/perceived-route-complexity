@@ -19,7 +19,9 @@ from PIL import Image
 
 # shutil is a standard library that helps with file operations in the shell
 import shutil
+
 FIREFOX_PATH = shutil.which("firefox")
+
 
 def plot_route_gdf(
     G,
@@ -119,10 +121,10 @@ def plot_route_gdf(
 
 def screenshot_map(full_path, imgpath):
     opts = webdriver.FirefoxOptions()
-    opts.add_argument("--width=3200")
-    opts.add_argument("--height=2572")
+    opts.add_argument("--width=1200")
+    opts.add_argument("--height=1000")
     opts.add_argument("--headless")
-    opts.add_argument("--window-size=3000,2572")
+    opts.add_argument("--window-size=1200,1000")
 
     opts.binary_location = FIREFOX_PATH
 
@@ -132,14 +134,14 @@ def screenshot_map(full_path, imgpath):
     # driver.set_window_size(1600, 1200)
     print(f"full path: {full_path}")
     driver.get(f"file://{full_path}")
-    driver.set_window_size(3000, 2572)
+    driver.set_window_size(1200, 1000)
     time.sleep(2)
     driver.save_screenshot(imgpath)
 
     driver.quit()
     with Image.open(imgpath) as im:
-        im = im.resize((3000, 2572), Image.LANCZOS)
-        im.save(imgpath, format="PNG", dpi=(300, 300))
+        im = im.resize((1200, 1000), Image.LANCZOS)
+        im.save(imgpath, format="PNG", dpi=(150, 150))
 
 
 def flip_map(m, end_location, start_location):
