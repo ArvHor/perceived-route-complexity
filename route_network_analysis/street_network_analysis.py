@@ -5,14 +5,13 @@ import numpy.typing as npt
 import networkx as nx
 import osmnx as ox
 from osmnx import projection
-from warnings import warn
 import scipy
 
 # Local modules
 from . import geo_util
 
 
-#betweenness_centrality
+# betweenness_centrality
 def get_node_avg(G, attribute):
     total = 0
     count = 0
@@ -21,7 +20,6 @@ def get_node_avg(G, attribute):
             total += attributes[attribute]
             count += 1
     return total / count if count > 0 else 0
-
 
 
 def add_deviation_from_prototypical_weights(G):
@@ -288,7 +286,7 @@ def extract_edge_bearings(
             "edge). If you want bidirectional edge bearings (two reciprocal bearings "
             "per edge), pass a MultiGraph instead. Use `convert.to_undirected`."
         )
-        #warn(msg, category=UserWarning, stacklevel=2)
+        # warn(msg, category=UserWarning, stacklevel=2)
         return bearings_array, weights_array
     # for undirected graphs, add reverse bearings
     bearings_array = np.concatenate([bearings_array, (bearings_array - 180) % 360])
@@ -394,4 +392,3 @@ def add_edge_bearings(G: nx.MultiDiGraph) -> nx.MultiDiGraph:
     nx.set_edge_attributes(G, dict(values), name="bearing")
 
     return G
-
