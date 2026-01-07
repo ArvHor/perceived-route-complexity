@@ -15,6 +15,7 @@ parameter_data/
 experiment_routes.py
 t_turn_tests.py
 test.py
+testing.py
 azimuth_tests.py
 chromedriver
 *.log

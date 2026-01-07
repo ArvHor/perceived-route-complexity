@@ -7,7 +7,6 @@ from typing import Union
 
 
 def get_od_pair_bearing_dist(fwd, bwd=None, perp_fwd=None, perp_bwd=None):
-
     if fwd and bwd and perp_fwd and perp_bwd:
         bearings = [fwd, bwd, perp_fwd, perp_bwd]
     elif fwd and bwd:
@@ -25,11 +24,12 @@ def get_od_pair_bearing_dist(fwd, bwd=None, perp_fwd=None, perp_bwd=None):
 
     return bin_counts
 
+
 def get_od_cardinal_direction(G, origin, destination):
     lat1 = G.nodes[origin]["y"]
     lon1 = G.nodes[origin]["x"]
-    lat2 = G.nodes[origin]["y"]
-    lon2 = G.nodes[origin]["x"]
+    lat2 = G.nodes[destination]["y"]
+    lon2 = G.nodes[destination]["x"]
 
     bearing = ox.bearing.calculate_bearing(lat1, lon1, lat2, lon2)
 

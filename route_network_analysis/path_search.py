@@ -1,5 +1,4 @@
 import heapq
-import networkx as nx
 import logging
 
 from . import geo_util

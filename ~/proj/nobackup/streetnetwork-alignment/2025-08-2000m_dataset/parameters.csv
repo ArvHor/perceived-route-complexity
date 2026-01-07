@@ -1,0 +1,13 @@
+Parameter,Value
+sample_size,1
+min_distance,2
+random_seed,4
+network_type,drive
+point_distance_size,1000
+min_od_distance,1000
+max_od_distance,2000
+base_path,~/proj/nobackup/streetnetwork-alignment/2025-08-2000m_dataset
+city_sample_nodes_path,~/proj/nobackup/streetnetwork-alignment/2025-08-2000m_dataset/city_sample_nodes_2025-08-2000m_dataset.csv
+local_graph_folder,~/proj/nobackup/streetnetwork-alignment/2025-08-2000m_dataset/local_origin_graphs
+base_path,~/proj/nobackup/streetnetwork-alignment/2025-08-2000m_dataset
+experiment_name,2025-08-2000m_dataset

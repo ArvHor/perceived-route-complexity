@@ -8,179 +8,213 @@ import overpy
 import osmnx as ox
 import random
 
-
-
 api = overpy.Overpass()
 
+
 def get_train_station_coordinates(city):
-  """
-  Retrieves the coordinates of a train station in a given city using Overpass API.
+    """
 
-  Args:
-    city: The name of the city.
+    Retrieves the coordinates of a train station in a given city using Overpass API.
 
-  Returns:
-    A tuple containing the latitude and longitude of the train station as floats,
-    or None if no train station is found.
-  """
-  geolocator = Nominatim(user_agent="train_station_finder")
-  api = overpy.Overpass()
-  try:
-    location = geolocator.geocode(city)
-    if not location:
-      print(f"Could not find the city: {city}")
-      return None
-    city_center_coords = (location.latitude, location.longitude)
-    lat, lon = location.latitude, location.longitude
-    result = api.query(f"""
+    Args:
+      city: The name of the city.
+
+    Returns:
+      A tuple containing the latitude and longitude of the train station as floats,
+      or None if no train station is found.
+    """
+    geolocator = Nominatim(user_agent="train_station_finder")
+    api = overpy.Overpass()
+    try:
+        location = geolocator.geocode(city)
+        if not location:
+            print(f"Could not find the city: {city}")
+            return None
+        city_center_coords = (location.latitude, location.longitude)
+        lat, lon = location.latitude, location.longitude
+        result = api.query(f"""
       [out:json];
       node(around:10000,{lat},{lon})["railway"="station"];
       out center;
     """)
-    if result.nodes:
-      closest_station = min(result.nodes,key=lambda node: geodesic(city_center_coords, (float(node.lat), float(node.lon))).km)
-      # Get the first train station found
-      train_station_name = closest_station.tags.get("name:en")
-      if not train_station_name:
-        train_station_name = closest_station.tags.get("name", "Unknown")
+        if result.nodes:
+            closest_station = min(
+                result.nodes,
+                key=lambda node: geodesic(
+                    city_center_coords, (float(node.lat), float(node.lon))
+                ).km,
+            )
+            # Get the first train station found
+            train_station_name = closest_station.tags.get("name:en")
+            if not train_station_name:
+                train_station_name = closest_station.tags.get("name", "Unknown")
 
-      city_location = geolocator.reverse((lat, lon), exactly_one=True)
-      address = city_location.raw.get('address', {})
-      city_country = address.get('country', 'Unknown')
-      #city_continent = address.get('continent', 'Unknown')
-      #print(f"Train station found: {train_station_name}")
-      return float(closest_station.lat), float(closest_station.lon), train_station_name, city_country,#city_continent  # Explicitly convert to floats
-    else:
-      print(f"No train station found in {city}")
-      return None
-  except GeocoderTimedOut:
-    print(f"Geocoding timed out for city: {city}")
-    return None
-  except overpy.exception.OverpassTooManyRequests:
-    print(f"Too many requests to Overpass API. Try again later.")
-    return None
-  except overpy.exception.OverpassGatewayTimeout:
-    print(f"Timeout error occurred while querying Overpass API for {city}")
-    return None
+            city_location = geolocator.reverse((lat, lon), exactly_one=True)
+            address = city_location.raw.get("address", {})
+            city_country = address.get("country", "Unknown")
+            # city_continent = address.get('continent', 'Unknown')
+            # print(f"Train station found: {train_station_name}")
+            return (
+                float(closest_station.lat),
+                float(closest_station.lon),
+                train_station_name,
+                city_country,
+            )  # city_continent  # Explicitly convert to floats
+        else:
+            print(f"No train station found in {city}")
+            return None
+    except GeocoderTimedOut:
+        print(f"Geocoding timed out for city: {city}")
+        return None
+    except overpy.exception.OverpassTooManyRequests:
+        print("Too many requests to Overpass API. Try again later.")
+        return None
+    except overpy.exception.OverpassGatewayTimeout:
+        print(f"Timeout error occurred while querying Overpass API for {city}")
+        return None
 
-def get_coord_info(lat,lon):
-  geolocator = Nominatim(user_agent="train_station_finder")
-  try:
-    location = geolocator.reverse((lat, lon), exactly_one=True)
-    address = location.raw.get('address', {})
-    city = address.get('city', '')
-    country = address.get('country', '')
-    return city, country
-  except GeocoderTimedOut:
-    print(f"Geocoding timed out for coordinates: {lat}, {lon}")
-    return None, None
+
+def get_coord_info(lat, lon):
+    geolocator = Nominatim(user_agent="train_station_finder")
+    try:
+        location = geolocator.reverse((lat, lon), exactly_one=True)
+        address = location.raw.get("address", {})
+        city = address.get("city", "")
+        country = address.get("country", "")
+        return city, country
+    except GeocoderTimedOut:
+        print(f"Geocoding timed out for coordinates: {lat}, {lon}")
+        return None, None
+
 
 def create_train_station_csv(origin_locations):
-  new_locations = []
+    new_locations = []
 
-  for index, row in origin_locations.iterrows():
-    city_name = row['city_name_en']
-    train_station_coords = get_train_station_coordinates(city_name)
-    if train_station_coords:
-      location = {
-        'country': train_station_coords[3],
-        'city_name': city_name,
-        'train_station_name': train_station_coords[2],
-        'train_station_lat': train_station_coords[0],
-        'train_station_lon': train_station_coords[1]
-      }
-      new_locations.append(location)
-      print(f"Train station coordinates for {city_name}: {train_station_coords}")
-    time.sleep(1)  # Sleep for 1 second to avoid making too many requests in a short period of time
+    for index, row in origin_locations.iterrows():
+        city_name = row["city_name_en"]
+        train_station_coords = get_train_station_coordinates(city_name)
+        if train_station_coords:
+            location = {
+                "country": train_station_coords[3],
+                "city_name": city_name,
+                "train_station_name": train_station_coords[2],
+                "train_station_lat": train_station_coords[0],
+                "train_station_lon": train_station_coords[1],
+            }
+            new_locations.append(location)
+            print(f"Train station coordinates for {city_name}: {train_station_coords}")
+        time.sleep(
+            1
+        )  # Sleep for 1 second to avoid making too many requests in a short period of time
 
-  # Save the new DataFrame to a new CSV file
-  new_locations = pd.DataFrame(new_locations)
-  new_locations.to_csv('./parameter_data/boeing_locations_with_stations.csv', index=False)
-
-
-def download_street_network_and_select_random_nodes(city_name,city_point,min_distance_km,sample_size,random_seed):
-  try:
-    # Download the street network graph for the city
-    graph = ox.graph_from_point(city_point, dist=10000, network_type='drive')
-
-    # Check if the graph is smaller than the minimum size
-    if len(graph.nodes) < 100:
-        raise ValueError(f"Graph for {city_name} is too small ({len(graph.nodes)} nodes). Skipping.")
+    # Save the new DataFrame to a new CSV file
+    new_locations = pd.DataFrame(new_locations)
+    new_locations.to_csv(
+        "./parameter_data/boeing_locations_with_stations.csv", index=False
+    )
 
 
-
-    # Get all the nodes in the graph
-    nodes = list(graph.nodes)
-    random.seed(4)
-    # Function to check if nodes are at least min_distance apart
-    def nodes_far_enough(node_list, new_node, min_distance_km=min_distance_km):
-      for node in node_list:
-        dist = geodesic((graph.nodes[node]['y'], graph.nodes[node]['x']),
-                        (graph.nodes[new_node]['y'], graph.nodes[new_node]['x'])).km
-        if dist < min_distance_km:
-          return False
-      return True
-
-    # Select 3 random nodes that are at least min_distance apart
-    random.seed(random_seed)
-    random_nodes = []
-    start_time = time.time()
-    while len(random_nodes) < sample_size and (time.time() - start_time)<60:
-      candidate_node = random.choice(nodes)
-      if nodes_far_enough(random_nodes, candidate_node):
-        random_nodes.append(candidate_node)
-
-    print(f"Random nodes for {city_name} that are at least {min_distance_km} km apart: {random_nodes}")
-    return graph, random_nodes
-
-  except Exception as e:
-    print(f"An error occurred while processing {city_name}: {e}")
-    return None
-
-def get_random_nodes_for_all_cities(origin_locations, min_distance_km, sample_size,random_seed):
-  # Example usage
-  samples = []
-  for index, row in origin_locations.iterrows():
-    city_name = row['city_name_en']
-    city_point = (row['latitude'],row['longitude'])
+def download_street_network_and_select_random_nodes(
+    city_name, city_point, min_distance_km, sample_size, random_seed
+):
     try:
-      graph, random_nodes = download_street_network_and_select_random_nodes(city_name,city_point,min_distance_km=min_distance_km,sample_size=sample_size,random_seed=random_seed)
+        # Download the street network graph for the city
+        graph = ox.graph_from_point(city_point, dist=10000, network_type="drive")
+
+        # Check if the graph is smaller than the minimum size
+        if len(graph.nodes) < 100:
+            raise ValueError(
+                f"Graph for {city_name} is too small ({len(graph.nodes)} nodes). Skipping."
+            )
+
+        # Get all the nodes in the graph
+        nodes = list(graph.nodes)
+        random.seed(4)
+
+        # Function to check if nodes are at least min_distance apart
+        def nodes_far_enough(node_list, new_node, min_distance_km=min_distance_km):
+            for node in node_list:
+                dist = geodesic(
+                    (graph.nodes[node]["y"], graph.nodes[node]["x"]),
+                    (graph.nodes[new_node]["y"], graph.nodes[new_node]["x"]),
+                ).km
+                if dist < min_distance_km:
+                    return False
+            return True
+
+        # Select 3 random nodes that are at least min_distance apart
+        random.seed(random_seed)
+        random_nodes = []
+        start_time = time.time()
+        while len(random_nodes) < sample_size and (time.time() - start_time) < 60:
+            candidate_node = random.choice(nodes)
+            if nodes_far_enough(random_nodes, candidate_node):
+                random_nodes.append(candidate_node)
+
+        print(
+            f"Random nodes for {city_name} that are at least {min_distance_km} km apart: {random_nodes}"
+        )
+        return graph, random_nodes
+
     except Exception as e:
-      print(f"An error occurred while processing {city_name}: {e}")
-      continue
-    if random_nodes:
-      print(f"Random nodes for {city_name}: {random_nodes}")
-    #time.sleep(1)  # Sleep for 1 second to avoid making too many requests in a short period of time
-    if random_nodes:
-      city = row['city_name_en']
-      #country = location_info[location_info['city_name'] == city]['country']
-      #region = location_info[location_info['city_name'] == city]['region']
-      node_samples = []
-      for index, node in enumerate(random_nodes):
-        print(f"Node: {node}")
+        print(f"An error occurred while processing {city_name}: {e}")
+        return None
 
-        node_lat = graph.nodes[node]['y']
-        node_lon = graph.nodes[node]['x']
-        node_latlon = (node_lat, node_lon)
-        print(f"Random node coordinates for {city_name}: {node_lat}, {node_lon}")
-        node_samples.append({"node_latlon":node_latlon,"node_id":node})
 
-    for i, node_sample in enumerate(node_samples,start=1):
-      location = {
-        'city_name': city,
-        'city_name_en': row['city_name_en'],
-        'country_name': row['country_name'],
-        'country_name_en': row['country_name_en'],
-        'continent': row['continent'],
-        'region': row['region'],
-        "network_type":"drive",
-        "node_id": node_sample['node_id'],
-        'node_latlon': node_sample['node_latlon'],
-      }
-      samples.append(location)
-    # Save the random nodes DataFrame to a new CSV file
-  node_samples_df = pd.DataFrame(samples)
-  return node_samples_df
+def get_random_nodes_for_all_cities(
+    origin_locations, min_distance_km, sample_size, random_seed
+):
+    # Example usage
+    samples = []
+    for index, row in origin_locations.iterrows():
+        city_name = row["city_name_en"]
+        city_point = (row["latitude"], row["longitude"])
+        try:
+            graph, random_nodes = download_street_network_and_select_random_nodes(
+                city_name,
+                city_point,
+                min_distance_km=min_distance_km,
+                sample_size=sample_size,
+                random_seed=random_seed,
+            )
+        except Exception as e:
+            print(f"An error occurred while processing {city_name}: {e}")
+            continue
+        if random_nodes:
+            print(f"Random nodes for {city_name}: {random_nodes}")
+        # time.sleep(1)  # Sleep for 1 second to avoid making too many requests in a short period of time
+        if random_nodes:
+            city = row["city_name_en"]
+            # country = location_info[location_info['city_name'] == city]['country']
+            # region = location_info[location_info['city_name'] == city]['region']
+            node_samples = []
+            for index, node in enumerate(random_nodes):
+                print(f"Node: {node}")
+
+                node_lat = graph.nodes[node]["y"]
+                node_lon = graph.nodes[node]["x"]
+                node_latlon = (node_lat, node_lon)
+                print(
+                    f"Random node coordinates for {city_name}: {node_lat}, {node_lon}"
+                )
+                node_samples.append({"node_latlon": node_latlon, "node_id": node})
+
+        for i, node_sample in enumerate(node_samples, start=1):
+            location = {
+                "city_name": city,
+                "city_name_en": row["city_name_en"],
+                "country_name": row["country_name"],
+                "country_name_en": row["country_name_en"],
+                "continent": row["continent"],
+                "region": row["region"],
+                "network_type": "drive",
+                "node_id": node_sample["node_id"],
+                "node_latlon": node_sample["node_latlon"],
+            }
+            samples.append(location)
+        # Save the random nodes DataFrame to a new CSV file
+    node_samples_df = pd.DataFrame(samples)
+    return node_samples_df
 
 
 def get_coord_info(lat, lon, max_retries=3, retry_delay=2):
@@ -202,28 +236,28 @@ def get_coord_info(lat, lon, max_retries=3, retry_delay=2):
 
     for attempt in range(max_retries):
         try:
-            location = geolocator.reverse((lat, lon), exactly_one=True, language='en')
-            address = location.raw.get('address', {})
+            location = geolocator.reverse((lat, lon), exactly_one=True, language="en")
+            address = location.raw.get("address", {})
 
             # Get city, considering alternatives if 'city' is missing
-            city = address.get('city',
-                               address.get('town',
-                                           address.get('village',
-                                                       address.get('hamlet', ''))))
+            city = address.get(
+                "city",
+                address.get("town", address.get("village", address.get("hamlet", ""))),
+            )
 
             # Get the region (state, county, or other administrative division)
-            region = address.get('state',
-                                 address.get('county',
-                                             address.get('region', '')))
+            region = address.get(
+                "state", address.get("county", address.get("region", ""))
+            )
 
-            country = address.get('country', '')
+            country = address.get("country", "")
             full_address = location.address
 
             return {
-                'city': city,
-                'region': region,
-                'country': country,
-                'address': full_address
+                "city": city,
+                "region": region,
+                "country": country,
+                "address": full_address,
             }
 
         except (GeocoderTimedOut, GeocoderUnavailable) as e:
@@ -232,134 +266,150 @@ def get_coord_info(lat, lon, max_retries=3, retry_delay=2):
                 print(f"Retrying in {retry_delay} seconds...")
                 time.sleep(retry_delay)
             else:
-                print(f"Geocoding failed after multiple retries for coordinates: {lat}, {lon}")
+                print(
+                    f"Geocoding failed after multiple retries for coordinates: {lat}, {lon}"
+                )
                 return None
     return None
 
+
 def fix_unknown(origin_locations):
-  for index, row in origin_locations.iterrows():
-    city = row['city_name_en']
-    if row['country'] == 'Unknown':
-      print(f"City: {city}")
-      lat,lon = ast.literal_eval(row['node1_latlon'])
-      coord_info = get_coord_info(lat, lon)
-      if coord_info:
-        print(f"City: {city}, Country: {coord_info['country']}")
-        origin_locations.at[index, 'country'] = coord_info['country']
-        origin_locations.at[index, 'region'] = coord_info['region']
-  origin_locations.to_csv('./parameter_data/boeing_locations_3node_sample_B.csv', index=False)
-
-
-  import overpy
-  import time
+    for index, row in origin_locations.iterrows():
+        city = row["city_name_en"]
+        if row["country"] == "Unknown":
+            print(f"City: {city}")
+            lat, lon = ast.literal_eval(row["node1_latlon"])
+            coord_info = get_coord_info(lat, lon)
+            if coord_info:
+                print(f"City: {city}, Country: {coord_info['country']}")
+                origin_locations.at[index, "country"] = coord_info["country"]
+                origin_locations.at[index, "region"] = coord_info["region"]
+    origin_locations.to_csv(
+        "./parameter_data/boeing_locations_3node_sample_B.csv", index=False
+    )
 
 
 def enrich_city_data(df):
-  """
-  Enrich a dataframe containing city and region information with additional geographic data
-  using targeted OpenStreetMap queries and geocoding.
-  """
-  # Create a copy of the dataframe
-  result_df = df.copy()
+    """
+    Enrich a dataframe containing city and region information with additional geographic data
+    using targeted OpenStreetMap queries and geocoding.
+    """
+    # Create a copy of the dataframe
+    result_df = df.copy()
 
-  # Initialize columns
-  result_df['city_name'] = df['City']
-  result_df['city_name_en'] = df['City']
-  result_df['country_name'] = None
-  result_df['country_name_en'] = None
-  result_df['continent'] = None
+    # Initialize columns
+    result_df["city_name"] = df["City"]
+    result_df["city_name_en"] = df["City"]
+    result_df["country_name"] = None
+    result_df["country_name_en"] = None
+    result_df["continent"] = None
 
-  # Initialize APIs
-  overpass_api = overpy.Overpass()
-  geolocator = Nominatim(user_agent="city_enricher")
+    # Initialize APIs
+    overpass_api = overpy.Overpass()
+    geolocator = Nominatim(user_agent="city_enricher")
 
-  # Country to continent mapping
-  country_to_continent = {
-    # Same mapping as before
-    'Thailand': 'Asia',
-    # Add other countries as needed
-  }
+    # Country to continent mapping
+    country_to_continent = {
+        # Same mapping as before
+        "Thailand": "Asia",
+        # Add other countries as needed
+    }
 
-  for idx, row in result_df.iterrows():
-    city = row['City']
-    region = row['Region']
+    for idx, row in result_df.iterrows():
+        city = row["City"]
+        region = row["Region"]
 
-    try:
-      # Step 1: Use Nominatim for basic geocoding - more reliable than direct Overpass query
-      location = geolocator.geocode(city, exactly_one=True, addressdetails=True)
+        try:
+            # Step 1: Use Nominatim for basic geocoding - more reliable than direct Overpass query
+            location = geolocator.geocode(city, exactly_one=True, addressdetails=True)
 
-      if location and hasattr(location, 'raw') and 'address' in location.raw:
-        address = location.raw['address']
+            if location and hasattr(location, "raw") and "address" in location.raw:
+                address = location.raw["address"]
 
-        # Get city name
-        if 'city' in address:
-          result_df.at[idx, 'city_name'] = address['city']
-          result_df.at[idx, 'city_name_en'] = address['city']
+                # Get city name
+                if "city" in address:
+                    result_df.at[idx, "city_name"] = address["city"]
+                    result_df.at[idx, "city_name_en"] = address["city"]
 
-        # Get country name
-        if 'country' in address:
-          result_df.at[idx, 'country_name'] = address['country']
-          result_df.at[idx, 'country_name_en'] = address['country']
+                # Get country name
+                if "country" in address:
+                    result_df.at[idx, "country_name"] = address["country"]
+                    result_df.at[idx, "country_name_en"] = address["country"]
 
-        # Step 2: Only use Overpass for more specific data with a targeted query
-        if 'country_code' in address and 'city' in address:
-          country_code = address['country_code'].upper()
+                # Step 2: Only use Overpass for more specific data with a targeted query
+                if "country_code" in address and "city" in address:
+                    country_code = address["country_code"].upper()
 
-          # More targeted query - get only city relation with exact name match
-          query = f"""
+                    # More targeted query - get only city relation with exact name match
+                    query = f"""
                   [out:json][timeout:25];
                   // Only query for the relation (most cities are stored as relations)
                   relation["place"="city"]["name"="{city}"]["admin_level"~"4|6|8"]["ISO3166-1"~".*{country_code}.*"];
                   out body;
                   """
 
-          try:
-            result = overpass_api.query(query)
+                    try:
+                        result = overpass_api.query(query)
 
-            if result.relations:
-              relation = result.relations[0]
-              tags = relation.tags
+                        if result.relations:
+                            relation = result.relations[0]
+                            tags = relation.tags
 
-              # Get localized and English names
-              if 'name' in tags:
-                result_df.at[idx, 'city_name'] = tags['name']
+                            # Get localized and English names
+                            if "name" in tags:
+                                result_df.at[idx, "city_name"] = tags["name"]
 
-              if 'name:en' in tags:
-                result_df.at[idx, 'city_name_en'] = tags['name:en']
+                            if "name:en" in tags:
+                                result_df.at[idx, "city_name_en"] = tags["name:en"]
 
-              # Get country information if available
-              if 'is_in:country' in tags:
-                result_df.at[idx, 'country_name'] = tags['is_in:country']
+                            # Get country information if available
+                            if "is_in:country" in tags:
+                                result_df.at[idx, "country_name"] = tags[
+                                    "is_in:country"
+                                ]
 
-              if 'is_in:country:en' in tags:
-                result_df.at[idx, 'country_name_en'] = tags['is_in:country:en']
-          except Exception as e:
-            print(f"Overpass error for {city}: {str(e)}")
+                            if "is_in:country:en" in tags:
+                                result_df.at[idx, "country_name_en"] = tags[
+                                    "is_in:country:en"
+                                ]
+                    except Exception as e:
+                        print(f"Overpass error for {city}: {str(e)}")
 
-      # Step 3: Determine continent (same as before)
-      if result_df.at[idx, 'country_name'] in country_to_continent:
-        result_df.at[idx, 'continent'] = country_to_continent[result_df.at[idx, 'country_name']]
-      elif result_df.at[idx, 'country_name_en'] in country_to_continent:
-        result_df.at[idx, 'continent'] = country_to_continent[result_df.at[idx, 'country_name_en']]
-      else:
-        # Extract from region field as before
-        if "Asia" in region:
-          if "Oceania" in region:
-            oceania_countries = ['Australia', 'Papua New Guinea', 'New Zealand', 'Fiji']
-            if (result_df.at[idx, 'country_name'] in oceania_countries or
-                    result_df.at[idx, 'country_name_en'] in oceania_countries):
-              result_df.at[idx, 'continent'] = "Oceania"
+            # Step 3: Determine continent (same as before)
+            if result_df.at[idx, "country_name"] in country_to_continent:
+                result_df.at[idx, "continent"] = country_to_continent[
+                    result_df.at[idx, "country_name"]
+                ]
+            elif result_df.at[idx, "country_name_en"] in country_to_continent:
+                result_df.at[idx, "continent"] = country_to_continent[
+                    result_df.at[idx, "country_name_en"]
+                ]
             else:
-              result_df.at[idx, 'continent'] = "Asia"
-          else:
-            result_df.at[idx, 'continent'] = "Asia"
-        # Other regions as before
+                # Extract from region field as before
+                if "Asia" in region:
+                    if "Oceania" in region:
+                        oceania_countries = [
+                            "Australia",
+                            "Papua New Guinea",
+                            "New Zealand",
+                            "Fiji",
+                        ]
+                        if (
+                            result_df.at[idx, "country_name"] in oceania_countries
+                            or result_df.at[idx, "country_name_en"] in oceania_countries
+                        ):
+                            result_df.at[idx, "continent"] = "Oceania"
+                        else:
+                            result_df.at[idx, "continent"] = "Asia"
+                    else:
+                        result_df.at[idx, "continent"] = "Asia"
+                # Other regions as before
 
-      # Avoid hitting rate limits
-      time.sleep(1.5)
-      print(f"finished {city}")
+            # Avoid hitting rate limits
+            time.sleep(1.5)
+            print(f"finished {city}")
 
-    except Exception as e:
-      print(f"Error processing {city}: {str(e)}")
+        except Exception as e:
+            print(f"Error processing {city}: {str(e)}")
 
-  return result_df
+    return result_df
